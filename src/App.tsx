@@ -1,5 +1,4 @@
 import './App.css'
-import Dropdown from './components/Dropdown'
 import RadioButtonGroup from './components/RadioButtonGroup'
 import NumberInput from './components/NumberInput'
 import TextInput from './components/TextInput'
@@ -11,8 +10,199 @@ import RecommendedPriceBanner from './components/RecommendedPriceBanner'
 import CollapsibleSection from './components/CollapsibleSection'
 import SearchableCategoryDropdown from './components/SearchableCategoryDropdown'
 import ConditionDropdown from './components/ConditionDropdown'
+import SearchableDropdown from './components/SearchableDropdown'
+import MultiSelectDropdown from './components/MultiSelectDropdown'
+import { useState } from 'react'
 
 function App() {
+  const [dateOfManufacture, setDateOfManufacture] = useState<string>('')
+  const [period, setPeriod] = useState<string>('')
+  const [materials, setMaterials] = useState<string[]>([])
+  const [condition, setCondition] = useState<string>('')
+
+  const materialOptions = [
+    'Brass',
+    'Bronze',
+    'Cherry',
+    'Fabric',
+    'Glass',
+    'Leather',
+    'Mahogany',
+    'Maple',
+    'Marble',
+    'Metal',
+    'Oak',
+    'Pine',
+    'Rattan',
+    'Solid Wood',
+    'Steel',
+    'Teak',
+    'Velvet',
+    'Veneer',
+    'Walnut',
+    'Wicker'
+  ]
+
+  const wearOptions = [
+    { value: 'consistent', label: 'Wear consistent with age and use' },
+    { value: 'minor-losses', label: 'Minor Losses' },
+    { value: 'minor-structural', label: 'Minor Structural Damages' },
+    { value: 'minor-fading', label: 'Minor Fading' }
+  ]
+
+  const restorationOptions = [
+    { value: 'no', label: 'No restorations or modifications have been made' },
+    { value: 'yes', label: 'Yes, restorations or modifications have been made' }
+  ]
+
+  const weightOptions = [
+    { value: 'less-40', label: 'Less than 40 lbs (<18 kilos)' },
+    { value: '40-70', label: 'Between 40-70 lbs (18-31 kilos)' },
+    { value: '70-200', label: 'Between 70-200 lbs (31-90 kilos)' },
+    { value: 'more-200', label: 'More than 200 lbs (90+ kilos)' }
+  ]
+
+  const attributionOptions = [
+    { value: 'attributed-to', label: 'Attributed To' },
+    { value: 'by', label: 'By' },
+    { value: 'by-documented', label: 'By and Documented' },
+    { value: 'style-of', label: 'In the Style of' },
+    { value: 'unattributed', label: 'Unattributed' }
+  ]
+
+  const creatorOptions = [
+    { value: 'charles-eames', label: 'Charles Eames' },
+    { value: 'ray-eames', label: 'Ray Eames' },
+    { value: 'hans-wegner', label: 'Hans Wegner' },
+    { value: 'arne-jacobsen', label: 'Arne Jacobsen' },
+    { value: 'george-nakashima', label: 'George Nakashima' },
+    { value: 'mies-van-der-rohe', label: 'Mies van der Rohe' },
+    { value: 'le-corbusier', label: 'Le Corbusier' },
+    { value: 'isamu-noguchi', label: 'Isamu Noguchi' },
+    { value: 'finn-juhl', label: 'Finn Juhl' },
+    { value: 'eero-saarinen', label: 'Eero Saarinen' },
+    { value: 'florence-knoll', label: 'Florence Knoll' },
+    { value: 'marcel-breuer', label: 'Marcel Breuer' },
+    { value: 'alvar-aalto', label: 'Alvar Aalto' },
+    { value: 'wendell-castle', label: 'Wendell Castle' },
+    { value: 'vladimir-kagan', label: 'Vladimir Kagan' },
+    { value: 'paul-evans', label: 'Paul Evans' },
+    { value: 'philippe-starck', label: 'Philippe Starck' },
+    { value: 'ettore-sottsass', label: 'Ettore Sottsass' },
+    { value: 'jean-prouve', label: 'Jean Prouvé' },
+    { value: 'charlotte-perriand', label: 'Charlotte Perriand' }
+  ]
+
+  const roleOptions = [
+    { value: 'artist', label: 'Artist' },
+    { value: 'author', label: 'Author' },
+    { value: 'designer', label: 'Designer' },
+    { value: 'maker', label: 'Maker' }
+  ]
+
+  const styleOptions = [
+    { value: 'art-deco', label: 'Art Deco' },
+    { value: 'art-nouveau', label: 'Art Nouveau' },
+    { value: 'baroque', label: 'Baroque' },
+    { value: 'bauhaus', label: 'Bauhaus' },
+    { value: 'chippendale', label: 'Chippendale' },
+    { value: 'colonial', label: 'Colonial' },
+    { value: 'contemporary', label: 'Contemporary' },
+    { value: 'danish-modern', label: 'Danish Modern' },
+    { value: 'french-provincial', label: 'French Provincial' },
+    { value: 'georgian', label: 'Georgian' },
+    { value: 'gothic', label: 'Gothic' },
+    { value: 'industrial', label: 'Industrial' },
+    { value: 'louis-xiv', label: 'Louis XIV' },
+    { value: 'mid-century-modern', label: 'Mid-Century Modern' },
+    { value: 'minimalist', label: 'Minimalist' },
+    { value: 'neoclassical', label: 'Neoclassical' },
+    { value: 'queen-anne', label: 'Queen Anne' },
+    { value: 'regency', label: 'Regency' },
+    { value: 'scandinavian', label: 'Scandinavian' },
+    { value: 'victorian', label: 'Victorian' }
+  ]
+
+  const countryOptions = [
+    { value: 'AF', label: 'Afghanistan' },
+    { value: 'AL', label: 'Albania' },
+    { value: 'DZ', label: 'Algeria' },
+    { value: 'AR', label: 'Argentina' },
+    { value: 'AM', label: 'Armenia' },
+    { value: 'AU', label: 'Australia' },
+    { value: 'AT', label: 'Austria' },
+    { value: 'AZ', label: 'Azerbaijan' },
+    { value: 'BD', label: 'Bangladesh' },
+    { value: 'BY', label: 'Belarus' },
+    { value: 'BE', label: 'Belgium' },
+    { value: 'BR', label: 'Brazil' },
+    { value: 'BG', label: 'Bulgaria' },
+    { value: 'KH', label: 'Cambodia' },
+    { value: 'CA', label: 'Canada' },
+    { value: 'CL', label: 'Chile' },
+    { value: 'CN', label: 'China' },
+    { value: 'CO', label: 'Colombia' },
+    { value: 'HR', label: 'Croatia' },
+    { value: 'CU', label: 'Cuba' },
+    { value: 'CZ', label: 'Czech Republic' },
+    { value: 'DK', label: 'Denmark' },
+    { value: 'EG', label: 'Egypt' },
+    { value: 'EE', label: 'Estonia' },
+    { value: 'FI', label: 'Finland' },
+    { value: 'FR', label: 'France' },
+    { value: 'GE', label: 'Georgia' },
+    { value: 'DE', label: 'Germany' },
+    { value: 'GR', label: 'Greece' },
+    { value: 'HK', label: 'Hong Kong' },
+    { value: 'HU', label: 'Hungary' },
+    { value: 'IS', label: 'Iceland' },
+    { value: 'IN', label: 'India' },
+    { value: 'ID', label: 'Indonesia' },
+    { value: 'IR', label: 'Iran' },
+    { value: 'IQ', label: 'Iraq' },
+    { value: 'IE', label: 'Ireland' },
+    { value: 'IL', label: 'Israel' },
+    { value: 'IT', label: 'Italy' },
+    { value: 'JP', label: 'Japan' },
+    { value: 'KZ', label: 'Kazakhstan' },
+    { value: 'KE', label: 'Kenya' },
+    { value: 'KR', label: 'South Korea' },
+    { value: 'LV', label: 'Latvia' },
+    { value: 'LT', label: 'Lithuania' },
+    { value: 'LU', label: 'Luxembourg' },
+    { value: 'MY', label: 'Malaysia' },
+    { value: 'MX', label: 'Mexico' },
+    { value: 'MA', label: 'Morocco' },
+    { value: 'NL', label: 'Netherlands' },
+    { value: 'NZ', label: 'New Zealand' },
+    { value: 'NG', label: 'Nigeria' },
+    { value: 'NO', label: 'Norway' },
+    { value: 'PK', label: 'Pakistan' },
+    { value: 'PE', label: 'Peru' },
+    { value: 'PH', label: 'Philippines' },
+    { value: 'PL', label: 'Poland' },
+    { value: 'PT', label: 'Portugal' },
+    { value: 'RO', label: 'Romania' },
+    { value: 'RU', label: 'Russia' },
+    { value: 'SA', label: 'Saudi Arabia' },
+    { value: 'RS', label: 'Serbia' },
+    { value: 'SG', label: 'Singapore' },
+    { value: 'SK', label: 'Slovakia' },
+    { value: 'SI', label: 'Slovenia' },
+    { value: 'ZA', label: 'South Africa' },
+    { value: 'ES', label: 'Spain' },
+    { value: 'SE', label: 'Sweden' },
+    { value: 'CH', label: 'Switzerland' },
+    { value: 'TW', label: 'Taiwan' },
+    { value: 'TH', label: 'Thailand' },
+    { value: 'TR', label: 'Turkey' },
+    { value: 'UA', label: 'Ukraine' },
+    { value: 'AE', label: 'United Arab Emirates' },
+    { value: 'GB', label: 'United Kingdom' },
+    { value: 'US', label: 'United States' },
+    { value: 'VN', label: 'Vietnam' }
+  ]
+
   const categories = [
     { l1: 'Decorative Objects', l2: 'Bowls and Baskets' },
     { l1: 'Decorative Objects', l2: 'Boxes' },
@@ -56,6 +246,45 @@ function App() {
     }
   ]
 
+  const periods = [
+    '2020-', '2010-2019', '2000-2009',
+    '1990-1999', '1980-1989', '1970-1979', '1960-1969', '1950-1959', '1940-1949', '1930-1939', '1920-1929', '1910-1919', '1900-1909',
+    '1890-1899', '1880-1889', '1870-1879', '1860-1869', '1850-1859', '1840-1849', '1830-1839', '1820-1829', '1810-1819', '1800-1809',
+    '1790-1799', '1780-1789', '1770-1779', '1760-1769', '1750-1759', '1740-1749', '1730-1739', '1720-1729', '1710-1719', '1700-1709',
+    '1690-1699', '1680-1689', '1670-1679', '1660-1669', '1650-1659', '1640-1649', '1630-1639', '1620-1629', '1610-1619', '1600-1609',
+    '21st Century',
+    '20th Century',
+    '19th Century',
+    '18th Century',
+    '17th Century',
+    '16th Century'
+  ]
+
+  // Calculate period from year
+  const calculatePeriod = (yearString: string) => {
+    const year = parseInt(yearString)
+    if (isNaN(year)) return
+
+    // Handle 2020 and beyond
+    if (year >= 2020) {
+      setPeriod('2020-')
+      return
+    }
+
+    // Calculate the decade
+    const decade = Math.floor(year / 10) * 10
+    const periodString = `${decade}-${decade + 9}`
+    
+    // Check if this period exists in our list
+    if (periods.includes(periodString)) {
+      setPeriod(periodString)
+    }
+  }
+
+  const handleDateBlur = (value: string) => {
+    calculatePeriod(value)
+  }
+
   return (
     <>
       <NavigationHeader />
@@ -97,29 +326,43 @@ function App() {
         <div className="form-row">
           <TextInput
             label="Date of Manufacture *"
+            value={dateOfManufacture}
+            onChange={setDateOfManufacture}
+            onBlur={handleDateBlur}
           />
-          <Dropdown
+          <SearchableDropdown
             label="Period *"
             placeholder="Select a period"
+            options={periods}
+            value={period}
+            onChange={setPeriod}
           />
         </div>
-        <Dropdown
+        <MultiSelectDropdown
           label="Materials *"
           placeholder="Select materials"
+          options={materialOptions}
+          value={materials}
+          onChange={setMaterials}
         />
         <ConditionDropdown
           label="Item Condition *"
           placeholder="Select condition"
           conditions={conditions}
+          value={condition}
+          onChange={setCondition}
         />
         <div className="form-row">
-          <Dropdown
+          <SearchableDropdown
             label="Wear"
             placeholder="Select wear"
+            options={wearOptions}
+            disabled={condition === 'New'}
           />
-          <Dropdown
+          <SearchableDropdown
             label="Restoration Work & Modifications *"
             placeholder="Select restoration work"
+            options={restorationOptions}
           />
         </div>
         <div className="dimensions-row">
@@ -136,32 +379,38 @@ function App() {
             suffix="in"
           />
         </div>
-        <Dropdown
+        <SearchableDropdown
           label="Weight"
           placeholder="Select weight"
+          options={weightOptions}
         />
         <div className="divider"></div>
         <p className="optional-fields-label">Optional Fields</p>
         <div className="creators-row">
-          <Dropdown
+          <SearchableDropdown
             label="Creators"
             placeholder="Select an attribution"
+            options={attributionOptions}
           />
-          <Dropdown
+          <SearchableDropdown
             placeholder="Search for creator"
+            options={creatorOptions}
           />
-          <Dropdown
+          <SearchableDropdown
             placeholder="Select a role"
+            options={roleOptions}
           />
         </div>
         <div className="form-row">
-          <Dropdown
+          <SearchableDropdown
             label="Place of Origin"
             placeholder="Select place of origin"
+            options={countryOptions}
           />
-          <Dropdown
+          <SearchableDropdown
             label="Style"
             placeholder="Select style"
+            options={styleOptions}
           />
         </div>
       </div>

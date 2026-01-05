@@ -55,5 +55,14 @@
 .dropdown-select:disabled {
   color: #999999;
   cursor: not-allowed;
+  background-color: #F5F5F5;
+}
+
+.dropdown.disabled .dropdown-label {
+  color: #999999;
+}
+
+.dropdown.disabled .dropdown-wrapper {
+  opacity: 0.6;
 }
 

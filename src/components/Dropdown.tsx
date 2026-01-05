@@ -7,17 +7,19 @@ interface DropdownProps {
   value?: string
   onChange?: (value: string) => void
   options?: Array<{ value: string; label: string }>
+  disabled?: boolean
 }
 
-function Dropdown({ label, placeholder, value, onChange, options = [] }: DropdownProps) {
+function Dropdown({ label, placeholder, value, onChange, options = [], disabled = false }: DropdownProps) {
   return (
-    <div className="dropdown">
+    <div className={`dropdown ${disabled ? 'disabled' : ''}`}>
       {label && <label className="dropdown-label">{label}</label>}
       <div className="dropdown-wrapper">
         <select
           className="dropdown-select"
           value={value || ''}
           onChange={(e) => onChange?.(e.target.value)}
+          disabled={disabled}
         >
           <option value="" disabled>
             {placeholder}
