@@ -1,0 +1,59 @@
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.dropdown-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-select {
+  width: 100%;
+  height: 40px;
+  padding: 8px 40px 8px 18px;
+  font-size: 16px;
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #888888;
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-top: 0px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.dropdown-chevron {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-select:hover {
+  border-color: #B0B0B0;
+}
+
+.dropdown-select:focus {
+  border-color: #222222;
+}
+
+.dropdown-select:disabled {
+  color: #999999;
+  cursor: not-allowed;
+}
+

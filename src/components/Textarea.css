@@ -1,0 +1,28 @@
+.textarea-field {
+  width: 100%;
+  padding: 16px 18px;
+  font-size: 16px;
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #222222;
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.textarea-field:hover {
+  border-color: #B0B0B0;
+}
+
+.textarea-field:focus {
+  border-color: #222222;
+}
+
+.textarea-field::placeholder {
+  color: #999999;
+  font-style: italic;
+  line-height: 1.8;
+}
+

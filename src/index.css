@@ -1,0 +1,136 @@
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 16px;
+  color: #222222;
+  line-height: 1.5;
+  font-weight: 300;
+  
+  --seller-primary-blue: #436B93;
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 16px;
+  color: #222222;
+  font-weight: 300;
+}
+
+h3 {
+  font-family: 'Cardinal Classic Short', 'Times New Roman', Times, serif;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+h5 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222222;
+  margin: 0 0 9px 0;
+}
+
+.link-button {
+  font-size: 14px;
+  color: var(--seller-primary-blue);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.link-button:hover {
+  color: var(--seller-primary-blue);
+  opacity: 0.8;
+}
+
+/* Proxima Nova */
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('./fonts/ProximaNova-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('./fonts/ProximaNova-Reg.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('./fonts/ProximaNova-RegIt.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('./fonts/ProximaNova-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('./fonts/ProximaNova-Sbold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Cardinal Classic Short */
+@font-face {
+  font-family: 'Cardinal Classic Short';
+  src: url('./fonts/cardinalclassicshort-regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cardinal Classic Short';
+  src: url('./fonts/cardinalclassicshort-medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cardinal Classic Short';
+  src: url('./fonts/cardinalclassicshort-semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cardinal Classic Short';
+  src: url('./fonts/cardinalclassicshort-bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

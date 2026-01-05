@@ -1,0 +1,112 @@
+.condition-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.condition-dropdown-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.condition-dropdown-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.condition-dropdown-input {
+  width: 100%;
+  height: 40px;
+  padding: 8px 40px 8px 18px;
+  font-size: 16px;
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #222222;
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-top: 0px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.condition-dropdown-input::placeholder {
+  color: #888888;
+}
+
+.condition-dropdown-input:hover {
+  border-color: #B0B0B0;
+}
+
+.condition-dropdown-input:focus {
+  border-color: #222222;
+}
+
+.condition-dropdown-chevron {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.condition-dropdown-chevron.open {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.condition-dropdown-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+}
+
+.condition-dropdown-suggestion {
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.condition-dropdown-suggestion:hover,
+.condition-dropdown-suggestion.highlighted {
+  background-color: #F5F5F5;
+}
+
+.condition-dropdown-name {
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #222222;
+}
+
+.condition-dropdown-description {
+  font-size: 14px;
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #888888;
+  line-height: 1.5;
+}
+
+.condition-dropdown-note {
+  font-size: 14px;
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: var(--seller-primary-blue);
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
