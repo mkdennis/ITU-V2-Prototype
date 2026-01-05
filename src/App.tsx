@@ -11,8 +11,38 @@ import RecommendedPriceBanner from './components/RecommendedPriceBanner'
 import CollapsibleSection from './components/CollapsibleSection'
 import SearchableCategoryDropdown from './components/SearchableCategoryDropdown'
 import ConditionDropdown from './components/ConditionDropdown'
+import SearchableDropdown from './components/SearchableDropdown'
+import MultiSelectDropdown from './components/MultiSelectDropdown'
+import { useState } from 'react'
 
 function App() {
+  const [dateOfManufacture, setDateOfManufacture] = useState<string>('')
+  const [period, setPeriod] = useState<string>('')
+  const [materials, setMaterials] = useState<string[]>([])
+
+  const materialOptions = [
+    'Solid Wood',
+    'Veneer',
+    'Oak',
+    'Walnut',
+    'Mahogany',
+    'Teak',
+    'Cherry',
+    'Maple',
+    'Pine',
+    'Leather',
+    'Fabric',
+    'Velvet',
+    'Metal',
+    'Brass',
+    'Bronze',
+    'Steel',
+    'Glass',
+    'Marble',
+    'Rattan',
+    'Wicker'
+  ]
+
   const categories = [
     { l1: 'Decorative Objects', l2: 'Bowls and Baskets' },
     { l1: 'Decorative Objects', l2: 'Boxes' },
@@ -56,6 +86,45 @@ function App() {
     }
   ]
 
+  const periods = [
+    '2020-', '2010-2019', '2000-2009',
+    '1990-1999', '1980-1989', '1970-1979', '1960-1969', '1950-1959', '1940-1949', '1930-1939', '1920-1929', '1910-1919', '1900-1909',
+    '1890-1899', '1880-1889', '1870-1879', '1860-1869', '1850-1859', '1840-1849', '1830-1839', '1820-1829', '1810-1819', '1800-1809',
+    '1790-1799', '1780-1789', '1770-1779', '1760-1769', '1750-1759', '1740-1749', '1730-1739', '1720-1729', '1710-1719', '1700-1709',
+    '1690-1699', '1680-1689', '1670-1679', '1660-1669', '1650-1659', '1640-1649', '1630-1639', '1620-1629', '1610-1619', '1600-1609',
+    '21st Century',
+    '20th Century',
+    '19th Century',
+    '18th Century',
+    '17th Century',
+    '16th Century'
+  ]
+
+  // Calculate period from year
+  const calculatePeriod = (yearString: string) => {
+    const year = parseInt(yearString)
+    if (isNaN(year)) return
+
+    // Handle 2020 and beyond
+    if (year >= 2020) {
+      setPeriod('2020-')
+      return
+    }
+
+    // Calculate the decade
+    const decade = Math.floor(year / 10) * 10
+    const periodString = `${decade}-${decade + 9}`
+    
+    // Check if this period exists in our list
+    if (periods.includes(periodString)) {
+      setPeriod(periodString)
+    }
+  }
+
+  const handleDateBlur = (value: string) => {
+    calculatePeriod(value)
+  }
+
   return (
     <>
       <NavigationHeader />
@@ -97,15 +166,24 @@ function App() {
         <div className="form-row">
           <TextInput
             label="Date of Manufacture *"
+            value={dateOfManufacture}
+            onChange={setDateOfManufacture}
+            onBlur={handleDateBlur}
           />
-          <Dropdown
+          <SearchableDropdown
             label="Period *"
             placeholder="Select a period"
+            options={periods}
+            value={period}
+            onChange={setPeriod}
           />
         </div>
-        <Dropdown
+        <MultiSelectDropdown
           label="Materials *"
           placeholder="Select materials"
+          options={materialOptions}
+          value={materials}
+          onChange={setMaterials}
         />
         <ConditionDropdown
           label="Item Condition *"
