@@ -1,5 +1,4 @@
 import './App.css'
-import Dropdown from './components/Dropdown'
 import RadioButtonGroup from './components/RadioButtonGroup'
 import NumberInput from './components/NumberInput'
 import TextInput from './components/TextInput'
@@ -354,13 +353,13 @@ function App() {
           onChange={setCondition}
         />
         <div className="form-row">
-          <Dropdown
+          <SearchableDropdown
             label="Wear"
             placeholder="Select wear"
             options={wearOptions}
             disabled={condition === 'New'}
           />
-          <Dropdown
+          <SearchableDropdown
             label="Restoration Work & Modifications *"
             placeholder="Select restoration work"
             options={restorationOptions}
@@ -380,7 +379,7 @@ function App() {
             suffix="in"
           />
         </div>
-        <Dropdown
+        <SearchableDropdown
           label="Weight"
           placeholder="Select weight"
           options={weightOptions}
@@ -388,27 +387,27 @@ function App() {
         <div className="divider"></div>
         <p className="optional-fields-label">Optional Fields</p>
         <div className="creators-row">
-          <Dropdown
+          <SearchableDropdown
             label="Creators"
             placeholder="Select an attribution"
             options={attributionOptions}
           />
-          <Dropdown
+          <SearchableDropdown
             placeholder="Search for creator"
             options={creatorOptions}
           />
-          <Dropdown
+          <SearchableDropdown
             placeholder="Select a role"
             options={roleOptions}
           />
         </div>
         <div className="form-row">
-          <Dropdown
+          <SearchableDropdown
             label="Place of Origin"
             placeholder="Select place of origin"
             options={countryOptions}
           />
-          <Dropdown
+          <SearchableDropdown
             label="Style"
             placeholder="Select style"
             options={styleOptions}
