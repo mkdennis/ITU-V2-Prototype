@@ -139,12 +139,13 @@
 
 .category-field-wrapper {
   display: flex;
-  align-items: flex-end;
-  gap: 12px;
+  flex-direction: column;
+  gap: 0px;
+  position: relative;
 }
 
 .view-all-categories-button {
-  padding: 10px 20px;
+  padding: 8px 16px;
   background-color: white;
   border: 1px solid #DDDDDD;
   border-radius: 4px;
@@ -153,8 +154,8 @@
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s;
-  height: 44px;
-  margin-bottom: 0px;
+  align-self: flex-end;
+  margin-top: 8px;
 }
 
 .view-all-categories-button:hover {
@@ -285,7 +286,7 @@
 .checkbox-text-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0px;
 }
 
 .checkbox-text-main {

@@ -46,6 +46,57 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   const [autoOfferDiscount, setAutoOfferDiscount] = useState<number>(10)
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false)
   const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [netPrice, setNetPrice] = useState<number>(0)
+  const [autoOfferPrice, setAutoOfferPrice] = useState<number>(0)
+
+  // Handle list price change
+  const handleListPriceChange = (value: number) => {
+    setListPrice(value)
+    // Auto-update net price
+    if (value > 0 && !noNetDiscount) {
+      setNetPrice(value * (netPriceDiscount / 100))
+    }
+    // Auto-update auto offer price
+    if (value > 0 && autoOfferEnabled) {
+      setAutoOfferPrice(value * (autoOfferDiscount / 100))
+    }
+  }
+
+  // Handle net price manual change
+  const handleNetPriceChange = (value: number) => {
+    setNetPrice(value)
+    // Calculate percentage from manual net price entry
+    if (listPrice > 0 && value > 0) {
+      const calculatedPercentage = Math.round((value / listPrice) * 100)
+      setNetPriceDiscount(calculatedPercentage)
+    }
+  }
+
+  // Handle net price discount change
+  const handleNetPriceDiscountChange = (percentage: number) => {
+    setNetPriceDiscount(percentage)
+    if (listPrice > 0 && !noNetDiscount) {
+      setNetPrice(listPrice * (percentage / 100))
+    }
+  }
+
+  // Handle auto offer price manual change
+  const handleAutoOfferPriceChange = (value: number) => {
+    setAutoOfferPrice(value)
+    // Calculate percentage from manual offer price entry
+    if (listPrice > 0 && value > 0) {
+      const calculatedPercentage = Math.round((value / listPrice) * 100)
+      setAutoOfferDiscount(calculatedPercentage)
+    }
+  }
+
+  // Handle auto offer discount change
+  const handleAutoOfferDiscountChange = (percentage: number) => {
+    setAutoOfferDiscount(percentage)
+    if (listPrice > 0) {
+      setAutoOfferPrice(listPrice * (percentage / 100))
+    }
+  }
 
   // Dummy AI suggestions
   const aiSuggestions: AISuggestions = aiAssistEnabled ? {
@@ -531,24 +582,14 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
 
       <div className="form-section" id="pricing-quantity-section">
         <h3>Pricing & Quantity</h3>
-        <div className="pricing-layout">
-          <NumberInput
-            label="List Price"
-            prefix="$"
-            suffix="USD"
-            placeholder="Enter amount"
-            value={listPrice}
-            onChange={setListPrice}
-          />
-          <RecommendedPriceBanner
-            recommendedPrice={750}
-            priceRange={{ min: 675, max: 825 }}
-            salesLikelihood={54}
-            onApply={() => {
-              // Handle apply action
-            }}
-          />
-        </div>
+        <NumberInput
+          label="List Price"
+          prefix="$"
+          suffix="USD"
+          placeholder="Enter amount"
+          value={listPrice}
+          onChange={handleListPriceChange}
+        />
         <label className="checkbox-label">
           <input
             type="checkbox"
@@ -561,16 +602,24 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
             <span className="checkbox-text-subtext">Allow buyers to send you offers for this item</span>
           </div>
         </label>
+        <RecommendedPriceBanner
+          recommendedPrice={750}
+          priceRange={{ min: 675, max: 825 }}
+          salesLikelihood={54}
+          onApply={() => {
+            // Handle apply action
+          }}
+        />
         <CollapsibleSection label="Other Pricing Options">
           <div className="pricing-options-content">
             <div className="net-price-section">
               <div className="net-price-row">
                 <div className="dropdown-container">
-                  <label className="dropdown-label">Discount</label>
+                  <label className="dropdown-label">Discount (Off List Price)</label>
                   <select
                     className="discount-dropdown"
                     value={netPriceDiscount}
-                    onChange={(e) => setNetPriceDiscount(Number(e.target.value))}
+                    onChange={(e) => handleNetPriceDiscountChange(Number(e.target.value))}
                     disabled={noNetDiscount}
                   >
                     {[10, 15, 20, 25, 30, 35, 40, 45, 50].map(percent => (
@@ -582,7 +631,8 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
                   label="Net Price"
                   prefix="$"
                   suffix="USD"
-                  value={noNetDiscount ? 0 : listPrice * (netPriceDiscount / 100)}
+                  value={noNetDiscount ? 0 : netPrice}
+                  onChange={handleNetPriceChange}
                   disabled={noNetDiscount}
                 />
               </div>
@@ -617,11 +667,11 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
                 <div className="auto-offer-fields">
                   <div className="net-price-row">
                     <div className="dropdown-container">
-                      <label className="dropdown-label">Discount Offer (Off List Price)</label>
+                      <label className="dropdown-label">Discount (Off List Price)</label>
                       <select
                         className="discount-dropdown"
                         value={autoOfferDiscount}
-                        onChange={(e) => setAutoOfferDiscount(Number(e.target.value))}
+                        onChange={(e) => handleAutoOfferDiscountChange(Number(e.target.value))}
                       >
                         {[10, 15, 20, 25, 30, 35, 40, 45, 50].map(percent => (
                           <option key={percent} value={percent}>{percent}%</option>
@@ -629,11 +679,11 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
                       </select>
                     </div>
                     <NumberInput
-                      label=""
+                      label="Offer Price"
                       prefix="$"
                       suffix="USD"
-                      value={listPrice * (autoOfferDiscount / 100)}
-                      disabled
+                      value={autoOfferPrice}
+                      onChange={handleAutoOfferPriceChange}
                     />
                   </div>
                 </div>
