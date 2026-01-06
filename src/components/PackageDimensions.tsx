@@ -1,5 +1,6 @@
 import './PackageDimensions.css'
 import NumberInput from './NumberInput'
+import { useState } from 'react'
 
 interface Package {
   weight: number
@@ -12,22 +13,58 @@ interface PackageDimensionsProps {
   packages: Package[]
   onPackageChange: (index: number, field: keyof Package, value: number) => void
   onAddPackage: () => void
+  onDeletePackage: (index: number) => void
 }
 
-function PackageDimensions({ packages, onPackageChange, onAddPackage }: PackageDimensionsProps) {
+function PackageDimensions({ packages, onPackageChange, onAddPackage, onDeletePackage }: PackageDimensionsProps) {
+  const [showEstimatedBanner, setShowEstimatedBanner] = useState<number[]>([])
+
+  const handleDontKnowDimensions = (index: number, e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    // Auto-fill with default values
+    onPackageChange(index, 'weight', 3)
+    onPackageChange(index, 'length', 7)
+    onPackageChange(index, 'width', 7)
+    onPackageChange(index, 'height', 7)
+    // Show banner for this package
+    if (!showEstimatedBanner.includes(index)) {
+      setShowEstimatedBanner([...showEstimatedBanner, index])
+    }
+  }
+
+  const handleDeleteClick = (index: number, e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    onDeletePackage(index)
+    // Remove banner state for deleted package
+    setShowEstimatedBanner(showEstimatedBanner.filter(i => i !== index))
+  }
+
   return (
     <div className="package-dimensions-container">
       {packages.map((pkg, index) => (
         <div key={index} className="package-box">
-          <h4 className="package-title">Package {index + 1}</h4>
+          <div className="package-header">
+            <h4 className="package-title">Package {index + 1}</h4>
+            {packages.length > 1 && (
+              <button
+                className="delete-package-button"
+                onClick={(e) => handleDeleteClick(index, e)}
+                aria-label="Delete package"
+              >
+                ✕
+              </button>
+            )}
+          </div>
 
-          <NumberInput
-            label="Total Package Weight"
-            suffix="lbs"
-            placeholder="Enter weight"
-            value={pkg.weight}
-            onChange={(value) => onPackageChange(index, 'weight', value)}
-          />
+          <div className="weight-row">
+            <NumberInput
+              label="Total Package Weight"
+              suffix="lbs"
+              placeholder="Enter weight"
+              value={pkg.weight}
+              onChange={(value) => onPackageChange(index, 'weight', value)}
+            />
+          </div>
 
           <div className="dimensions-row">
             <NumberInput
@@ -53,7 +90,19 @@ function PackageDimensions({ packages, onPackageChange, onAddPackage }: PackageD
             />
           </div>
 
-          <a href="#" className="dimensions-link">I don't know my packed dimensions</a>
+          {showEstimatedBanner.includes(index) && (
+            <div className="estimated-dimensions-banner">
+              Estimated dimensions may result in inaccurate shipping prices
+            </div>
+          )}
+
+          <a
+            href="#"
+            className="dimensions-link"
+            onClick={(e) => handleDontKnowDimensions(index, e)}
+          >
+            I don't know my packed dimensions
+          </a>
         </div>
       ))}
 

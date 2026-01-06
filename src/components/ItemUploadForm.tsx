@@ -13,7 +13,7 @@ import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
-import DropdownWithSubline from './DropdownWithSubline'
+import StandardDropdown from './StandardDropdown'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
@@ -151,6 +151,13 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
 
   const handleAddPackage = () => {
     setPackages([...packages, { weight: 0, length: 0, width: 0, height: 0 }])
+  }
+
+  const handleDeletePackage = (index: number) => {
+    if (packages.length > 1) {
+      const newPackages = packages.filter((_, i) => i !== index)
+      setPackages(newPackages)
+    }
   }
 
   // Handle shipping zone changes
@@ -683,8 +690,6 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
           />
         </div>
 
-        <div className="divider"></div>
-
         <div className="pricing-options-content">
           <div className="net-price-section">
             <div className="net-price-row">
@@ -723,7 +728,6 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
               </div>
             </label>
           </div>
-          <div className="divider"></div>
           <div className="auto-offers-section">
             <label className="checkbox-label">
               <input
@@ -843,7 +847,7 @@ What details would be useful for a potential buyer to know?`}
       <div className="form-section" id="shipping-section">
         <h3>Shipping & Handling</h3>
 
-        <DropdownWithSubline
+        <StandardDropdown
           label="Inventory Location"
           value={inventoryLocation}
           options={[
@@ -857,15 +861,12 @@ What details would be useful for a potential buyer to know?`}
           placeholder="Select inventory location"
         />
 
-        <div className="divider"></div>
-
         <PackageDimensions
           packages={packages}
           onPackageChange={handlePackageChange}
           onAddPackage={handleAddPackage}
+          onDeletePackage={handleDeletePackage}
         />
-
-        <div className="divider"></div>
 
         <ShippingQuotes
           zones={shippingZones}
@@ -873,27 +874,18 @@ What details would be useful for a potential buyer to know?`}
           onShippingMethodChange={handleShippingMethodChange}
         />
 
-        <div className="divider"></div>
+        <StandardDropdown
+          label="Handling Time"
+          value={handlingTime}
+          onChange={setHandlingTime}
+          options={Array.from({ length: 10 }, (_, i) => i + 1).map(days => ({
+            value: days.toString(),
+            label: `${days} Business ${days === 1 ? 'Day' : 'Days'}`
+          }))}
+          placeholder="Select handling time"
+        />
 
-        <div className="handling-time-container">
-          <label className="dropdown-label">Handling Time</label>
-          <select
-            className="standard-dropdown"
-            value={handlingTime}
-            onChange={(e) => setHandlingTime(e.target.value)}
-          >
-            <option value="">Select handling time</option>
-            {Array.from({ length: 10 }, (_, i) => i + 1).map(days => (
-              <option key={days} value={days}>
-                {days} Business {days === 1 ? 'Day' : 'Days'}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="divider"></div>
-
-        <DropdownWithSubline
+        <StandardDropdown
           label="Return Policy"
           value={returnPolicy}
           options={[
