@@ -9,6 +9,7 @@ import NavigationHeader from './NavigationHeader'
 import RecommendedPriceBanner from './RecommendedPriceBanner'
 import CollapsibleSection from './CollapsibleSection'
 import SearchableCategoryDropdown from './SearchableCategoryDropdown'
+import CategorySelectionModal from './CategorySelectionModal'
 import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import MultiSelectDropdown from './MultiSelectDropdown'
@@ -36,6 +37,15 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   const [title, setTitle] = useState<string>('')
   const [style, setStyle] = useState<string>('')
   const [placeOfOrigin, setPlaceOfOrigin] = useState<string>('')
+  const [unlimitedQuantity, setUnlimitedQuantity] = useState<boolean>(false)
+  const [listPrice, setListPrice] = useState<number>(0)
+  const [negotiable, setNegotiable] = useState<boolean>(false)
+  const [netPriceDiscount, setNetPriceDiscount] = useState<number>(10)
+  const [noNetDiscount, setNoNetDiscount] = useState<boolean>(false)
+  const [autoOfferEnabled, setAutoOfferEnabled] = useState<boolean>(false)
+  const [autoOfferDiscount, setAutoOfferDiscount] = useState<number>(10)
+  const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false)
+  const [selectedCategory, setSelectedCategory] = useState<string>('')
 
   // Dummy AI suggestions
   const aiSuggestions: AISuggestions = aiAssistEnabled ? {
@@ -231,23 +241,23 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   ]
 
   const categories = [
-    { l1: 'Decorative Objects', l2: 'Bowls and Baskets' },
-    { l1: 'Decorative Objects', l2: 'Boxes' },
-    { l1: 'Decorative Objects', l2: 'Candle Holders' },
-    { l1: 'Decorative Objects', l2: 'Clocks' },
-    { l1: 'Decorative Objects', l2: 'Desk Accessories' },
-    { l1: 'Decorative Objects', l2: 'Picture Frames' },
-    { l1: 'Decorative Objects', l2: 'Sculptures' },
-    { l1: 'Decorative Objects', l2: 'Vases and Vessels' },
-    { l1: 'Lighting', l2: 'Chandeliers and Pendants' },
-    { l1: 'Lighting', l2: 'Floor Lamps' },
-    { l1: 'Lighting', l2: 'Flush Mount' },
-    { l1: 'Lighting', l2: 'Lanterns' },
-    { l1: 'Lighting', l2: 'Table Lamps' },
-    { l1: 'Lighting', l2: 'Wall Lights and Sconces' },
-    { l1: 'Seating', l2: 'Dining Chairs' },
-    { l1: 'Seating', l2: 'Stools' },
-    { l1: 'Tables', l2: 'Vanities' },
+    { l1: 'Decorative Objects', l2: 'Bowls and Baskets', l3: ['Bowls', 'Baskets', 'Trays'] },
+    { l1: 'Decorative Objects', l2: 'Boxes', l3: ['Jewelry Boxes', 'Decorative Boxes', 'Storage Boxes'] },
+    { l1: 'Decorative Objects', l2: 'Candle Holders', l3: ['Candelabras', 'Candle Lamps', 'Candle Sconces'] },
+    { l1: 'Decorative Objects', l2: 'Clocks', l3: ['Wall Clocks', 'Mantle Clocks', 'Grandfather Clocks'] },
+    { l1: 'Decorative Objects', l2: 'Desk Accessories', l3: ['Paperweights', 'Letter Holders', 'Pen Stands'] },
+    { l1: 'Decorative Objects', l2: 'Picture Frames', l3: ['Table Frames', 'Wall Frames', 'Standing Frames'] },
+    { l1: 'Decorative Objects', l2: 'Sculptures', l3: ['Abstract', 'Figurative', 'Busts'] },
+    { l1: 'Decorative Objects', l2: 'Vases and Vessels', l3: ['Floor Vases', 'Table Vases', 'Urns'] },
+    { l1: 'Lighting', l2: 'Chandeliers and Pendants', l3: ['Crystal Chandeliers', 'Modern Pendants', 'Vintage Chandeliers'] },
+    { l1: 'Lighting', l2: 'Floor Lamps', l3: ['Arc Lamps', 'Torchiere', 'Reading Lamps'] },
+    { l1: 'Lighting', l2: 'Flush Mount', l3: ['Ceiling Lights', 'Semi-Flush Mount', 'Recessed Lighting'] },
+    { l1: 'Lighting', l2: 'Lanterns', l3: ['Outdoor Lanterns', 'Indoor Lanterns', 'Hanging Lanterns'] },
+    { l1: 'Lighting', l2: 'Table Lamps', l3: ['Desk Lamps', 'Bedside Lamps', 'Accent Lamps'] },
+    { l1: 'Lighting', l2: 'Wall Lights and Sconces', l3: ['Swing Arm Sconces', 'Candle Sconces', 'Picture Lights'] },
+    { l1: 'Seating', l2: 'Dining Chairs', l3: ['Side Chairs', 'Arm Chairs', 'Bar Stools'] },
+    { l1: 'Seating', l2: 'Stools', l3: ['Counter Stools', 'Footstools', 'Ottomans'] },
+    { l1: 'Tables', l2: 'Vanities', l3: ['Makeup Vanities', 'Dressing Tables', 'Bathroom Vanities'] },
   ]
 
   const conditions = [
@@ -318,9 +328,25 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
       <div className="app">
         <div className="form-section" id="basic-information-section">
           <h3>Basic Information</h3>
-        <SearchableCategoryDropdown
-          label="Category *"
-          placeholder="Select a category"
+        <div className="category-field-wrapper">
+          <SearchableCategoryDropdown
+            label="Category *"
+            placeholder="Select a category"
+            categories={categories}
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+          />
+          <button
+            className="view-all-categories-button"
+            onClick={() => setCategoryModalOpen(true)}
+          >
+            View All Categories
+          </button>
+        </div>
+        <CategorySelectionModal
+          isOpen={categoryModalOpen}
+          onClose={() => setCategoryModalOpen(false)}
+          onSelect={setSelectedCategory}
           categories={categories}
         />
         <RadioButtonGroup
@@ -336,9 +362,15 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
             <NumberInput
               label="Quantity Available"
               suffix="Items"
+              disabled={unlimitedQuantity}
             />
             <label className="checkbox-label">
-              <input type="checkbox" className="checkbox-input" />
+              <input
+                type="checkbox"
+                className="checkbox-input"
+                checked={unlimitedQuantity}
+                onChange={(e) => setUnlimitedQuantity(e.target.checked)}
+              />
               <span>Unlimited (Typically used for made to order or current production inventory)</span>
             </label>
           </div>
@@ -446,7 +478,8 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
           options={weightOptions}
         />
         <div className="divider"></div>
-        <p className="optional-fields-label">Optional Fields</p>
+        <p className="optional-fields-label">Additional Fields</p>
+        <p className="additional-fields-subtext">Adding more fields helps your item get discovered</p>
         <div className="creators-row">
           <SearchableDropdown
             label="Creators"
@@ -504,6 +537,8 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
             prefix="$"
             suffix="USD"
             placeholder="Enter amount"
+            value={listPrice}
+            onChange={setListPrice}
           />
           <RecommendedPriceBanner
             recommendedPrice={750}
@@ -514,10 +549,96 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
             }}
           />
         </div>
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            className="checkbox-input"
+            checked={negotiable}
+            onChange={(e) => setNegotiable(e.target.checked)}
+          />
+          <div className="checkbox-text-wrapper">
+            <span className="checkbox-text-main">This Item is Negotiable</span>
+            <span className="checkbox-text-subtext">Allow buyers to send you offers for this item</span>
+          </div>
+        </label>
         <CollapsibleSection label="Other Pricing Options">
           <div className="pricing-options-content">
-            {/* Add pricing options content here */}
-            <p>Additional pricing options will be displayed here.</p>
+            <div className="net-price-section">
+              <div className="net-price-row">
+                <div className="dropdown-container">
+                  <label className="dropdown-label">Discount</label>
+                  <select
+                    className="discount-dropdown"
+                    value={netPriceDiscount}
+                    onChange={(e) => setNetPriceDiscount(Number(e.target.value))}
+                    disabled={noNetDiscount}
+                  >
+                    {[10, 15, 20, 25, 30, 35, 40, 45, 50].map(percent => (
+                      <option key={percent} value={percent}>{percent}%</option>
+                    ))}
+                  </select>
+                </div>
+                <NumberInput
+                  label="Net Price"
+                  prefix="$"
+                  suffix="USD"
+                  value={noNetDiscount ? 0 : listPrice * (netPriceDiscount / 100)}
+                  disabled={noNetDiscount}
+                />
+              </div>
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  className="checkbox-input"
+                  checked={noNetDiscount}
+                  onChange={(e) => setNoNetDiscount(e.target.checked)}
+                />
+                <div className="checkbox-text-wrapper">
+                  <span className="checkbox-text-main">I do not offer a net price discount on this piece</span>
+                  <span className="checkbox-text-subtext">By selecting this option you confirm that your List Price is the best price you can offer, and you understand this listing may not be promoted to the trade.</span>
+                </div>
+              </label>
+            </div>
+            <div className="divider"></div>
+            <div className="auto-offers-section">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  className="checkbox-input"
+                  checked={autoOfferEnabled}
+                  onChange={(e) => setAutoOfferEnabled(e.target.checked)}
+                />
+                <div className="checkbox-text-wrapper">
+                  <span className="checkbox-text-main">Automatically Send Offers to Interested Customers</span>
+                  <span className="checkbox-text-subtext">Opt in to proactively send offers to interested customers. Choose the offer amount and 1stDibs will handle the rest. Automated private offers will expire after 7 days.</span>
+                </div>
+              </label>
+              {autoOfferEnabled && (
+                <div className="auto-offer-fields">
+                  <div className="net-price-row">
+                    <div className="dropdown-container">
+                      <label className="dropdown-label">Discount Offer (Off List Price)</label>
+                      <select
+                        className="discount-dropdown"
+                        value={autoOfferDiscount}
+                        onChange={(e) => setAutoOfferDiscount(Number(e.target.value))}
+                      >
+                        {[10, 15, 20, 25, 30, 35, 40, 45, 50].map(percent => (
+                          <option key={percent} value={percent}>{percent}%</option>
+                        ))}
+                      </select>
+                    </div>
+                    <NumberInput
+                      label=""
+                      prefix="$"
+                      suffix="USD"
+                      value={listPrice * (autoOfferDiscount / 100)}
+                      disabled
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </CollapsibleSection>
       </div>
