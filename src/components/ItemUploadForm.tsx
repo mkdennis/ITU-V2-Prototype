@@ -13,7 +13,6 @@ import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
-import StandardDropdown from './StandardDropdown'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
@@ -847,14 +846,13 @@ What details would be useful for a potential buyer to know?`}
       <div className="form-section" id="shipping-section">
         <h3>Shipping & Handling</h3>
 
-        <StandardDropdown
+        <SearchableDropdown
           label="Inventory Location"
           value={inventoryLocation}
           options={[
             {
               value: 'storefront',
-              label: 'Seller Storefront (Default)',
-              subline: '383 North Indian Canyon Drive Palm Springs CA 92262'
+              label: 'Seller Storefront (Default)'
             }
           ]}
           onChange={setInventoryLocation}
@@ -874,7 +872,7 @@ What details would be useful for a potential buyer to know?`}
           onShippingMethodChange={handleShippingMethodChange}
         />
 
-        <StandardDropdown
+        <SearchableDropdown
           label="Handling Time"
           value={handlingTime}
           onChange={setHandlingTime}
@@ -885,14 +883,13 @@ What details would be useful for a potential buyer to know?`}
           placeholder="Select handling time"
         />
 
-        <StandardDropdown
+        <SearchableDropdown
           label="Return Policy"
           value={returnPolicy}
           options={[
             {
               value: 'final',
-              label: 'All Sales Final',
-              subline: '25% Restocking Fee | Buyer pays return shipping. All sales are final for new, customized or made to order items.'
+              label: 'All Sales Final'
             }
           ]}
           onChange={setReturnPolicy}

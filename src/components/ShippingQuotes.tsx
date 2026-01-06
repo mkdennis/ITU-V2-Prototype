@@ -1,5 +1,5 @@
 import './ShippingQuotes.css'
-import StandardDropdown from './StandardDropdown'
+import SearchableDropdown from './SearchableDropdown'
 
 interface ShippingZone {
   region: string
@@ -49,7 +49,7 @@ function ShippingQuotes({ zones, onShippingPriceChange, onShippingMethodChange }
           </div>
 
           <div className="shipping-dropdown-group">
-            <StandardDropdown
+            <SearchableDropdown
               label="Shipping Price"
               placeholder="Select shipping price"
               value={zone.shippingPrice}
@@ -57,7 +57,7 @@ function ShippingQuotes({ zones, onShippingPriceChange, onShippingMethodChange }
               options={shippingPriceOptions}
             />
 
-            <StandardDropdown
+            <SearchableDropdown
               label="Shipping Method"
               placeholder="Select shipping method"
               value={zone.shippingMethod}
