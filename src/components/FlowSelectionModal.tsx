@@ -21,12 +21,9 @@ function FlowSelectionModal({ isOpen, onSelectAIAssist, onSelectStandard }: Flow
           <div className="flow-card" onClick={onSelectAIAssist}>
             <div className="flow-card-icon">
               <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-                <circle cx="40" cy="40" r="30" stroke="#436B93" strokeWidth="2" fill="none"/>
-                <path d="M35 35 L45 40 L35 45 Z" fill="#436B93"/>
-                <circle cx="40" cy="25" r="3" fill="#436B93"/>
-                <circle cx="55" cy="40" r="3" fill="#436B93"/>
-                <circle cx="40" cy="55" r="3" fill="#436B93"/>
-                <circle cx="25" cy="40" r="3" fill="#436B93"/>
+                <path d="M40 10 L42 38 L70 40 L42 42 L40 70 L38 42 L10 40 L38 38 Z" fill="#436B93"/>
+                <path d="M60 20 L61 28 L69 29 L61 30 L60 38 L59 30 L51 29 L59 28 Z" fill="#436B93" opacity="0.7"/>
+                <path d="M20 60 L21 68 L29 69 L21 70 L20 78 L19 70 L11 69 L19 68 Z" fill="#436B93" opacity="0.7"/>
               </svg>
             </div>
             <h3 className="flow-card-title">AI Assist</h3>

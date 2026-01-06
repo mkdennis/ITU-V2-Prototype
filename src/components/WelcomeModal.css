@@ -3,39 +3,13 @@
   flex-direction: column;
 }
 
-.welcome-features {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.welcome-feature {
-  display: flex;
-  gap: 16px;
-  align-items: start;
-}
-
-.welcome-feature-icon {
-  font-size: 32px;
-  flex-shrink: 0;
-}
-
-.welcome-feature-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.welcome-feature-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #222222;
-  margin: 0;
-}
-
-.welcome-feature-description {
+.welcome-banner {
+  background-color: #FFF9E6;
+  border: 1px solid #FFE066;
+  border-radius: 4px;
+  padding: 16px;
   font-size: 14px;
-  color: #666666;
-  margin: 0;
+  color: #222222;
   line-height: 1.5;
+  text-align: center;
 }

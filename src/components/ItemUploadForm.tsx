@@ -14,7 +14,7 @@ import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface ItemUploadFormProps {
   aiAssistEnabled?: boolean
@@ -43,11 +43,25 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   const [netPriceDiscount, setNetPriceDiscount] = useState<number>(10)
   const [noNetDiscount, setNoNetDiscount] = useState<boolean>(false)
   const [autoOfferEnabled, setAutoOfferEnabled] = useState<boolean>(false)
-  const [autoOfferDiscount, setAutoOfferDiscount] = useState<number>(10)
+  const [autoOfferDiscount, setAutoOfferDiscount] = useState<number>(15)
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false)
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [netPrice, setNetPrice] = useState<number>(0)
   const [autoOfferPrice, setAutoOfferPrice] = useState<number>(0)
+
+  // Update prices when list price changes
+  useEffect(() => {
+    if (listPrice > 0) {
+      // Update net price (10% default)
+      if (!noNetDiscount) {
+        setNetPrice(listPrice * (netPriceDiscount / 100))
+      }
+      // Update auto offer price (15% default for automated offers)
+      if (autoOfferEnabled) {
+        setAutoOfferPrice(listPrice * (autoOfferDiscount / 100))
+      }
+    }
+  }, [listPrice, netPriceDiscount, noNetDiscount, autoOfferEnabled, autoOfferDiscount])
 
   // Handle list price change
   const handleListPriceChange = (value: number) => {
@@ -582,34 +596,38 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
 
       <div className="form-section" id="pricing-quantity-section">
         <h3>Pricing & Quantity</h3>
-        <NumberInput
-          label="List Price"
-          prefix="$"
-          suffix="USD"
-          placeholder="Enter amount"
-          value={listPrice}
-          onChange={handleListPriceChange}
-        />
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            className="checkbox-input"
-            checked={negotiable}
-            onChange={(e) => setNegotiable(e.target.checked)}
-          />
-          <div className="checkbox-text-wrapper">
-            <span className="checkbox-text-main">This Item is Negotiable</span>
-            <span className="checkbox-text-subtext">Allow buyers to send you offers for this item</span>
+        <div className="pricing-layout">
+          <div className="pricing-column-left">
+            <NumberInput
+              label="List Price"
+              prefix="$"
+              suffix="USD"
+              placeholder="Enter amount"
+              value={listPrice}
+              onChange={handleListPriceChange}
+            />
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                className="checkbox-input"
+                checked={negotiable}
+                onChange={(e) => setNegotiable(e.target.checked)}
+              />
+              <div className="checkbox-text-wrapper">
+                <span className="checkbox-text-main">This Item is Negotiable</span>
+                <span className="checkbox-text-subtext">Allow buyers to send you offers for this item</span>
+              </div>
+            </label>
           </div>
-        </label>
-        <RecommendedPriceBanner
-          recommendedPrice={750}
-          priceRange={{ min: 675, max: 825 }}
-          salesLikelihood={54}
-          onApply={() => {
-            // Handle apply action
-          }}
-        />
+          <RecommendedPriceBanner
+            recommendedPrice={750}
+            priceRange={{ min: 675, max: 825 }}
+            salesLikelihood={54}
+            onApply={() => {
+              // Handle apply action
+            }}
+          />
+        </div>
         <CollapsibleSection label="Other Pricing Options">
           <div className="pricing-options-content">
             <div className="net-price-section">
@@ -757,7 +775,7 @@ What details would be useful for a potential buyer to know?`}
               <ImageSlot label="Details" icon="🔍" />
               <ImageSlot label="Various Angles" icon="🪑" />
               <ImageSlot label="In Situation" icon="💡" />
-              <ImageSlot label="Creator" icon="✏️" />
+              <ImageSlot label="Signatures/Labels" icon="✏️" />
               <ImageSlot />
               <ImageSlot />
               <ImageSlot />

@@ -17,34 +17,8 @@ function WelcomeModal({ isOpen, onGetStarted }: WelcomeModalProps) {
           </p>
         </div>
         <div className="modal-body">
-          <div className="welcome-features">
-            <div className="welcome-feature">
-              <div className="welcome-feature-icon">📸</div>
-              <div className="welcome-feature-content">
-                <h4 className="welcome-feature-title">Upload Photos</h4>
-                <p className="welcome-feature-description">
-                  Upload images of your item for AI analysis
-                </p>
-              </div>
-            </div>
-            <div className="welcome-feature">
-              <div className="welcome-feature-icon">📝</div>
-              <div className="welcome-feature-content">
-                <h4 className="welcome-feature-title">Paste Information</h4>
-                <p className="welcome-feature-description">
-                  Copy and paste any text about your item
-                </p>
-              </div>
-            </div>
-            <div className="welcome-feature">
-              <div className="welcome-feature-icon">✨</div>
-              <div className="welcome-feature-content">
-                <h4 className="welcome-feature-title">Get Smart Suggestions</h4>
-                <p className="welcome-feature-description">
-                  Review and apply AI-generated listing details
-                </p>
-              </div>
-            </div>
+          <div className="welcome-banner">
+            This prototype is for demo purposes only. Certain functionalities may not work. Final design may look different.
           </div>
         </div>
         <div className="modal-footer">

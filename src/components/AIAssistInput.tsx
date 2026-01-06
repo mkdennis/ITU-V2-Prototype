@@ -15,9 +15,12 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
 
   return (
     <>
-      <NavigationHeader />
+      <NavigationHeader hideTabs title="1stDibs Item Upload Prototype" />
       <div className="app">
         <div className="form-section ai-assist-container">
+          <div className="ai-assist-banner">
+            This prototype is for demo purposes only. Certain functionalities may not work. Final design may look different.
+          </div>
           <div className="ai-assist-header">
             <h3>AI Assist Upload</h3>
             <p className="ai-assist-description">
@@ -49,15 +52,13 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
             />
           </div>
 
-          <div className="ai-assist-footer">
-            <button
-              className={`continue-button ${isTextFilled ? '' : 'disabled'}`}
-              onClick={onContinue}
-              disabled={!isTextFilled}
-            >
-              Continue to Review
-            </button>
-          </div>
+          <button
+            className={`continue-button ${isTextFilled ? '' : 'disabled'}`}
+            onClick={onContinue}
+            disabled={!isTextFilled}
+          >
+            Generate Listing
+          </button>
         </div>
       </div>
     </>

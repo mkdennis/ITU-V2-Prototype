@@ -139,13 +139,16 @@
 
 .category-field-wrapper {
   display: flex;
-  flex-direction: column;
-  gap: 0px;
-  position: relative;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.category-field-wrapper .searchable-category-dropdown {
+  flex: 1;
 }
 
 .view-all-categories-button {
-  padding: 8px 16px;
+  padding: 10px 20px;
   background-color: white;
   border: 1px solid #DDDDDD;
   border-radius: 4px;
@@ -154,8 +157,9 @@
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s;
-  align-self: flex-end;
-  margin-top: 8px;
+  height: 44px;
+  margin-bottom: 0px;
+  flex-shrink: 0;
 }
 
 .view-all-categories-button:hover {
@@ -269,6 +273,12 @@
   grid-template-columns: 1fr 1fr;
   gap: 18px;
   align-items: start;
+}
+
+.pricing-column-left {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 @media (max-width: 900px) {
