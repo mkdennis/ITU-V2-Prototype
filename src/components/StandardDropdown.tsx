@@ -174,9 +174,6 @@ function StandardDropdown({
           </div>
         )}
       </div>
-      {selectedOption?.subline && (
-        <div className="standard-dropdown-selected-subline">{selectedOption.subline}</div>
-      )}
     </div>
   )
 }
