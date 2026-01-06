@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './RadioButtonGroup.css'
 
 interface RadioOption {
@@ -14,6 +15,15 @@ interface RadioButtonGroupProps {
 }
 
 function RadioButtonGroup({ label, name, options, value, onChange }: RadioButtonGroupProps) {
+  const [internalValue, setInternalValue] = useState<string>(value || '')
+
+  const handleChange = (newValue: string) => {
+    setInternalValue(newValue)
+    onChange?.(newValue)
+  }
+
+  const selectedValue = value !== undefined ? value : internalValue
+
   return (
     <div className="radio-group">
       <label className="radio-group-label">{label}</label>
@@ -24,8 +34,8 @@ function RadioButtonGroup({ label, name, options, value, onChange }: RadioButton
               type="radio"
               name={name}
               value={option.value}
-              checked={value === option.value}
-              onChange={(e) => onChange?.(e.target.value)}
+              checked={selectedValue === option.value}
+              onChange={(e) => handleChange(e.target.value)}
               className="radio-input"
             />
             <span className="radio-label">{option.label}</span>
