@@ -82,10 +82,39 @@
 }
 
 .checkbox-input {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
-  accent-color: #222222;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 2px solid #D0D0D0;
+  border-radius: 3px;
+  outline: none;
+  transition: all 0.2s;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.checkbox-input:hover {
+  border-color: #436B93;
+}
+
+.checkbox-input:checked {
+  border-color: #436B93;
+  background-color: #436B93;
+}
+
+.checkbox-input:checked::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
 .divider {
