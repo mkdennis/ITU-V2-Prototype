@@ -7,6 +7,11 @@ interface Tab {
   sectionId: string
 }
 
+interface NavigationHeaderProps {
+  hideTabs?: boolean
+  title?: string
+}
+
 const tabs: Tab[] = [
   { id: 'basic-information', label: 'Basic Information', sectionId: 'basic-information-section' },
   { id: 'item-details', label: 'Item Details', sectionId: 'item-details-section' },
@@ -14,7 +19,7 @@ const tabs: Tab[] = [
   { id: 'images', label: 'Images', sectionId: 'images-section' },
 ]
 
-function NavigationHeader() {
+function NavigationHeader({ hideTabs = false, title = 'Create New Listing' }: NavigationHeaderProps) {
   const [activeTab, setActiveTab] = useState('basic-information')
   const [underlineStyle, setUnderlineStyle] = useState({ translateX: 0, width: 0 })
   const navRef = useRef<HTMLElement>(null)
@@ -122,28 +127,30 @@ function NavigationHeader() {
   return (
     <header className="navigation-header">
       <div className="header-content">
-        <h1 className="header-title">Create New Listing</h1>
-        <nav className="header-nav" ref={navRef}>
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              ref={(el) => {
-                tabRefs.current[tab.id] = el
+        <h1 className="header-title">{title}</h1>
+        {!hideTabs && (
+          <nav className="header-nav" ref={navRef}>
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                ref={(el) => {
+                  tabRefs.current[tab.id] = el
+                }}
+                className={`nav-tab ${activeTab === tab.id ? 'active' : ''}`}
+                onClick={() => handleTabClick(tab.id, tab.sectionId)}
+              >
+                {tab.label}
+              </button>
+            ))}
+            <div
+              className="nav-underline"
+              style={{
+                transform: `translate3d(${underlineStyle.translateX}px, 0px, 0px)`,
+                width: `${underlineStyle.width}px`
               }}
-              className={`nav-tab ${activeTab === tab.id ? 'active' : ''}`}
-              onClick={() => handleTabClick(tab.id, tab.sectionId)}
-            >
-              {tab.label}
-            </button>
-          ))}
-          <div 
-            className="nav-underline"
-            style={{
-              transform: `translate3d(${underlineStyle.translateX}px, 0px, 0px)`,
-              width: `${underlineStyle.width}px`
-            }}
-          />
-        </nav>
+            />
+          </nav>
+        )}
       </div>
     </header>
   )

@@ -1,0 +1,15 @@
+.welcome-modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.welcome-banner {
+  background-color: #FFF9E6;
+  border: 1px solid #FFE066;
+  border-radius: 4px;
+  padding: 16px;
+  font-size: 14px;
+  color: #222222;
+  line-height: 1.5;
+  text-align: center;
+}

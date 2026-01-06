@@ -8,9 +8,10 @@ interface NumberInputProps {
   value?: number
   onChange?: (value: number) => void
   placeholder?: string
+  disabled?: boolean
 }
 
-function NumberInput({ label, suffix, prefix, value, onChange, placeholder }: NumberInputProps) {
+function NumberInput({ label, suffix, prefix, value, onChange, placeholder, disabled = false }: NumberInputProps) {
   const [internalValue, setInternalValue] = useState<string>(value?.toString() || '')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +41,7 @@ function NumberInput({ label, suffix, prefix, value, onChange, placeholder }: Nu
           value={internalValue}
           onChange={handleChange}
           placeholder={placeholder}
+          disabled={disabled}
         />
         {suffix && <span className="number-input-suffix">{suffix}</span>}
       </div>

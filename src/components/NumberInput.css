@@ -53,6 +53,13 @@
   color: #888888;
 }
 
+.number-input-field:disabled {
+  background-color: #F3F3F3;
+  cursor: not-allowed;
+  color: #999999;
+  border-color: #E0E0E0;
+}
+
 .number-input-prefix {
   position: absolute;
   left: 18px;
