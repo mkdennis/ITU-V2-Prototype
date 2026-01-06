@@ -7,13 +7,15 @@ import ImageUpload from './ImageUpload'
 import ImageSlot from './ImageSlot'
 import NavigationHeader from './NavigationHeader'
 import RecommendedPriceBanner from './RecommendedPriceBanner'
-import CollapsibleSection from './CollapsibleSection'
 import SearchableCategoryDropdown from './SearchableCategoryDropdown'
 import CategorySelectionModal from './CategorySelectionModal'
 import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
+import DropdownWithSubline from './DropdownWithSubline'
+import PackageDimensions from './PackageDimensions'
+import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
 
 interface ItemUploadFormProps {
@@ -48,6 +50,34 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [netPrice, setNetPrice] = useState<number>(0)
   const [autoOfferPrice, setAutoOfferPrice] = useState<number>(0)
+
+  // Shipping & Handling state
+  const [inventoryLocation, setInventoryLocation] = useState<string>('')
+  const [packages, setPackages] = useState<Array<{ weight: number; length: number; width: number; height: number }>>([
+    { weight: 0, length: 0, width: 0, height: 0 }
+  ])
+  const [handlingTime, setHandlingTime] = useState<string>('')
+  const [returnPolicy, setReturnPolicy] = useState<string>('')
+  const [shippingZones, setShippingZones] = useState([
+    {
+      region: 'Continental United States',
+      priceRange: { min: 25, max: 36 },
+      description: 'Shipping cost is calculated based on buyer\'s location and packing dimensions.',
+      shippingPrice: 'calculated',
+      shippingMethod: 'fedex-standard'
+    },
+    {
+      region: 'Rest of World',
+      priceRange: { min: 50, max: 75 },
+      description: 'Shipping cost is calculated based on buyer\'s location and packing dimensions.',
+      shippingPrice: 'calculated',
+      shippingMethod: 'fedex-standard'
+    }
+  ])
+
+  // Internal Notes state
+  const [referenceNumber, setReferenceNumber] = useState<string>('')
+  const [internalNotes, setInternalNotes] = useState<string>('')
 
   // Update prices when list price changes
   useEffect(() => {
@@ -110,6 +140,30 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
     if (listPrice > 0) {
       setAutoOfferPrice(listPrice * (percentage / 100))
     }
+  }
+
+  // Handle package changes
+  const handlePackageChange = (index: number, field: 'weight' | 'length' | 'width' | 'height', value: number) => {
+    const newPackages = [...packages]
+    newPackages[index][field] = value
+    setPackages(newPackages)
+  }
+
+  const handleAddPackage = () => {
+    setPackages([...packages, { weight: 0, length: 0, width: 0, height: 0 }])
+  }
+
+  // Handle shipping zone changes
+  const handleShippingPriceChange = (region: string, value: string) => {
+    setShippingZones(zones =>
+      zones.map(zone => zone.region === region ? { ...zone, shippingPrice: value } : zone)
+    )
+  }
+
+  const handleShippingMethodChange = (region: string, value: string) => {
+    setShippingZones(zones =>
+      zones.map(zone => zone.region === region ? { ...zone, shippingMethod: value } : zone)
+    )
   }
 
   // Dummy AI suggestions
@@ -628,87 +682,88 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
             }}
           />
         </div>
-        <CollapsibleSection label="Other Pricing Options">
-          <div className="pricing-options-content">
-            <div className="net-price-section">
-              <div className="net-price-row">
-                <div className="dropdown-container">
-                  <label className="dropdown-label">Discount (Off List Price)</label>
-                  <select
-                    className="discount-dropdown"
-                    value={netPriceDiscount}
-                    onChange={(e) => handleNetPriceDiscountChange(Number(e.target.value))}
-                    disabled={noNetDiscount}
-                  >
-                    {[10, 15, 20, 25, 30, 35, 40, 45, 50].map(percent => (
-                      <option key={percent} value={percent}>{percent}%</option>
-                    ))}
-                  </select>
-                </div>
-                <NumberInput
-                  label="Net Price"
-                  prefix="$"
-                  suffix="USD"
-                  value={noNetDiscount ? 0 : netPrice}
-                  onChange={handleNetPriceChange}
+
+        <div className="divider"></div>
+
+        <div className="pricing-options-content">
+          <div className="net-price-section">
+            <div className="net-price-row">
+              <div className="dropdown-container">
+                <label className="dropdown-label">Discount (Off List Price)</label>
+                <select
+                  className="discount-dropdown"
+                  value={netPriceDiscount}
+                  onChange={(e) => handleNetPriceDiscountChange(Number(e.target.value))}
                   disabled={noNetDiscount}
-                />
+                >
+                  {[10, 15, 20, 25, 30, 35, 40, 45, 50].map(percent => (
+                    <option key={percent} value={percent}>{percent}%</option>
+                  ))}
+                </select>
               </div>
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  className="checkbox-input"
-                  checked={noNetDiscount}
-                  onChange={(e) => setNoNetDiscount(e.target.checked)}
-                />
-                <div className="checkbox-text-wrapper">
-                  <span className="checkbox-text-main">I do not offer a net price discount on this piece</span>
-                  <span className="checkbox-text-subtext">By selecting this option you confirm that your List Price is the best price you can offer, and you understand this listing may not be promoted to the trade.</span>
-                </div>
-              </label>
+              <NumberInput
+                label="Net Price"
+                prefix="$"
+                suffix="USD"
+                value={noNetDiscount ? 0 : netPrice}
+                onChange={handleNetPriceChange}
+                disabled={noNetDiscount}
+              />
             </div>
-            <div className="divider"></div>
-            <div className="auto-offers-section">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  className="checkbox-input"
-                  checked={autoOfferEnabled}
-                  onChange={(e) => setAutoOfferEnabled(e.target.checked)}
-                />
-                <div className="checkbox-text-wrapper">
-                  <span className="checkbox-text-main">Automatically Send Offers to Interested Customers</span>
-                  <span className="checkbox-text-subtext">Opt in to proactively send offers to interested customers. Choose the offer amount and 1stDibs will handle the rest. Automated private offers will expire after 7 days.</span>
-                </div>
-              </label>
-              {autoOfferEnabled && (
-                <div className="auto-offer-fields">
-                  <div className="net-price-row">
-                    <div className="dropdown-container">
-                      <label className="dropdown-label">Discount (Off List Price)</label>
-                      <select
-                        className="discount-dropdown"
-                        value={autoOfferDiscount}
-                        onChange={(e) => handleAutoOfferDiscountChange(Number(e.target.value))}
-                      >
-                        {[10, 15, 20, 25, 30, 35, 40, 45, 50].map(percent => (
-                          <option key={percent} value={percent}>{percent}%</option>
-                        ))}
-                      </select>
-                    </div>
-                    <NumberInput
-                      label="Offer Price"
-                      prefix="$"
-                      suffix="USD"
-                      value={autoOfferPrice}
-                      onChange={handleAutoOfferPriceChange}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                className="checkbox-input"
+                checked={noNetDiscount}
+                onChange={(e) => setNoNetDiscount(e.target.checked)}
+              />
+              <div className="checkbox-text-wrapper">
+                <span className="checkbox-text-main">I do not offer a net price discount on this piece</span>
+                <span className="checkbox-text-subtext">By selecting this option you confirm that your List Price is the best price you can offer, and you understand this listing may not be promoted to the trade.</span>
+              </div>
+            </label>
           </div>
-        </CollapsibleSection>
+          <div className="divider"></div>
+          <div className="auto-offers-section">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                className="checkbox-input"
+                checked={autoOfferEnabled}
+                onChange={(e) => setAutoOfferEnabled(e.target.checked)}
+              />
+              <div className="checkbox-text-wrapper">
+                <span className="checkbox-text-main">Automatically Send Offers to Interested Customers</span>
+                <span className="checkbox-text-subtext">Opt in to proactively send offers to interested customers. Choose the offer amount and 1stDibs will handle the rest. Automated private offers will expire after 7 days.</span>
+              </div>
+            </label>
+            {autoOfferEnabled && (
+              <div className="auto-offer-fields">
+                <div className="net-price-row">
+                  <div className="dropdown-container">
+                    <label className="dropdown-label">Discount (Off List Price)</label>
+                    <select
+                      className="discount-dropdown"
+                      value={autoOfferDiscount}
+                      onChange={(e) => handleAutoOfferDiscountChange(Number(e.target.value))}
+                    >
+                      {[10, 15, 20, 25, 30, 35, 40, 45, 50].map(percent => (
+                        <option key={percent} value={percent}>{percent}%</option>
+                      ))}
+                    </select>
+                  </div>
+                  <NumberInput
+                    label="Offer Price"
+                    prefix="$"
+                    suffix="USD"
+                    value={autoOfferPrice}
+                    onChange={handleAutoOfferPriceChange}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="form-section" id="description-section">
@@ -783,6 +838,93 @@ What details would be useful for a potential buyer to know?`}
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="form-section" id="shipping-section">
+        <h3>Shipping & Handling</h3>
+
+        <DropdownWithSubline
+          label="Inventory Location"
+          value={inventoryLocation}
+          options={[
+            {
+              value: 'storefront',
+              label: 'Seller Storefront (Default)',
+              subline: '383 North Indian Canyon Drive Palm Springs CA 92262'
+            }
+          ]}
+          onChange={setInventoryLocation}
+          placeholder="Select inventory location"
+        />
+
+        <div className="divider"></div>
+
+        <PackageDimensions
+          packages={packages}
+          onPackageChange={handlePackageChange}
+          onAddPackage={handleAddPackage}
+        />
+
+        <div className="divider"></div>
+
+        <ShippingQuotes
+          zones={shippingZones}
+          onShippingPriceChange={handleShippingPriceChange}
+          onShippingMethodChange={handleShippingMethodChange}
+        />
+
+        <div className="divider"></div>
+
+        <div className="handling-time-container">
+          <label className="dropdown-label">Handling Time</label>
+          <select
+            className="standard-dropdown"
+            value={handlingTime}
+            onChange={(e) => setHandlingTime(e.target.value)}
+          >
+            <option value="">Select handling time</option>
+            {Array.from({ length: 10 }, (_, i) => i + 1).map(days => (
+              <option key={days} value={days}>
+                {days} Business {days === 1 ? 'Day' : 'Days'}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="divider"></div>
+
+        <DropdownWithSubline
+          label="Return Policy"
+          value={returnPolicy}
+          options={[
+            {
+              value: 'final',
+              label: 'All Sales Final',
+              subline: '25% Restocking Fee | Buyer pays return shipping. All sales are final for new, customized or made to order items.'
+            }
+          ]}
+          onChange={setReturnPolicy}
+          placeholder="Select return policy"
+        />
+      </div>
+
+      <div className="form-section" id="internal-notes-section">
+        <h3>Internal Notes & Documents</h3>
+
+        <TextInput
+          label="Soho Antiques's Reference"
+          value={referenceNumber}
+          onChange={setReferenceNumber}
+          placeholder="Enter reference number"
+        />
+
+        <Textarea
+          label="Soho Antiques's Internal Notes"
+          value={internalNotes}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInternalNotes(e.target.value)}
+          placeholder="Enter internal notes"
+          rows={6}
+        />
       </div>
       </div>
     </>

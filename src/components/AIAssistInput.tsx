@@ -46,7 +46,7 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
             </p>
             <Textarea
               value={textContent}
-              onChange={setTextContent}
+              onChange={(e) => setTextContent(e.target.value)}
               placeholder="Paste item information here..."
               rows={12}
             />
