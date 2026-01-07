@@ -815,7 +815,7 @@ What details would be useful for a potential buyer to know?`}
                   {additionalImages.length <= 1 && <ImageSlot label="Various Angles" icon="🪑" isEmpty={true} />}
                   {additionalImages.length <= 2 && <ImageSlot label="In Situation" icon="💡" isEmpty={true} />}
                   {additionalImages.length <= 3 && <ImageSlot label="Signatures/Labels" icon="✏️" isEmpty={true} />}
-                  {[...Array(Math.max(0, Math.min(4, 20 - additionalImages.length - 4)))].map((_, i) => (
+                  {[...Array(Math.max(0, Math.min(3, 20 - additionalImages.length - 4)))].map((_, i) => (
                     <ImageSlot key={`empty-${i}`} isEmpty={true} />
                   ))}
                   <ImageSlot label="Up to 20 Images" icon="📤" isEmpty={true} />
