@@ -19,17 +19,19 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
   // Handle image upload
   const handleImagesUpload = (files: FileList) => {
     const fileArray = Array.from(files)
-    const newImages: string[] = []
 
-    fileArray.forEach((file) => {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        newImages.push(reader.result as string)
-        if (newImages.length === fileArray.length) {
-          setUploadedImages((prev) => [...prev, ...newImages])
-        }
-      }
-      reader.readAsDataURL(file)
+    Promise.all(
+      fileArray.map((file) => {
+        return new Promise<string>((resolve) => {
+          const reader = new FileReader()
+          reader.onloadend = () => {
+            resolve(reader.result as string)
+          }
+          reader.readAsDataURL(file)
+        })
+      })
+    ).then((newImages) => {
+      setUploadedImages((prev) => [...prev, ...newImages])
     })
   }
 
@@ -63,7 +65,7 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
 
   return (
     <>
-      <NavigationHeader hideTabs title="1stDibs Item Upload Prototype" />
+      <NavigationHeader hideTabs title="Create New Listing" />
       <div className="app">
         <div className="form-section ai-assist-container">
           <div className="ai-assist-banner">
