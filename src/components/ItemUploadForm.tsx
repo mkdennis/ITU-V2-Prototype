@@ -846,13 +846,13 @@ What details would be useful for a potential buyer to know?`}
       <div className="form-section" id="shipping-section">
         <h3>Shipping & Handling</h3>
 
-        <SearchableDropdown
+        <ConditionDropdown
           label="Inventory Location"
           value={inventoryLocation}
-          options={[
+          conditions={[
             {
-              value: 'storefront',
-              label: 'Seller Storefront (Default)'
+              name: 'Seller Storefront (Default)',
+              description: '383 North Indian Canyon Drive Palm Springs CA 92262'
             }
           ]}
           onChange={setInventoryLocation}
@@ -883,13 +883,13 @@ What details would be useful for a potential buyer to know?`}
           placeholder="Select handling time"
         />
 
-        <SearchableDropdown
+        <ConditionDropdown
           label="Return Policy"
           value={returnPolicy}
-          options={[
+          conditions={[
             {
-              value: 'final',
-              label: 'All Sales Final'
+              name: 'All Sales Final',
+              description: '25% Restocking Fee | Buyer pays return shipping | All sales are final for new, customized or made to order items.'
             }
           ]}
           onChange={setReturnPolicy}
