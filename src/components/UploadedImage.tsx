@@ -9,6 +9,7 @@ interface UploadedImageProps {
   onDragStart?: (e: React.DragEvent) => void
   onDragOver?: (e: React.DragEvent) => void
   onDrop?: (e: React.DragEvent) => void
+  isPrimary?: boolean
 }
 
 function UploadedImage({
@@ -18,13 +19,14 @@ function UploadedImage({
   draggable = false,
   onDragStart,
   onDragOver,
-  onDrop
+  onDrop,
+  isPrimary = false
 }: UploadedImageProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
     <div
-      className="uploaded-image-container"
+      className={`uploaded-image-container ${isPrimary ? 'primary' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       draggable={draggable}

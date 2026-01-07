@@ -4,6 +4,7 @@ import NumberInput from './NumberInput'
 import TextInput from './TextInput'
 import Textarea from './Textarea'
 import ImageUpload from './ImageUpload'
+import ImageSlot from './ImageSlot'
 import UploadedImage from './UploadedImage'
 import NavigationHeader from './NavigationHeader'
 import RecommendedPriceBanner from './RecommendedPriceBanner'
@@ -762,6 +763,7 @@ What details would be useful for a potential buyer to know?`}
               src={primaryImage}
               alt="Primary image"
               onDelete={handlePrimaryImageDelete}
+              isPrimary={true}
             />
           ) : (
             <ImageUpload
@@ -794,22 +796,32 @@ What details would be useful for a potential buyer to know?`}
               onFilesSelected={handleAdditionalImagesUpload}
               multiple={true}
             />
-            {additionalImages.length > 0 && (
-              <div className="image-slots-grid">
-                {additionalImages.map((image, index) => (
-                  <UploadedImage
-                    key={index}
-                    src={image}
-                    alt={`Additional image ${index + 1}`}
-                    onDelete={() => handleAdditionalImageDelete(index)}
-                    draggable={true}
-                    onDragStart={() => handleImageDragStart(index)}
-                    onDragOver={handleImageDragOver}
-                    onDrop={() => handleImageDrop(index)}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="image-slots-grid">
+              {additionalImages.map((image, index) => (
+                <UploadedImage
+                  key={`uploaded-${index}`}
+                  src={image}
+                  alt={`Additional image ${index + 1}`}
+                  onDelete={() => handleAdditionalImageDelete(index)}
+                  draggable={true}
+                  onDragStart={() => handleImageDragStart(index)}
+                  onDragOver={handleImageDragOver}
+                  onDrop={() => handleImageDrop(index)}
+                />
+              ))}
+              {additionalImages.length < 20 && (
+                <>
+                  {additionalImages.length === 0 && <ImageSlot label="Details" icon="🔍" isEmpty={true} />}
+                  {additionalImages.length <= 1 && <ImageSlot label="Various Angles" icon="🪑" isEmpty={true} />}
+                  {additionalImages.length <= 2 && <ImageSlot label="In Situation" icon="💡" isEmpty={true} />}
+                  {additionalImages.length <= 3 && <ImageSlot label="Signatures/Labels" icon="✏️" isEmpty={true} />}
+                  {[...Array(Math.max(0, Math.min(4, 20 - additionalImages.length - 4)))].map((_, i) => (
+                    <ImageSlot key={`empty-${i}`} isEmpty={true} />
+                  ))}
+                  <ImageSlot label="Up to 20 Images" icon="📤" isEmpty={true} />
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
