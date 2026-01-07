@@ -318,7 +318,7 @@
 
 .net-price-row {
   display: grid;
-  grid-template-columns: 1fr 200px;
+  grid-template-columns: 426px 200px;
   gap: 18px;
   align-items: end;
 }

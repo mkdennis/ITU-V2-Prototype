@@ -881,16 +881,14 @@ What details would be useful for a potential buyer to know?`}
         <div className="pricing-options-content">
           <div className="net-price-section">
             <div className="net-price-row">
-              <div style={{ maxWidth: '426px' }}>
-                <NumberInput
-                  label="Net Price"
-                  prefix="$"
-                  suffix="USD"
-                  value={noNetDiscount ? 0 : netPrice}
-                  onChange={handleNetPriceChange}
-                  disabled={noNetDiscount}
-                />
-              </div>
+              <NumberInput
+                label="Net Price"
+                prefix="$"
+                suffix="USD"
+                value={noNetDiscount ? 0 : netPrice}
+                onChange={handleNetPriceChange}
+                disabled={noNetDiscount}
+              />
               <div className="dropdown-container">
                 <label className="dropdown-label">Discount (Off List Price)</label>
                 <select
@@ -934,15 +932,13 @@ What details would be useful for a potential buyer to know?`}
             {autoOfferEnabled && (
               <div className="auto-offer-fields">
                 <div className="net-price-row">
-                  <div style={{ maxWidth: '426px' }}>
-                    <NumberInput
-                      label="Offer Price"
-                      prefix="$"
-                      suffix="USD"
-                      value={autoOfferPrice}
-                      onChange={handleAutoOfferPriceChange}
-                    />
-                  </div>
+                  <NumberInput
+                    label="Offer Price"
+                    prefix="$"
+                    suffix="USD"
+                    value={autoOfferPrice}
+                    onChange={handleAutoOfferPriceChange}
+                  />
                   <div className="dropdown-container">
                     <label className="dropdown-label">Discount (Off List Price)</label>
                     <select
