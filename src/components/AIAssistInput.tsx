@@ -13,7 +13,7 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
   const [textContent, setTextContent] = useState<string>('')
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
   const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null)
-  const [selectedTextOption, setSelectedTextOption] = useState<'description' | 'open-text' | null>(null)
+  const [usePrefillDescription, setUsePrefillDescription] = useState<boolean>(false)
 
   const isTextFilled = textContent.trim().length > 0
 
@@ -86,53 +86,26 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
           <div className="ai-assist-section">
             <h5 className="ai-assist-section-title">Item Information *</h5>
             <p className="ai-assist-section-description">
-              Select how you'd like to provide information about your item.
+              Paste any text you have about your item - descriptions, auction listings, provenance information, etc.
             </p>
-
-            {selectedTextOption === null ? (
-              <div className="text-option-cards">
-                <div className="text-option-card" onClick={() => setSelectedTextOption('description')}>
-                  <h3 className="text-option-card-title">Use Description</h3>
-                  <p className="text-option-card-description">
-                    Description will be prefilled in Item Upload
-                  </p>
-                </div>
-                <div className="text-option-card" onClick={() => setSelectedTextOption('open-text')}>
-                  <h3 className="text-option-card-title">Open Text</h3>
-                  <p className="text-option-card-description">
-                    Copy and paste any information about item (item dimensions, category, etc). Does not need to be structured.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <>
-                {selectedTextOption === 'description' && (
-                  <p className="text-helper-text">
-                    We will prefill your description with this text.
-                  </p>
-                )}
-                <Textarea
-                  value={textContent}
-                  onChange={(e) => setTextContent(e.target.value)}
-                  placeholder={selectedTextOption === 'description'
-                    ? "Paste your item description here..."
-                    : "Paste item information here..."}
-                  rows={8}
-                />
-                <button
-                  className="back-to-selection-button"
-                  onClick={() => {
-                    setSelectedTextOption(null)
-                    setTextContent('')
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M10 12L6 8L10 4" stroke="#436B93" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  Back to Selection
-                </button>
-              </>
-            )}
+            <Textarea
+              value={textContent}
+              onChange={(e) => setTextContent(e.target.value)}
+              placeholder="Paste item information here..."
+              rows={8}
+            />
+            <div className="checkbox-container">
+              <input
+                type="checkbox"
+                id="prefill-description"
+                checked={usePrefillDescription}
+                onChange={(e) => setUsePrefillDescription(e.target.checked)}
+                className="prefill-checkbox"
+              />
+              <label htmlFor="prefill-description" className="prefill-label">
+                Use this text to prefill description in Item Upload
+              </label>
+            </div>
           </div>
 
           <div className="ai-assist-section">
