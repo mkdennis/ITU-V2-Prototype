@@ -19,9 +19,13 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
   // Handle image upload
   const handleImagesUpload = (files: FileList) => {
     const fileArray = Array.from(files)
+    const remainingSlots = 4 - uploadedImages.length
+    const filesToUpload = fileArray.slice(0, remainingSlots)
+
+    if (filesToUpload.length === 0) return
 
     Promise.all(
-      fileArray.map((file) => {
+      filesToUpload.map((file) => {
         return new Promise<string>((resolve) => {
           const reader = new FileReader()
           reader.onloadend = () => {
@@ -84,10 +88,11 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
               Upload photos of your item. These will help our AI identify details about the piece.
             </p>
             <ImageUpload
-              uploadText="Upload Images or Drag Images Here"
+              uploadText="Upload Images or Drag Images Here (Up to 4)"
               requirements="All images must be at least 768x768 px, less than 16MB, JPEGs only"
               onFilesSelected={handleImagesUpload}
               multiple={true}
+              disabled={uploadedImages.length >= 4}
             />
             {uploadedImages.length > 0 && (
               <div className="image-slots-grid">
