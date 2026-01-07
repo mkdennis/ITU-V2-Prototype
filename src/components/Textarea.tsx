@@ -7,9 +7,10 @@ interface TextareaProps {
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
   placeholder?: string
   rows?: number
+  disabled?: boolean
 }
 
-function Textarea({ label, value, onChange, placeholder, rows = 10 }: TextareaProps) {
+function Textarea({ label, value, onChange, placeholder, rows = 10, disabled = false }: TextareaProps) {
   const [internalValue, setInternalValue] = useState<string>(value || '')
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -29,6 +30,7 @@ function Textarea({ label, value, onChange, placeholder, rows = 10 }: TextareaPr
         onChange={handleChange}
         placeholder={placeholder}
         rows={rows}
+        disabled={disabled}
       />
     </div>
   )
