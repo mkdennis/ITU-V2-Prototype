@@ -31,6 +31,51 @@
   cursor: pointer;
 }
 
+.condition-dropdown-input-display {
+  width: 100%;
+  min-height: 64px;
+  padding: 12px 40px 12px 18px;
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-top: 0px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+
+.condition-dropdown-input-display:hover {
+  border-color: #B0B0B0;
+}
+
+.condition-dropdown-input-display.focused {
+  border-color: #222222;
+}
+
+.condition-dropdown-input-display.empty {
+  color: #888888;
+  font-size: 16px;
+  justify-content: center;
+}
+
+.condition-dropdown-input-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222222;
+  line-height: 1.2;
+}
+
+.condition-dropdown-input-subline {
+  font-size: 14px;
+  color: #888888;
+  line-height: 1.4;
+}
+
 .condition-dropdown-input::placeholder {
   color: #888888;
 }
