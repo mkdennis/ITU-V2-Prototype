@@ -13,14 +13,16 @@ interface ConditionDropdownProps {
   value?: string
   onChange?: (value: string) => void
   conditions: Condition[]
+  showSublineInField?: boolean
 }
 
-function ConditionDropdown({ 
-  label, 
-  placeholder, 
-  value, 
-  onChange, 
-  conditions = [] 
+function ConditionDropdown({
+  label,
+  placeholder,
+  value,
+  onChange,
+  conditions = [],
+  showSublineInField = false
 }: ConditionDropdownProps) {
   const [internalValue, setInternalValue] = useState<string>(value || '')
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -122,6 +124,18 @@ function ConditionDropdown({
   const displayValue = value !== undefined ? value : internalValue
   const showPlaceholder = !displayValue && !isOpen
 
+  // Get the full display text including subline if enabled
+  const getDisplayText = () => {
+    if (!displayValue) return ''
+    if (!showSublineInField) return displayValue
+
+    const selectedCondition = conditions.find(c => c.name === displayValue)
+    if (selectedCondition) {
+      return `${selectedCondition.name} - ${selectedCondition.description}`
+    }
+    return displayValue
+  }
+
   return (
     <div className="condition-dropdown" ref={wrapperRef}>
       {label && <label className="condition-dropdown-label">{label}</label>}
@@ -130,7 +144,7 @@ function ConditionDropdown({
           ref={inputRef}
           type="text"
           className="condition-dropdown-input"
-          value={displayValue}
+          value={getDisplayText()}
           onClick={handleInputClick}
           onKeyDown={handleKeyDown}
           placeholder={showPlaceholder ? placeholder : ''}

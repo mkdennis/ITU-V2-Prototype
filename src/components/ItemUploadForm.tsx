@@ -853,10 +853,19 @@ What details would be useful for a potential buyer to know?`}
             {
               name: 'Seller Storefront (Default)',
               description: '383 North Indian Canyon Drive Palm Springs CA 92262'
+            },
+            {
+              name: 'Warehouse - East Coast',
+              description: '1247 Commerce Street Brooklyn NY 11222'
+            },
+            {
+              name: 'Warehouse - West Coast',
+              description: '5890 Industrial Blvd Los Angeles CA 90058'
             }
           ]}
           onChange={setInventoryLocation}
           placeholder="Select inventory location"
+          showSublineInField={true}
         />
 
         <PackageDimensions
@@ -890,10 +899,19 @@ What details would be useful for a potential buyer to know?`}
             {
               name: 'All Sales Final',
               description: '25% Restocking Fee | Buyer pays return shipping | All sales are final for new, customized or made to order items.'
+            },
+            {
+              name: '14-Day Returns',
+              description: 'Free returns within 14 days | Buyer pays return shipping | Item must be in original condition with tags attached.'
+            },
+            {
+              name: '30-Day Returns',
+              description: 'Free returns within 30 days | Seller covers return shipping | Full refund if item is not as described.'
             }
           ]}
           onChange={setReturnPolicy}
           placeholder="Select return policy"
+          showSublineInField={true}
         />
       </div>
 
