@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './AIAssistInput.css'
 import NavigationHeader from './NavigationHeader'
 import ImageUpload from './ImageUpload'
+import UploadedImage from './UploadedImage'
 import Textarea from './Textarea'
 
 interface AIAssistInputProps {
@@ -10,8 +11,55 @@ interface AIAssistInputProps {
 
 function AIAssistInput({ onContinue }: AIAssistInputProps) {
   const [textContent, setTextContent] = useState<string>('')
+  const [uploadedImages, setUploadedImages] = useState<string[]>([])
+  const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null)
 
   const isTextFilled = textContent.trim().length > 0
+
+  // Handle image upload
+  const handleImagesUpload = (files: FileList) => {
+    const fileArray = Array.from(files)
+    const newImages: string[] = []
+
+    fileArray.forEach((file) => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        newImages.push(reader.result as string)
+        if (newImages.length === fileArray.length) {
+          setUploadedImages((prev) => [...prev, ...newImages])
+        }
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  // Handle image delete
+  const handleImageDelete = (index: number) => {
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  // Handle drag start for image reordering
+  const handleImageDragStart = (index: number) => {
+    setDraggedImageIndex(index)
+  }
+
+  // Handle drag over for image reordering
+  const handleImageDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
+
+  // Handle drop for image reordering
+  const handleImageDrop = (index: number) => {
+    if (draggedImageIndex === null) return
+
+    const newImages = [...uploadedImages]
+    const draggedImage = newImages[draggedImageIndex]
+    newImages.splice(draggedImageIndex, 1)
+    newImages.splice(index, 0, draggedImage)
+
+    setUploadedImages(newImages)
+    setDraggedImageIndex(null)
+  }
 
   return (
     <>
@@ -36,7 +84,25 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
             <ImageUpload
               uploadText="Upload Images or Drag Images Here"
               requirements="All images must be at least 768x768 px, less than 16MB, JPEGs only"
+              onFilesSelected={handleImagesUpload}
+              multiple={true}
             />
+            {uploadedImages.length > 0 && (
+              <div className="image-slots-grid">
+                {uploadedImages.map((image, index) => (
+                  <UploadedImage
+                    key={`ai-uploaded-${index}`}
+                    src={image}
+                    alt={`AI assist image ${index + 1}`}
+                    onDelete={() => handleImageDelete(index)}
+                    draggable={true}
+                    onDragStart={() => handleImageDragStart(index)}
+                    onDragOver={handleImageDragOver}
+                    onDrop={() => handleImageDrop(index)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="ai-assist-section">
