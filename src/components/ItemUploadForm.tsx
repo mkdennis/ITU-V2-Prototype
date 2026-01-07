@@ -577,21 +577,19 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
             />
           )}
         </div>
-        <div className="form-row">
-          <SearchableDropdown
-            label="Wear"
-            placeholder="Select wear"
-            options={wearOptions}
-            disabled={condition === 'New'}
-          />
-          <MultiSelectDropdown
-            label="Restoration Work & Modifications *"
-            placeholder="Select restoration work"
-            options={restorationOptions}
-            value={restoration}
-            onChange={setRestoration}
-          />
-        </div>
+        <SearchableDropdown
+          label="Wear"
+          placeholder="Select wear"
+          options={wearOptions}
+          disabled={condition === 'New'}
+        />
+        <MultiSelectDropdown
+          label="Restoration Work & Modifications *"
+          placeholder="Select restoration work"
+          options={restorationOptions}
+          value={restoration}
+          onChange={setRestoration}
+        />
         <Textarea
           label="Do you have additional comments about the condition of this item?"
           placeholder="Describe any signs of wear, scratches, cracks, or other types of damage. Additionally, if any restorations been made, please describe the work here."
