@@ -655,7 +655,7 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
       </div>
 
       <div className="form-section" id="pricing-quantity-section">
-        <h3>Pricing & Quantity</h3>
+        <h3>Pricing</h3>
         <div className="pricing-layout">
           <div className="pricing-column-left">
             <NumberInput
