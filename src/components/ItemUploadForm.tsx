@@ -55,7 +55,7 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   const [packages, setPackages] = useState<Array<{ weight: number; length: number; width: number; height: number }>>([
     { weight: 0, length: 0, width: 0, height: 0 }
   ])
-  const [handlingTime, setHandlingTime] = useState<string>('')
+  const [handlingTime, setHandlingTime] = useState<string>('3')
   const [returnPolicy, setReturnPolicy] = useState<string>('All Sales Final')
   const [shippingZones, setShippingZones] = useState([
     {
