@@ -117,7 +117,7 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
                   placeholder={selectedTextOption === 'description'
                     ? "Paste your item description here..."
                     : "Paste item information here..."}
-                  rows={12}
+                  rows={8}
                 />
                 <button
                   className="back-to-selection-button"
