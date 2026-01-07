@@ -654,6 +654,80 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
         </div>
       </div>
 
+      <div className="form-section" id="description-section">
+        <h3 className="description-heading">Description</h3>
+          <p className="description-recommendation">Recommended length: 120 words.</p>
+        <div className="description-section">
+          <Textarea
+            placeholder={`What makes this piece unique or special?
+Why is it worth the price?
+How would you describe it (and its condition) to someone who hasn't seen it in person?
+What is its background or history?
+What details would be useful for a potential buyer to know?`}
+            rows={12}
+          />
+          <div className="description-tips">
+            <div className="tips-header">
+              <span className="tips-icon">💡</span>
+              <h4 className="tips-title">Tips for Writing a Description That Drives Traffic</h4>
+            </div>
+            <ul className="tips-list">
+              <li>Adding your most important keywords at the beginning of the description is the most effective way to have your listing included in early search engine results.</li>
+              <li>Do not include shipping or contact information in the description.</li>
+            </ul>
+            <a href="#" className="tips-link">Learn more</a>
+          </div>
+        </div>
+      </div>
+
+      <div className="form-section" id="images-section">
+        <h3>Images</h3>
+
+        <div className="image-layout">
+          <div className="image-layout-info">
+            <h5>Primary Image</h5>
+            <p className="image-upload-description">
+              This is used as the main listing image across the site. Once you upload an image it will be automatically edited with a white background. If there are issues with the automatic processing of your image, our team can manually edit it.
+            </p>
+          </div>
+          <ImageUpload
+            uploadText="Upload Primary Image or Drag Image Here"
+            requirements="All images must be at least 768x768 px, less than 16MB, JPEGs only"
+            processingNote="This image will be automatically processed"
+          />
+        </div>
+        <div className="divider"></div>
+
+        <div className="image-layout">
+          <div className="image-layout-info">
+            <h5>Additional Images</h5>
+            <p className="image-upload-description">
+              Images should communicate the attributes you would want buyer to experience in person. Add at least four detail shots, including material, hardware, construction, and creator marks. Drag images to change their order. Do not include additional information, such as text or logos, on any images.
+            </p>
+          </div>
+          <div className="additional-images-upload-wrapper">
+            <div className="alert-box">
+              <span className="alert-icon">ℹ️</span>
+              <span className="alert-text">Select primary image first</span>
+            </div>
+            <ImageUpload
+              uploadText="Upload Additional Images or Drag Images Here"
+              disabled={true}
+            />
+            <div className="image-slots-grid">
+              <ImageSlot label="Details" icon="🔍" />
+              <ImageSlot label="Various Angles" icon="🪑" />
+              <ImageSlot label="In Situation" icon="💡" />
+              <ImageSlot label="Signatures/Labels" icon="✏️" />
+              <ImageSlot />
+              <ImageSlot />
+              <ImageSlot />
+              <ImageSlot label="Up to 20 Images" icon="📤" />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="form-section" id="pricing-quantity-section">
         <h3>Pricing</h3>
         <div className="pricing-layout">
@@ -765,80 +839,6 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
                 </div>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-
-      <div className="form-section" id="description-section">
-        <h3 className="description-heading">Description</h3>
-          <p className="description-recommendation">Recommended length: 120 words.</p>
-        <div className="description-section">
-          <Textarea
-            placeholder={`What makes this piece unique or special?
-Why is it worth the price?
-How would you describe it (and its condition) to someone who hasn't seen it in person?
-What is its background or history?
-What details would be useful for a potential buyer to know?`}
-            rows={12}
-          />
-          <div className="description-tips">
-            <div className="tips-header">
-              <span className="tips-icon">💡</span>
-              <h4 className="tips-title">Tips for Writing a Description That Drives Traffic</h4>
-            </div>
-            <ul className="tips-list">
-              <li>Adding your most important keywords at the beginning of the description is the most effective way to have your listing included in early search engine results.</li>
-              <li>Do not include shipping or contact information in the description.</li>
-            </ul>
-            <a href="#" className="tips-link">Learn more</a>
-          </div>
-        </div>
-      </div>
-
-      <div className="form-section" id="images-section">
-        <h3>Images</h3>
-
-        <div className="image-layout">
-          <div className="image-layout-info">
-            <h5>Primary Image</h5>
-            <p className="image-upload-description">
-              This is used as the main listing image across the site. Once you upload an image it will be automatically edited with a white background. If there are issues with the automatic processing of your image, our team can manually edit it.
-            </p>
-          </div>
-          <ImageUpload
-            uploadText="Upload Primary Image or Drag Image Here"
-            requirements="All images must be at least 768x768 px, less than 16MB, JPEGs only"
-            processingNote="This image will be automatically processed"
-          />
-        </div>
-        <div className="divider"></div>
-
-        <div className="image-layout">
-          <div className="image-layout-info">
-            <h5>Additional Images</h5>
-            <p className="image-upload-description">
-              Images should communicate the attributes you would want buyer to experience in person. Add at least four detail shots, including material, hardware, construction, and creator marks. Drag images to change their order. Do not include additional information, such as text or logos, on any images.
-            </p>
-          </div>
-          <div className="additional-images-upload-wrapper">
-            <div className="alert-box">
-              <span className="alert-icon">ℹ️</span>
-              <span className="alert-text">Select primary image first</span>
-            </div>
-            <ImageUpload
-              uploadText="Upload Additional Images or Drag Images Here"
-              disabled={true}
-            />
-            <div className="image-slots-grid">
-              <ImageSlot label="Details" icon="🔍" />
-              <ImageSlot label="Various Angles" icon="🪑" />
-              <ImageSlot label="In Situation" icon="💡" />
-              <ImageSlot label="Signatures/Labels" icon="✏️" />
-              <ImageSlot />
-              <ImageSlot />
-              <ImageSlot />
-              <ImageSlot label="Up to 20 Images" icon="📤" />
-            </div>
           </div>
         </div>
       </div>
