@@ -51,12 +51,12 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   const [autoOfferPrice, setAutoOfferPrice] = useState<number>(0)
 
   // Shipping & Handling state
-  const [inventoryLocation, setInventoryLocation] = useState<string>('')
+  const [inventoryLocation, setInventoryLocation] = useState<string>('Seller Storefront (Default)')
   const [packages, setPackages] = useState<Array<{ weight: number; length: number; width: number; height: number }>>([
     { weight: 0, length: 0, width: 0, height: 0 }
   ])
   const [handlingTime, setHandlingTime] = useState<string>('')
-  const [returnPolicy, setReturnPolicy] = useState<string>('')
+  const [returnPolicy, setReturnPolicy] = useState<string>('All Sales Final')
   const [shippingZones, setShippingZones] = useState([
     {
       region: 'Continental United States',

@@ -34,7 +34,7 @@
 .condition-dropdown-input-display {
   width: 100%;
   min-height: 64px;
-  padding: 12px 40px 12px 18px;
+  padding: 13px 40px 12px 18px;
   font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background-color: white;
   border: 1px solid #E0E0E0;
@@ -64,7 +64,7 @@
 }
 
 .condition-dropdown-input-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #222222;
   line-height: 1.2;
