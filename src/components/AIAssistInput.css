@@ -95,3 +95,17 @@
   margin: 0;
   user-select: none;
 }
+
+.ai-assist-text-section {
+  gap: 0;
+}
+
+.ai-assist-text-section .ai-assist-section-description {
+  margin: 0 0 9px 0;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #DDDDDD;
+  margin: 24px 0;
+}

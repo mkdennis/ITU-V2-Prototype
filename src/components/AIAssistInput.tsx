@@ -83,10 +83,10 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
             </p>
           </div>
 
-          <div className="ai-assist-section">
+          <div className="ai-assist-section ai-assist-text-section">
             <h5 className="ai-assist-section-title">Item Information *</h5>
             <p className="ai-assist-section-description">
-              Paste any text you have about your item - descriptions, auction listings, provenance information, etc.
+              Paste any text you have about your item i.e. Description, dimensions, style, category, etc.
             </p>
             <Textarea
               value={textContent}
@@ -107,6 +107,8 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
               </label>
             </div>
           </div>
+
+          <hr className="section-divider" />
 
           <div className="ai-assist-section">
             <h5 className="ai-assist-section-title">Item Photos (Optional)</h5>
