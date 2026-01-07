@@ -51,12 +51,12 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   const [autoOfferPrice, setAutoOfferPrice] = useState<number>(0)
 
   // Shipping & Handling state
-  const [inventoryLocation, setInventoryLocation] = useState<string>('')
+  const [inventoryLocation, setInventoryLocation] = useState<string>('Seller Storefront (Default)')
   const [packages, setPackages] = useState<Array<{ weight: number; length: number; width: number; height: number }>>([
     { weight: 0, length: 0, width: 0, height: 0 }
   ])
-  const [handlingTime, setHandlingTime] = useState<string>('')
-  const [returnPolicy, setReturnPolicy] = useState<string>('')
+  const [handlingTime, setHandlingTime] = useState<string>('3')
+  const [returnPolicy, setReturnPolicy] = useState<string>('All Sales Final')
   const [shippingZones, setShippingZones] = useState([
     {
       region: 'Continental United States',
@@ -846,17 +846,26 @@ What details would be useful for a potential buyer to know?`}
       <div className="form-section" id="shipping-section">
         <h3>Shipping & Handling</h3>
 
-        <SearchableDropdown
+        <ConditionDropdown
           label="Inventory Location"
           value={inventoryLocation}
-          options={[
+          conditions={[
             {
-              value: 'storefront',
-              label: 'Seller Storefront (Default)'
+              name: 'Seller Storefront (Default)',
+              description: '383 North Indian Canyon Drive Palm Springs CA 92262'
+            },
+            {
+              name: 'Warehouse - East Coast',
+              description: '1247 Commerce Street Brooklyn NY 11222'
+            },
+            {
+              name: 'Warehouse - West Coast',
+              description: '5890 Industrial Blvd Los Angeles CA 90058'
             }
           ]}
           onChange={setInventoryLocation}
           placeholder="Select inventory location"
+          showSublineInField={true}
         />
 
         <PackageDimensions
@@ -883,17 +892,26 @@ What details would be useful for a potential buyer to know?`}
           placeholder="Select handling time"
         />
 
-        <SearchableDropdown
+        <ConditionDropdown
           label="Return Policy"
           value={returnPolicy}
-          options={[
+          conditions={[
             {
-              value: 'final',
-              label: 'All Sales Final'
+              name: 'All Sales Final',
+              description: '25% Restocking Fee | Buyer pays return shipping | All sales are final for new, customized or made to order items.'
+            },
+            {
+              name: '14-Day Returns',
+              description: 'Free returns within 14 days | Buyer pays return shipping | Item must be in original condition with tags attached.'
+            },
+            {
+              name: '30-Day Returns',
+              description: 'Free returns within 30 days | Seller covers return shipping | Full refund if item is not as described.'
             }
           ]}
           onChange={setReturnPolicy}
           placeholder="Select return policy"
+          showSublineInField={true}
         />
       </div>
 

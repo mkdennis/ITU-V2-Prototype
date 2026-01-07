@@ -13,14 +13,16 @@ interface ConditionDropdownProps {
   value?: string
   onChange?: (value: string) => void
   conditions: Condition[]
+  showSublineInField?: boolean
 }
 
-function ConditionDropdown({ 
-  label, 
-  placeholder, 
-  value, 
-  onChange, 
-  conditions = [] 
+function ConditionDropdown({
+  label,
+  placeholder,
+  value,
+  onChange,
+  conditions = [],
+  showSublineInField = false
 }: ConditionDropdownProps) {
   const [internalValue, setInternalValue] = useState<string>(value || '')
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -122,20 +124,44 @@ function ConditionDropdown({
   const displayValue = value !== undefined ? value : internalValue
   const showPlaceholder = !displayValue && !isOpen
 
+  // Get the selected condition for subline display
+  const selectedCondition = displayValue ? conditions.find(c => c.name === displayValue) : null
+
   return (
     <div className="condition-dropdown" ref={wrapperRef}>
       {label && <label className="condition-dropdown-label">{label}</label>}
       <div className="condition-dropdown-wrapper">
-        <input
-          ref={inputRef}
-          type="text"
-          className="condition-dropdown-input"
-          value={displayValue}
-          onClick={handleInputClick}
-          onKeyDown={handleKeyDown}
-          placeholder={showPlaceholder ? placeholder : ''}
-          readOnly
-        />
+        {showSublineInField ? (
+          <div
+            className={`condition-dropdown-input-display ${isOpen ? 'focused' : ''} ${!displayValue ? 'empty' : ''}`}
+            onClick={handleInputClick}
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+            role="button"
+            aria-haspopup="listbox"
+            aria-expanded={isOpen}
+          >
+            {displayValue && selectedCondition ? (
+              <>
+                <div className="condition-dropdown-input-title">{selectedCondition.name}</div>
+                <div className="condition-dropdown-input-subline">{selectedCondition.description}</div>
+              </>
+            ) : (
+              <span>{placeholder}</span>
+            )}
+          </div>
+        ) : (
+          <input
+            ref={inputRef}
+            type="text"
+            className="condition-dropdown-input"
+            value={displayValue}
+            onClick={handleInputClick}
+            onKeyDown={handleKeyDown}
+            placeholder={showPlaceholder ? placeholder : ''}
+            readOnly
+          />
+        )}
         <div className={`condition-dropdown-chevron ${isOpen ? 'open' : ''}`}>
           <img src={chevronDown} alt="" />
         </div>
