@@ -17,6 +17,8 @@ const tabs: Tab[] = [
   { id: 'item-details', label: 'Item Details', sectionId: 'item-details-section' },
   { id: 'description', label: 'Description', sectionId: 'description-section' },
   { id: 'images', label: 'Images', sectionId: 'images-section' },
+  { id: 'pricing', label: 'Pricing', sectionId: 'pricing-quantity-section' },
+  { id: 'shipping', label: 'Shipping & Handling', sectionId: 'shipping-section' },
 ]
 
 function NavigationHeader({ hideTabs = false, title = 'Create New Listing' }: NavigationHeaderProps) {
