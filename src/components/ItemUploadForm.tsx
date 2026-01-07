@@ -4,7 +4,7 @@ import NumberInput from './NumberInput'
 import TextInput from './TextInput'
 import Textarea from './Textarea'
 import ImageUpload from './ImageUpload'
-import ImageSlot from './ImageSlot'
+import UploadedImage from './UploadedImage'
 import NavigationHeader from './NavigationHeader'
 import RecommendedPriceBanner from './RecommendedPriceBanner'
 import SearchableCategoryDropdown from './SearchableCategoryDropdown'
@@ -49,6 +49,11 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [netPrice, setNetPrice] = useState<number>(0)
   const [autoOfferPrice, setAutoOfferPrice] = useState<number>(0)
+
+  // Image state
+  const [primaryImage, setPrimaryImage] = useState<string | null>(null)
+  const [additionalImages, setAdditionalImages] = useState<string[]>([])
+  const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null)
 
   // Shipping & Handling state
   const [inventoryLocation, setInventoryLocation] = useState<string>('')
@@ -139,6 +144,68 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
     if (listPrice > 0) {
       setAutoOfferPrice(listPrice * (percentage / 100))
     }
+  }
+
+  // Handle primary image upload
+  const handlePrimaryImageUpload = (files: FileList) => {
+    const file = files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPrimaryImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  // Handle additional images upload
+  const handleAdditionalImagesUpload = (files: FileList) => {
+    const fileArray = Array.from(files)
+    const newImages: string[] = []
+
+    fileArray.forEach((file) => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        newImages.push(reader.result as string)
+        if (newImages.length === fileArray.length) {
+          setAdditionalImages((prev) => [...prev, ...newImages])
+        }
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  // Handle primary image delete
+  const handlePrimaryImageDelete = () => {
+    setPrimaryImage(null)
+  }
+
+  // Handle additional image delete
+  const handleAdditionalImageDelete = (index: number) => {
+    setAdditionalImages((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  // Handle drag start for image reordering
+  const handleImageDragStart = (index: number) => {
+    setDraggedImageIndex(index)
+  }
+
+  // Handle drag over for image reordering
+  const handleImageDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
+
+  // Handle drop for image reordering
+  const handleImageDrop = (index: number) => {
+    if (draggedImageIndex === null) return
+
+    const newImages = [...additionalImages]
+    const draggedImage = newImages[draggedImageIndex]
+    newImages.splice(draggedImageIndex, 1)
+    newImages.splice(index, 0, draggedImage)
+
+    setAdditionalImages(newImages)
+    setDraggedImageIndex(null)
   }
 
   // Handle package changes
@@ -690,11 +757,20 @@ What details would be useful for a potential buyer to know?`}
               This is used as the main listing image across the site. Once you upload an image it will be automatically edited with a white background. If there are issues with the automatic processing of your image, our team can manually edit it.
             </p>
           </div>
-          <ImageUpload
-            uploadText="Upload Primary Image or Drag Image Here"
-            requirements="All images must be at least 768x768 px, less than 16MB, JPEGs only"
-            processingNote="This image will be automatically processed"
-          />
+          {primaryImage ? (
+            <UploadedImage
+              src={primaryImage}
+              alt="Primary image"
+              onDelete={handlePrimaryImageDelete}
+            />
+          ) : (
+            <ImageUpload
+              uploadText="Upload Primary Image or Drag Image Here"
+              requirements="All images must be at least 768x768 px, less than 16MB, JPEGs only"
+              processingNote="This image will be automatically processed"
+              onFilesSelected={handlePrimaryImageUpload}
+            />
+          )}
         </div>
         <div className="divider"></div>
 
@@ -706,24 +782,34 @@ What details would be useful for a potential buyer to know?`}
             </p>
           </div>
           <div className="additional-images-upload-wrapper">
-            <div className="alert-box">
-              <span className="alert-icon">ℹ️</span>
-              <span className="alert-text">Select primary image first</span>
-            </div>
+            {!primaryImage && (
+              <div className="alert-box">
+                <span className="alert-icon">ℹ️</span>
+                <span className="alert-text">Select primary image first</span>
+              </div>
+            )}
             <ImageUpload
               uploadText="Upload Additional Images or Drag Images Here"
-              disabled={true}
+              disabled={!primaryImage}
+              onFilesSelected={handleAdditionalImagesUpload}
+              multiple={true}
             />
-            <div className="image-slots-grid">
-              <ImageSlot label="Details" icon="🔍" />
-              <ImageSlot label="Various Angles" icon="🪑" />
-              <ImageSlot label="In Situation" icon="💡" />
-              <ImageSlot label="Signatures/Labels" icon="✏️" />
-              <ImageSlot />
-              <ImageSlot />
-              <ImageSlot />
-              <ImageSlot label="Up to 20 Images" icon="📤" />
-            </div>
+            {additionalImages.length > 0 && (
+              <div className="image-slots-grid">
+                {additionalImages.map((image, index) => (
+                  <UploadedImage
+                    key={index}
+                    src={image}
+                    alt={`Additional image ${index + 1}`}
+                    onDelete={() => handleAdditionalImageDelete(index)}
+                    draggable={true}
+                    onDragStart={() => handleImageDragStart(index)}
+                    onDragOver={handleImageDragOver}
+                    onDrop={() => handleImageDrop(index)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

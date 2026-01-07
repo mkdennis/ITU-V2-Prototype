@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react'
 import './ImageUpload.css'
 
 interface ImageUploadProps {
@@ -5,16 +6,73 @@ interface ImageUploadProps {
   requirements?: string
   processingNote?: string
   disabled?: boolean
+  onFilesSelected?: (files: FileList) => void
+  multiple?: boolean
 }
 
-function ImageUpload({ 
-  uploadText, 
-  requirements, 
+function ImageUpload({
+  uploadText,
+  requirements,
   processingNote,
-  disabled = false 
+  disabled = false,
+  onFilesSelected,
+  multiple = false
 }: ImageUploadProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleClick = () => {
+    if (!disabled && fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0 && onFilesSelected) {
+      onFilesSelected(e.target.files)
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!disabled) {
+      setIsDragging(true)
+    }
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    if (!disabled && e.dataTransfer.files && e.dataTransfer.files.length > 0 && onFilesSelected) {
+      onFilesSelected(e.dataTransfer.files)
+    }
+  }
+
   return (
-    <div className={`image-upload-area ${disabled ? 'disabled' : ''}`}>
+    <div
+      className={`image-upload-area ${disabled ? 'disabled' : ''} ${isDragging ? 'dragging' : ''}`}
+      onClick={handleClick}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/jpg"
+        multiple={multiple}
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+      />
       <div className="upload-icon">
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clipPath="url(#clip0_4078_447)">

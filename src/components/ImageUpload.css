@@ -17,6 +17,11 @@
   background-color: #FAFAFA;
 }
 
+.image-upload-area.dragging {
+  border-color: #436B93;
+  background-color: #F0F5F9;
+}
+
 .image-upload-area.disabled {
   background-color: #F5F5F5;
   border-color: #E0E0E0;
