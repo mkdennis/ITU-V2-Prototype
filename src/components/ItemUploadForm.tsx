@@ -36,6 +36,8 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   const [period, setPeriod] = useState<string>('')
   const [materials, setMaterials] = useState<string[]>([])
   const [condition, setCondition] = useState<string>('')
+  const [restoration, setRestoration] = useState<string[]>([])
+  const [conditionComments, setConditionComments] = useState<string>('')
   const [title, setTitle] = useState<string>('')
   const [style, setStyle] = useState<string>('')
   const [placeOfOrigin, setPlaceOfOrigin] = useState<string>('')
@@ -283,8 +285,13 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
   ]
 
   const restorationOptions = [
-    { value: 'no', label: 'No restorations or modifications have been made' },
-    { value: 'yes', label: 'Yes, restorations or modifications have been made' }
+    'Repairs',
+    'Replacements',
+    'Refinishing',
+    'Reupholstery',
+    'Reweaving',
+    'Rewiring',
+    'Additions or Alterations to Original'
   ]
 
   const weightOptions = [
@@ -640,19 +647,27 @@ function ItemUploadForm({ aiAssistEnabled = false }: ItemUploadFormProps) {
             />
           )}
         </div>
-        <div className="form-row">
-          <SearchableDropdown
-            label="Wear"
-            placeholder="Select wear"
-            options={wearOptions}
-            disabled={condition === 'New'}
-          />
-          <SearchableDropdown
-            label="Restoration Work & Modifications *"
-            placeholder="Select restoration work"
-            options={restorationOptions}
-          />
-        </div>
+        <SearchableDropdown
+          label="Wear"
+          placeholder="Select wear"
+          options={wearOptions}
+          disabled={condition === 'New'}
+        />
+        <MultiSelectDropdown
+          label="Restoration Work & Modifications *"
+          placeholder="Select restoration work"
+          options={restorationOptions}
+          value={restoration}
+          onChange={setRestoration}
+        />
+        <Textarea
+          label="Do you have additional comments about the condition of this item?"
+          placeholder="Describe any signs of wear, scratches, cracks, or other types of damage. Additionally, if any restorations been made, please describe the work here."
+          rows={4}
+          value={conditionComments}
+          onChange={(e) => setConditionComments(e.target.value)}
+          disabled={condition === 'Excellent' || condition === 'New'}
+        />
         <div className="dimensions-row">
           <NumberInput
             label="Item Width"
