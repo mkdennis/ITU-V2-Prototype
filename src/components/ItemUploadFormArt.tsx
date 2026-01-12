@@ -744,8 +744,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
                       border: 'none',
                       cursor: 'pointer',
                       fontSize: '20px',
-                      padding: '8px',
-                      marginBottom: '12px'
+                      padding: '8px'
                     }}
                   >
                     ×
