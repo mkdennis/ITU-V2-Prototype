@@ -31,12 +31,26 @@ function App() {
   }
 
   const handleAIAssistContinue = async (textContent: string, usePrefillDescription: boolean) => {
+    console.log('=== AI ASSIST FLOW STARTED ===')
+    console.log('Text content length:', textContent.length)
+    console.log('Text preview:', textContent.slice(0, 200) + '...')
+    console.log('Use prefill description:', usePrefillDescription)
+
     setAppState('ai-loading')
     setIsProcessing(true)
 
     try {
+      console.log('Calling parseListingWithAI...')
+      const startTime = performance.now()
+
       // Parse the listing text with AI
       const result = await parseListingWithAI(textContent, usePrefillDescription)
+
+      const endTime = performance.now()
+      console.log(`Parsing completed in ${(endTime - startTime).toFixed(0)}ms`)
+      console.log('=== PARSED SUGGESTIONS ===')
+      console.log(JSON.stringify(result.suggestions, null, 2))
+
       setAiSuggestions(result.suggestions)
     } catch (error) {
       console.error('Failed to parse listing:', error)
@@ -44,6 +58,7 @@ function App() {
       setAiSuggestions({})
     } finally {
       setIsProcessing(false)
+      console.log('=== AI ASSIST FLOW COMPLETE ===')
     }
   }
 

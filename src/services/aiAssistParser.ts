@@ -139,11 +139,14 @@ function parseAndValidateResponse(
     }
 
     const parsed = JSON.parse(jsonStr.trim())
+    console.log('[AI Parser] Parsed JSON from Claude:', parsed)
 
     // Validate and match each field
+    console.log('[AI Parser] Starting field validation...')
 
     // Category - prioritize AI response, validate against our options
     if (parsed.category?.l1 && parsed.category?.l2) {
+      console.log('[AI Parser] Category from Claude:', parsed.category)
       const matchedCat = findMatchingCategory(`${parsed.category.l1} ${parsed.category.l2}`)
       if (matchedCat) {
         suggestions.category = matchedCat
@@ -396,12 +399,15 @@ export async function parseListingWithAI(
   listingText: string,
   usePrefillDescription: boolean = false
 ): Promise<AIParseResult> {
+  console.log('[AI Parser] Starting parseListingWithAI')
   const apiKey = getApiKey()
 
   // If no API key, fall back to regex-based extraction
   if (!apiKey) {
-    console.warn('No Anthropic API key found. Using fallback extraction.')
+    console.warn('[AI Parser] No Anthropic API key found. Using FALLBACK regex extraction.')
+    console.log('[AI Parser] Running extractSuggestionsFromText...')
     const suggestions = extractSuggestionsFromText(listingText)
+    console.log('[AI Parser] Fallback extraction results:', suggestions)
 
     // If user wants to prefill description, use original text
     if (usePrefillDescription) {
@@ -414,7 +420,11 @@ export async function parseListingWithAI(
     }
   }
 
+  console.log('[AI Parser] API key found, making Claude API request...')
+  console.log('[AI Parser] Model: claude-sonnet-4-20250514')
+
   try {
+    console.log('[AI Parser] Sending request to:', ANTHROPIC_API_URL)
     const response = await fetch(ANTHROPIC_API_URL, {
       method: 'POST',
       headers: {
@@ -436,16 +446,28 @@ export async function parseListingWithAI(
       }),
     })
 
+    console.log('[AI Parser] Response status:', response.status)
+
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('API request failed:', response.status, errorText)
+      console.error('[AI Parser] API request failed:', response.status, errorText)
       throw new Error(`API request failed: ${response.status}`)
     }
 
     const data = await response.json()
     const rawResponse = data.content?.[0]?.text || ''
 
+    console.log('[AI Parser] === RAW CLAUDE RESPONSE ===')
+    console.log(rawResponse)
+    console.log('[AI Parser] === END RAW RESPONSE ===')
+
+    console.log('[AI Parser] Parsing and validating response...')
     const suggestions = parseAndValidateResponse(rawResponse, listingText)
+
+    console.log('[AI Parser] === VALIDATED SUGGESTIONS ===')
+    Object.entries(suggestions).forEach(([key, value]) => {
+      console.log(`[AI Parser]   ${key}:`, value)
+    })
 
     // If user wants to prefill description and AI didn't generate one
     if (usePrefillDescription && !suggestions.description) {
@@ -458,8 +480,10 @@ export async function parseListingWithAI(
       rawResponse,
     }
   } catch (error) {
-    console.error('AI parsing failed, using fallback:', error)
+    console.error('[AI Parser] AI parsing failed, using fallback:', error)
+    console.log('[AI Parser] Running fallback extractSuggestionsFromText...')
     const suggestions = extractSuggestionsFromText(listingText)
+    console.log('[AI Parser] Fallback results:', suggestions)
 
     if (usePrefillDescription) {
       suggestions.description = listingText
