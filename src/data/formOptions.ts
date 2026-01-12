@@ -48,6 +48,7 @@ export const categories: Category[] = [
   // Tables
   { l1: 'Tables', l2: 'Coffee Tables', l3: ['Round Coffee Tables', 'Square Coffee Tables', 'Oval Coffee Tables'] },
   { l1: 'Tables', l2: 'Console Tables', l3: ['Entryway Consoles', 'Sofa Tables', 'Hallway Tables'] },
+  { l1: 'Tables', l2: 'Desks', l3: ['Writing Desks', 'Executive Desks', 'Partners Desks'] },
   { l1: 'Tables', l2: 'Dining Tables', l3: ['Rectangular', 'Round', 'Extendable'] },
   { l1: 'Tables', l2: 'Side Tables', l3: ['End Tables', 'Accent Tables', 'Nesting Tables'] },
   { l1: 'Tables', l2: 'Vanities', l3: ['Makeup Vanities', 'Dressing Tables', 'Bathroom Vanities'] },
@@ -76,7 +77,6 @@ export const categories: Category[] = [
   { l1: 'Case Pieces and Storage Cabinets', l2: 'Cabinets', l3: ['Display Cabinets', 'Storage Cabinets', 'Bar Cabinets'] },
   { l1: 'Case Pieces and Storage Cabinets', l2: 'Chests and Trunks', l3: ['Blanket Chests', 'Campaign Chests', 'Steamer Trunks'] },
   { l1: 'Case Pieces and Storage Cabinets', l2: 'Commodes', l3: ['French Commodes', 'Bombe Commodes', 'Serpentine Commodes'] },
-  { l1: 'Case Pieces and Storage Cabinets', l2: 'Desks', l3: ['Writing Desks', 'Executive Desks', 'Partners Desks'] },
   { l1: 'Case Pieces and Storage Cabinets', l2: 'Dressers and Chests of Drawers', l3: ['Tall Chests', 'Bachelor Chests', 'Lingerie Chests'] },
   { l1: 'Case Pieces and Storage Cabinets', l2: 'Highboys and Lowboys', l3: ['Queen Anne Highboys', 'Chippendale Highboys', 'Lowboys'] },
   { l1: 'Case Pieces and Storage Cabinets', l2: 'Secretaries and Desks', l3: ['Secretary Bookcases', 'Slant Front Desks', 'Fall Front Desks'] },

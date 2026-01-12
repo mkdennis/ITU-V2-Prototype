@@ -158,8 +158,8 @@ export function findMatchingCategory(input: string): Category | null {
     'console table': { l1: 'Tables', l2: 'Console Tables' },
     'vanity': { l1: 'Tables', l2: 'Vanities' },
     'dressing table': { l1: 'Tables', l2: 'Vanities' },
+    'desk': { l1: 'Tables', l2: 'Desks' },
     // Case Pieces and Storage
-    'desk': { l1: 'Case Pieces and Storage Cabinets', l2: 'Desks' },
     'cabinet': { l1: 'Case Pieces and Storage Cabinets', l2: 'Cabinets' },
     'bookcase': { l1: 'Case Pieces and Storage Cabinets', l2: 'Bookcases' },
     'bookshelf': { l1: 'Case Pieces and Storage Cabinets', l2: 'Bookcases' },
