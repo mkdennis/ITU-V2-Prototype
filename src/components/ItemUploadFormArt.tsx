@@ -261,8 +261,11 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
   }
 
   const handleDeleteSizeEdition = (index: number) => {
-    if (sizesAndEditions.length > 1) {
-      const newSizesAndEditions = sizesAndEditions.filter((_, i) => i !== index)
+    const newSizesAndEditions = sizesAndEditions.filter((_, i) => i !== index)
+    // If all items are deleted, reset to one empty item
+    if (newSizesAndEditions.length === 0) {
+      setSizesAndEditions([{ size: '', price: 0 }])
+    } else {
       setSizesAndEditions(newSizesAndEditions)
     }
   }
@@ -735,22 +738,20 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
                     onChange={(value) => handleSizeEditionChange(index, 'price', value)}
                   />
                 </div>
-                {sizesAndEditions.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteSizeEdition(index)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '20px',
-                      padding: '8px',
-                      marginBottom: '4px'
-                    }}
-                  >
-                    ×
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => handleDeleteSizeEdition(index)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '20px',
+                    padding: '8px',
+                    marginBottom: '4px'
+                  }}
+                >
+                  ×
+                </button>
               </div>
             ))}
             <button
