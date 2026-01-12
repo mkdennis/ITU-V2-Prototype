@@ -1,0 +1,34 @@
+.voice-to-text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #436B93;
+  background-color: white;
+  border: 1px solid #436B93;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  margin-top: 12px;
+}
+
+.voice-to-text-button:hover:not(.disabled) {
+  background-color: #436B93;
+  color: white;
+}
+
+.voice-to-text-button.disabled {
+  color: #CCCCCC;
+  border-color: #CCCCCC;
+  cursor: not-allowed;
+}
+
+.voice-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
