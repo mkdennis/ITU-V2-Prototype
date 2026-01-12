@@ -518,20 +518,22 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false, aiSuggestions = {} }
       <div className="app">
         <div className="form-section" id="basic-information-section">
           <h3>Basic Information</h3>
-        <div className="category-field-wrapper">
-          <SearchableCategoryDropdown
-            label="Category *"
-            placeholder="Select a category"
-            categories={categories}
-            value={selectedCategory}
-            onChange={setSelectedCategory}
-          />
-          <button
-            className="view-all-categories-button"
-            onClick={() => setCategoryModalOpen(true)}
-          >
-            View All Categories
-          </button>
+        <div>
+          <div className="category-field-wrapper">
+            <SearchableCategoryDropdown
+              label="Category *"
+              placeholder="Select a category"
+              categories={categories}
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+            />
+            <button
+              className="view-all-categories-button"
+              onClick={() => setCategoryModalOpen(true)}
+            >
+              View All Categories
+            </button>
+          </div>
           {aiAssistEnabled && aiSuggestions.category && !selectedCategory && (
             <AISuggestion
               suggestion={`${aiSuggestions.category.l1} > ${aiSuggestions.category.l2}`}
@@ -673,36 +675,38 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false, aiSuggestions = {} }
           onChange={(e) => setConditionComments(e.target.value)}
           disabled={condition === 'Excellent' || condition === 'New'}
         />
-        <div className="dimensions-row">
-          <NumberInput
-            label="Item Width"
-            suffix={aiSuggestions.dimensionUnit || 'in'}
-            value={itemWidth}
-            onChange={setItemWidth}
-          />
-          <NumberInput
-            label="Item Depth"
-            suffix={aiSuggestions.dimensionUnit || 'in'}
-            value={itemDepth}
-            onChange={setItemDepth}
-          />
-          <NumberInput
-            label="Item Height"
-            suffix={aiSuggestions.dimensionUnit || 'in'}
-            value={itemHeight}
-            onChange={setItemHeight}
-          />
+        <div className="dimensions-section">
+          <div className="dimensions-row">
+            <NumberInput
+              label="Item Width"
+              suffix={aiSuggestions.dimensionUnit || 'in'}
+              value={itemWidth}
+              onChange={setItemWidth}
+            />
+            <NumberInput
+              label="Item Depth"
+              suffix={aiSuggestions.dimensionUnit || 'in'}
+              value={itemDepth}
+              onChange={setItemDepth}
+            />
+            <NumberInput
+              label="Item Height"
+              suffix={aiSuggestions.dimensionUnit || 'in'}
+              value={itemHeight}
+              onChange={setItemHeight}
+            />
+          </div>
+          {aiAssistEnabled && aiSuggestions.dimensions && (itemWidth === 0 && itemDepth === 0 && itemHeight === 0) && (
+            <AISuggestion
+              suggestion={`${aiSuggestions.dimensions.width || '?'} x ${aiSuggestions.dimensions.depth || '?'} x ${aiSuggestions.dimensions.height || '?'} ${aiSuggestions.dimensionUnit || 'in'}`}
+              onApply={() => {
+                if (aiSuggestions.dimensions?.width) setItemWidth(aiSuggestions.dimensions.width)
+                if (aiSuggestions.dimensions?.depth) setItemDepth(aiSuggestions.dimensions.depth)
+                if (aiSuggestions.dimensions?.height) setItemHeight(aiSuggestions.dimensions.height)
+              }}
+            />
+          )}
         </div>
-        {aiAssistEnabled && aiSuggestions.dimensions && (itemWidth === 0 && itemDepth === 0 && itemHeight === 0) && (
-          <AISuggestion
-            suggestion={`${aiSuggestions.dimensions.width || '?'} x ${aiSuggestions.dimensions.depth || '?'} x ${aiSuggestions.dimensions.height || '?'} ${aiSuggestions.dimensionUnit || 'in'}`}
-            onApply={() => {
-              if (aiSuggestions.dimensions?.width) setItemWidth(aiSuggestions.dimensions.width)
-              if (aiSuggestions.dimensions?.depth) setItemDepth(aiSuggestions.dimensions.depth)
-              if (aiSuggestions.dimensions?.height) setItemHeight(aiSuggestions.dimensions.height)
-            }}
-          />
-        )}
         <div>
           <SearchableDropdown
             label="Weight"
