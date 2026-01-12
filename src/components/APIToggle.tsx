@@ -33,7 +33,7 @@ function APIToggle({ mode, onModeChange }: APIToggleProps) {
             className={`api-toggle-option ${mode === 'regex' ? 'active' : ''}`}
             onClick={() => onModeChange('regex')}
           >
-            Regex Backup
+            Simple AI
           </button>
         </div>
       </div>

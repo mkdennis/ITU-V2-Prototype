@@ -33,7 +33,7 @@ const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages'
 
 // AI Mode - 'claude' uses API, 'regex' uses fallback extraction
 type AIMode = 'claude' | 'regex'
-let currentAIMode: AIMode = 'claude'
+let currentAIMode: AIMode = 'regex'
 
 /**
  * Set the AI mode globally

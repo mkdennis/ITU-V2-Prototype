@@ -18,7 +18,7 @@ function App() {
   const [aiSuggestions, setAiSuggestions] = useState<AISuggestions>({})
   const [isProcessing, setIsProcessing] = useState(false)
   const [selectedVertical, setSelectedVertical] = useState<Vertical>('furniture')
-  const [aiMode, setAiModeState] = useState<AIMode>('claude')
+  const [aiMode, setAiModeState] = useState<AIMode>('regex')
 
   const handleAIModeChange = (mode: AIMode) => {
     setAiModeState(mode)
