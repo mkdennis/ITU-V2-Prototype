@@ -12,7 +12,6 @@ import SearchableCategoryDropdown from './SearchableCategoryDropdown'
 import CategorySelectionModal from './CategorySelectionModal'
 import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
-import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
@@ -35,7 +34,6 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
   const [period, setPeriod] = useState<string>('')
   const [medium, setMedium] = useState<string>('')
   const [condition, setCondition] = useState<string>('')
-  const [restoration, setRestoration] = useState<string[]>([])
   const [conditionComments, setConditionComments] = useState<string>('')
   const [title, setTitle] = useState<string>('')
   const [attribution, setAttribution] = useState<string>('')
@@ -45,6 +43,10 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
   const [framingOptionsAvailable, setFramingOptionsAvailable] = useState<boolean>(false)
   const [style, setStyle] = useState<string>('')
   const [unlimitedQuantity, setUnlimitedQuantity] = useState<boolean>(false)
+  const [showSizesAndEditions, setShowSizesAndEditions] = useState<boolean>(false)
+  const [sizesAndEditions, setSizesAndEditions] = useState<Array<{ size: string; price: number }>>([
+    { size: '', price: 0 }
+  ])
   const [listPrice, setListPrice] = useState<number>(0)
   const [negotiable, setNegotiable] = useState<boolean>(false)
   const [netPriceDiscount, setNetPriceDiscount] = useState<number>(10)
@@ -247,6 +249,24 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
     )
   }
 
+  // Handle sizes and editions changes
+  const handleSizeEditionChange = (index: number, field: 'size' | 'price', value: string | number) => {
+    const newSizesAndEditions = [...sizesAndEditions]
+    newSizesAndEditions[index][field] = value as never
+    setSizesAndEditions(newSizesAndEditions)
+  }
+
+  const handleAddSizeEdition = () => {
+    setSizesAndEditions([...sizesAndEditions, { size: '', price: 0 }])
+  }
+
+  const handleDeleteSizeEdition = (index: number) => {
+    if (sizesAndEditions.length > 1) {
+      const newSizesAndEditions = sizesAndEditions.filter((_, i) => i !== index)
+      setSizesAndEditions(newSizesAndEditions)
+    }
+  }
+
   // Dummy AI suggestions
   const aiSuggestions: AISuggestions = aiAssistEnabled ? {
     title: 'Mid-Century Modern Walnut Coffee Table',
@@ -284,23 +304,6 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
     { value: 'tempera', label: 'Tempera' },
     { value: 'watercolor', label: 'Watercolor' },
     { value: 'wood', label: 'Wood' }
-  ]
-
-  const wearOptions = [
-    { value: 'consistent', label: 'Wear consistent with age and use' },
-    { value: 'minor-losses', label: 'Minor Losses' },
-    { value: 'minor-structural', label: 'Minor Structural Damages' },
-    { value: 'minor-fading', label: 'Minor Fading' }
-  ]
-
-  const restorationOptions = [
-    'Repairs',
-    'Replacements',
-    'Refinishing',
-    'Reupholstery',
-    'Reweaving',
-    'Rewiring',
-    'Additions or Alterations to Original'
   ]
 
   const weightOptions = [
@@ -368,23 +371,66 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
   ]
 
   const categories = [
-    { l1: 'Paintings', l2: 'Abstract', l3: ['Expressionism', 'Geometric', 'Color Field'] },
-    { l1: 'Paintings', l2: 'Figurative', l3: ['Portraits', 'Nudes', 'Narrative'] },
-    { l1: 'Paintings', l2: 'Landscape', l3: ['Seascape', 'Cityscape', 'Nature'] },
-    { l1: 'Paintings', l2: 'Still Life', l3: ['Floral', 'Food', 'Objects'] },
-    { l1: 'Photography', l2: 'Fine Art', l3: ['Black & White', 'Color', 'Digital'] },
-    { l1: 'Photography', l2: 'Documentary', l3: ['Street', 'Photojournalism', 'Portrait'] },
-    { l1: 'Photography', l2: 'Fashion', l3: ['Editorial', 'Commercial', 'Beauty'] },
-    { l1: 'Prints', l2: 'Etchings', l3: ['Drypoint', 'Aquatint', 'Line Etching'] },
-    { l1: 'Prints', l2: 'Lithographs', l3: ['Stone', 'Offset', 'Transfer'] },
-    { l1: 'Prints', l2: 'Screenprints', l3: ['Serigraph', 'Silkscreen', 'Stencil'] },
-    { l1: 'Prints', l2: 'Woodcuts', l3: ['Relief', 'Linocut', 'Wood Engraving'] },
-    { l1: 'Sculpture', l2: 'Abstract', l3: ['Geometric', 'Organic', 'Kinetic'] },
-    { l1: 'Sculpture', l2: 'Figurative', l3: ['Bust', 'Full Figure', 'Torso'] },
-    { l1: 'Sculpture', l2: 'Wall Mounted', l3: ['Relief', 'Hanging', 'Assemblage'] },
-    { l1: 'Works on Paper', l2: 'Drawings', l3: ['Charcoal', 'Pencil', 'Ink'] },
-    { l1: 'Works on Paper', l2: 'Watercolors', l3: ['Gouache', 'Tempera', 'Mixed Media'] },
-    { l1: 'Works on Paper', l2: 'Collage', l3: ['Paper', 'Mixed Media', 'Assemblage'] }
+    // Drawings and Watercolor Paintings (8)
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Abstract Drawings', l3: ['Expressionism', 'Geometric', 'Gestural'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Figurative Drawings', l3: ['Portraits', 'Nudes', 'Narrative'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Landscape Drawings', l3: ['Seascape', 'Cityscape', 'Nature'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Still-life Drawings', l3: ['Floral', 'Food', 'Objects'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Abstract Watercolors', l3: ['Expressionism', 'Color Studies', 'Mixed Media'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Figurative Watercolors', l3: ['Portraits', 'Figures', 'Narrative'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Landscape Watercolors', l3: ['Seascape', 'Cityscape', 'Nature'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Still-life Watercolors', l3: ['Floral', 'Food', 'Objects'] },
+
+    // Mixed Media (5)
+    { l1: 'Mixed Media', l2: 'Collage', l3: ['Paper', 'Fabric', 'Found Objects'] },
+    { l1: 'Mixed Media', l2: 'Assemblage', l3: ['Wall Mounted', 'Freestanding', 'Relief'] },
+    { l1: 'Mixed Media', l2: 'Abstract Mixed Media', l3: ['Expressionism', 'Geometric', 'Textural'] },
+    { l1: 'Mixed Media', l2: 'Figurative Mixed Media', l3: ['Portraits', 'Figures', 'Narrative'] },
+    { l1: 'Mixed Media', l2: 'Installation Art', l3: ['Participatory', 'Site-specific', 'Multimedia'] },
+
+    // More Art (5)
+    { l1: 'More Art', l2: 'Digital Art', l3: ['NFTs', 'Prints', 'Generative'] },
+    { l1: 'More Art', l2: 'Street Art', l3: ['Graffiti', 'Stencils', 'Murals'] },
+    { l1: 'More Art', l2: 'Textile Art', l3: ['Tapestries', 'Fiber Art', 'Quilts'] },
+    { l1: 'More Art', l2: 'Ceramics', l3: ['Vessels', 'Sculptural', 'Functional'] },
+    { l1: 'More Art', l2: 'Glass Art', l3: ['Blown Glass', 'Stained Glass', 'Sculptural'] },
+
+    // Paintings (8)
+    { l1: 'Paintings', l2: 'Abstract Paintings', l3: ['Expressionism', 'Geometric', 'Color Field'] },
+    { l1: 'Paintings', l2: 'Animal Paintings', l3: ['Wildlife', 'Domestic', 'Marine Life'] },
+    { l1: 'Paintings', l2: 'Figurative Paintings', l3: ['Portraits', 'Nudes', 'Narrative'] },
+    { l1: 'Paintings', l2: 'Interior Paintings', l3: ['Domestic Scenes', 'Architectural', 'Still Life Settings'] },
+    { l1: 'Paintings', l2: 'Landscape Paintings', l3: ['Seascape', 'Cityscape', 'Nature'] },
+    { l1: 'Paintings', l2: 'Nude Paintings', l3: ['Classical', 'Contemporary', 'Abstract'] },
+    { l1: 'Paintings', l2: 'Portrait Paintings', l3: ['Single Figure', 'Group Portraits', 'Self-portraits'] },
+    { l1: 'Paintings', l2: 'Still-life Paintings', l3: ['Floral', 'Food', 'Objects'] },
+
+    // Photography (8)
+    { l1: 'Photography', l2: 'Abstract Photography', l3: ['Experimental', 'Color Studies', 'Light and Shadow'] },
+    { l1: 'Photography', l2: 'Documentary Photography', l3: ['Street', 'Photojournalism', 'Social Commentary'] },
+    { l1: 'Photography', l2: 'Fashion Photography', l3: ['Editorial', 'Commercial', 'Beauty'] },
+    { l1: 'Photography', l2: 'Fine Art Photography', l3: ['Black & White', 'Color', 'Digital'] },
+    { l1: 'Photography', l2: 'Landscape Photography', l3: ['Nature', 'Urban', 'Aerial'] },
+    { l1: 'Photography', l2: 'Portrait Photography', l3: ['Studio', 'Environmental', 'Candid'] },
+    { l1: 'Photography', l2: 'Still-life Photography', l3: ['Product', 'Food', 'Objects'] },
+    { l1: 'Photography', l2: 'Wildlife Photography', l3: ['Animals', 'Birds', 'Marine Life'] },
+
+    // Prints and Multiples (9)
+    { l1: 'Prints and Multiples', l2: 'Etchings', l3: ['Drypoint', 'Aquatint', 'Line Etching'] },
+    { l1: 'Prints and Multiples', l2: 'Giclée Prints', l3: ['Fine Art', 'Reproduction', 'Limited Edition'] },
+    { l1: 'Prints and Multiples', l2: 'Letterpress', l3: ['Posters', 'Typography', 'Illustrations'] },
+    { l1: 'Prints and Multiples', l2: 'Linocuts', l3: ['Relief', 'Reduction', 'Multi-block'] },
+    { l1: 'Prints and Multiples', l2: 'Lithographs', l3: ['Stone', 'Offset', 'Transfer'] },
+    { l1: 'Prints and Multiples', l2: 'Monotypes', l3: ['Abstract', 'Figurative', 'Landscape'] },
+    { l1: 'Prints and Multiples', l2: 'Screenprints', l3: ['Serigraph', 'Silkscreen', 'Stencil'] },
+    { l1: 'Prints and Multiples', l2: 'Woodcuts', l3: ['Relief', 'Wood Engraving', 'Japanese Woodblock'] },
+    { l1: 'Prints and Multiples', l2: 'Other Prints', l3: ['Posters', 'Reproductions', 'Limited Editions'] },
+
+    // Sculptures (4)
+    { l1: 'Sculptures', l2: 'Abstract Sculptures', l3: ['Geometric', 'Organic', 'Kinetic'] },
+    { l1: 'Sculptures', l2: 'Figurative Sculptures', l3: ['Bust', 'Full Figure', 'Torso'] },
+    { l1: 'Sculptures', l2: 'Outdoor Sculptures', l3: ['Garden', 'Monumental', 'Public Art'] },
+    { l1: 'Sculptures', l2: 'Wall-mounted Sculptures', l3: ['Relief', 'Hanging', 'Assemblage'] }
   ]
 
   const conditions = [
@@ -519,22 +565,26 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
             />
           )}
         </div>
-        <div className="form-row">
-          <SearchableDropdown
-            label="Artist"
-            placeholder="Select an attribution"
-            options={attributionOptions}
-            value={attribution}
-            onChange={setAttribution}
-            disabled={artistUnknown}
-          />
-          <SearchableDropdown
-            placeholder="Search for artist"
-            options={artistOptions}
-            value={artist}
-            onChange={setArtist}
-            disabled={artistUnknown}
-          />
+        <div className="form-row" style={{ alignItems: 'flex-end' }}>
+          <div style={{ flex: '0 0 35%' }}>
+            <SearchableDropdown
+              label="Artist"
+              placeholder="Select an attribution"
+              options={attributionOptions}
+              value={attribution}
+              onChange={setAttribution}
+              disabled={artistUnknown}
+            />
+          </div>
+          <div style={{ flex: '1' }}>
+            <SearchableDropdown
+              placeholder="Search for artist"
+              options={artistOptions}
+              value={artist}
+              onChange={setArtist}
+              disabled={artistUnknown}
+            />
+          </div>
         </div>
         <label className="checkbox-label">
           <input
@@ -583,7 +633,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
         />
         <div>
           <p className="optional-fields-label" style={{ marginTop: '16px', marginBottom: '8px' }}>Framing</p>
-          <label className="checkbox-label">
+          <label className="checkbox-label" style={{ marginBottom: '12px' }}>
             <input
               type="checkbox"
               className="checkbox-input"
@@ -617,19 +667,6 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
             />
           )}
         </div>
-        <SearchableDropdown
-          label="Wear"
-          placeholder="Select wear"
-          options={wearOptions}
-          disabled={condition === 'New'}
-        />
-        <MultiSelectDropdown
-          label="Restoration Work & Modifications *"
-          placeholder="Select restoration work"
-          options={restorationOptions}
-          value={restoration}
-          onChange={setRestoration}
-        />
         <Textarea
           label="Do you have additional comments about the condition of this item?"
           placeholder="Describe any signs of wear, scratches, cracks, or other types of damage. Additionally, if any restorations been made, please describe the work here."
@@ -667,6 +704,63 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
           value={style}
           onChange={setStyle}
         />
+        <label className="checkbox-label" style={{ marginTop: '16px' }}>
+          <input
+            type="checkbox"
+            className="checkbox-input"
+            checked={showSizesAndEditions}
+            onChange={(e) => setShowSizesAndEditions(e.target.checked)}
+          />
+          <span>Add More Sizes and Editions</span>
+        </label>
+        {showSizesAndEditions && (
+          <div style={{ marginTop: '4px' }}>
+            {sizesAndEditions.map((item, index) => (
+              <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', marginBottom: '12px' }}>
+                <div style={{ flex: '1' }}>
+                  <TextInput
+                    label="Size and Edition"
+                    placeholder="e.g. 16 x 20, Edition of 50"
+                    value={item.size}
+                    onChange={(value) => handleSizeEditionChange(index, 'size', value)}
+                  />
+                </div>
+                <div style={{ flex: '1' }}>
+                  <NumberInput
+                    label="Price"
+                    placeholder="Enter amount"
+                    prefix="$"
+                    suffix="USD"
+                    value={item.price}
+                    onChange={(value) => handleSizeEditionChange(index, 'price', value)}
+                  />
+                </div>
+                {sizesAndEditions.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteSizeEdition(index)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: '20px',
+                      padding: '8px'
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              className="link-button"
+              onClick={handleAddSizeEdition}
+            >
+              Add Size and Edition
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="form-section" id="description-section">
