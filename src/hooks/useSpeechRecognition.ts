@@ -7,9 +7,8 @@ interface UseSpeechRecognitionReturn {
   transcript: string
   interimTranscript: string
   startListening: () => void
-  stopListening: () => void
+  stopListening: () => Promise<string>
   resetTranscript: () => void
-  getCurrentTranscript: () => string
   browserSupportError: string | null
 }
 
@@ -21,12 +20,12 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
   const [browserSupportError, setBrowserSupportError] = useState<string | null>(null)
 
   const recognitionRef = useRef<SpeechRecognition | null>(null)
-  // Refs to track latest values for use in callbacks (avoids stale closures)
   const transcriptRef = useRef('')
   const interimTranscriptRef = useRef('')
+  const isListeningRef = useRef(false)
+  const stopResolverRef = useRef<((text: string) => void) | null>(null)
 
   useEffect(() => {
-    // Check for browser support
     const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition
 
     if (!SpeechRecognitionAPI) {
@@ -54,11 +53,9 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
       }
 
       if (finalTranscript) {
-        setTranscript((prev) => {
-          const newValue = prev + finalTranscript
-          transcriptRef.current = newValue
-          return newValue
-        })
+        const newValue = transcriptRef.current + finalTranscript
+        transcriptRef.current = newValue
+        setTranscript(newValue)
       }
       interimTranscriptRef.current = interimText
       setInterimTranscript(interimText)
@@ -70,18 +67,27 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
       if (event.error === 'not-allowed') {
         setBrowserSupportError('Microphone access was denied. Please allow microphone access and try again.')
       } else if (event.error === 'no-speech') {
-        // No speech detected - this is not a critical error
+        // No speech detected - not a critical error
       } else if (event.error === 'audio-capture') {
         setBrowserSupportError('No microphone was found. Please ensure a microphone is connected.')
       } else if (event.error !== 'aborted') {
         setBrowserSupportError(`Speech recognition error: ${event.error}`)
       }
 
+      isListeningRef.current = false
       setIsListening(false)
     }
 
     recognition.onend = () => {
+      isListeningRef.current = false
       setIsListening(false)
+
+      // Resolve the stop promise with final transcript
+      if (stopResolverRef.current) {
+        const finalText = transcriptRef.current + interimTranscriptRef.current
+        stopResolverRef.current(finalText)
+        stopResolverRef.current = null
+      }
     }
 
     recognitionRef.current = recognition
@@ -94,39 +100,41 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
   }, [])
 
   const startListening = useCallback(() => {
-    if (recognitionRef.current && !isListening) {
-      setTranscript('')
-      setInterimTranscript('')
+    if (recognitionRef.current && !isListeningRef.current) {
       transcriptRef.current = ''
       interimTranscriptRef.current = ''
+      setTranscript('')
+      setInterimTranscript('')
       setBrowserSupportError(null)
       try {
         recognitionRef.current.start()
+        isListeningRef.current = true
         setIsListening(true)
       } catch (error) {
         console.error('Failed to start speech recognition:', error)
         setBrowserSupportError('Failed to start speech recognition. Please try again.')
       }
     }
-  }, [isListening])
-
-  const stopListening = useCallback(() => {
-    if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop()
-      setIsListening(false)
-    }
-  }, [isListening])
-
-  const resetTranscript = useCallback(() => {
-    setTranscript('')
-    setInterimTranscript('')
-    transcriptRef.current = ''
-    interimTranscriptRef.current = ''
   }, [])
 
-  // Get current transcript values (uses refs to avoid stale closures)
-  const getCurrentTranscript = useCallback(() => {
-    return transcriptRef.current + interimTranscriptRef.current
+  const stopListening = useCallback((): Promise<string> => {
+    return new Promise((resolve) => {
+      if (recognitionRef.current && isListeningRef.current) {
+        // Store resolver to be called when onend fires
+        stopResolverRef.current = resolve
+        recognitionRef.current.stop()
+      } else {
+        // Not listening, resolve with current transcript immediately
+        resolve(transcriptRef.current + interimTranscriptRef.current)
+      }
+    })
+  }, [])
+
+  const resetTranscript = useCallback(() => {
+    transcriptRef.current = ''
+    interimTranscriptRef.current = ''
+    setTranscript('')
+    setInterimTranscript('')
   }, [])
 
   return {
@@ -137,7 +145,6 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
     startListening,
     stopListening,
     resetTranscript,
-    getCurrentTranscript,
     browserSupportError
   }
 }

@@ -32,7 +32,6 @@ function VoiceRecordingModal({
     startListening,
     stopListening,
     resetTranscript,
-    getCurrentTranscript,
     browserSupportError
   } = useSpeechRecognition()
 
@@ -75,12 +74,11 @@ function VoiceRecordingModal({
 
   // Handle stopping recording
   const handleStopRecording = useCallback(async () => {
-    stopListening()
-    cleanupAudio()
     setRecordingState('processing')
+    cleanupAudio()
 
-    // Use getCurrentTranscript to get latest values (avoids stale closure)
-    const textToClean = getCurrentTranscript()
+    // Wait for speech recognition to fully stop and get final transcript
+    const textToClean = await stopListening()
 
     if (!textToClean.trim()) {
       setError('No speech was detected. Please try again.')
@@ -98,7 +96,7 @@ function VoiceRecordingModal({
       setError('Failed to process transcription. Please try again.')
       setRecordingState('error')
     }
-  }, [stopListening, cleanupAudio, getCurrentTranscript, onTranscriptionComplete, resetTranscript])
+  }, [stopListening, cleanupAudio, onTranscriptionComplete, resetTranscript])
 
   // Handle modal close with cleanup
   const handleClose = useCallback(() => {
