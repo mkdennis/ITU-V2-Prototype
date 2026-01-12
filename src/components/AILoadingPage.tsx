@@ -1,19 +1,30 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './AILoadingPage.css'
 import NavigationHeader from './NavigationHeader'
 
 interface AILoadingPageProps {
   onComplete: () => void
+  isProcessing?: boolean
 }
 
-function AILoadingPage({ onComplete }: AILoadingPageProps) {
+function AILoadingPage({ onComplete, isProcessing = false }: AILoadingPageProps) {
+  const [minTimePassed, setMinTimePassed] = useState(false)
+
+  // Ensure minimum display time for better UX
   useEffect(() => {
     const timer = setTimeout(() => {
-      onComplete()
-    }, 3000)
+      setMinTimePassed(true)
+    }, 2000) // Minimum 2 seconds display
 
     return () => clearTimeout(timer)
-  }, [onComplete])
+  }, [])
+
+  // Transition when both min time passed and processing complete
+  useEffect(() => {
+    if (minTimePassed && !isProcessing) {
+      onComplete()
+    }
+  }, [minTimePassed, isProcessing, onComplete])
 
   return (
     <>
@@ -27,7 +38,7 @@ function AILoadingPage({ onComplete }: AILoadingPageProps) {
           </div>
           <h3 className="loading-title">Analyzing Your Item</h3>
           <p className="loading-description">
-            Our AI is reviewing your photos and information to generate smart suggestions...
+            Our AI is reviewing your information to generate smart suggestions...
           </p>
         </div>
       </div>

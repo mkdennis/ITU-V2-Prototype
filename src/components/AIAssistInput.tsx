@@ -6,7 +6,7 @@ import UploadedImage from './UploadedImage'
 import Textarea from './Textarea'
 
 interface AIAssistInputProps {
-  onContinue: () => void
+  onContinue: (textContent: string, usePrefillDescription: boolean) => void
 }
 
 function AIAssistInput({ onContinue }: AIAssistInputProps) {
@@ -142,7 +142,7 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
 
           <button
             className={`continue-button ${isTextFilled ? '' : 'disabled'}`}
-            onClick={onContinue}
+            onClick={() => onContinue(textContent, usePrefillDescription)}
             disabled={!isTextFilled}
           >
             Generate Listing
