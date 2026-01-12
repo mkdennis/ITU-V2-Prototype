@@ -5,14 +5,17 @@ import FlowSelectionModal from './components/FlowSelectionModal'
 import AIAssistInput from './components/AIAssistInput'
 import AILoadingPage from './components/AILoadingPage'
 import ItemUploadForm from './components/ItemUploadForm'
+import type { Vertical } from './types/vertical'
 
 type AppState = 'welcome' | 'flow-selection' | 'ai-assist-input' | 'ai-loading' | 'item-upload'
 
 function App() {
   const [appState, setAppState] = useState<AppState>('welcome')
   const [aiAssistEnabled, setAiAssistEnabled] = useState(false)
+  const [selectedVertical, setSelectedVertical] = useState<Vertical>('furniture')
 
-  const handleGetStarted = () => {
+  const handleGetStarted = (vertical: Vertical) => {
+    setSelectedVertical(vertical)
     setAppState('flow-selection')
   }
 
@@ -52,7 +55,7 @@ function App() {
         <AILoadingPage onComplete={handleLoadingComplete} />
       )}
       {appState === 'item-upload' && (
-        <ItemUploadForm aiAssistEnabled={aiAssistEnabled} />
+        <ItemUploadForm aiAssistEnabled={aiAssistEnabled} vertical={selectedVertical} />
       )}
     </>
   )
