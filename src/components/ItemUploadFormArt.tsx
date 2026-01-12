@@ -704,7 +704,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
           value={style}
           onChange={setStyle}
         />
-        <label className="checkbox-label">
+        <label className="checkbox-label" style={{ marginTop: '16px' }}>
           <input
             type="checkbox"
             className="checkbox-input"
@@ -714,7 +714,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
           <span>Add More Sizes and Editions</span>
         </label>
         {showSizesAndEditions && (
-          <div style={{ marginTop: '8px' }}>
+          <div style={{ marginTop: '4px' }}>
             {sizesAndEditions.map((item, index) => (
               <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', marginBottom: '12px' }}>
                 <div style={{ flex: '1' }}>
@@ -755,16 +755,8 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
             ))}
             <button
               type="button"
+              className="link-button"
               onClick={handleAddSizeEdition}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#0066cc',
-                cursor: 'pointer',
-                fontSize: '14px',
-                padding: '0',
-                textDecoration: 'underline'
-              }}
             >
               Add Size and Edition
             </button>
