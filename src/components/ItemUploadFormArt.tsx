@@ -12,7 +12,6 @@ import SearchableCategoryDropdown from './SearchableCategoryDropdown'
 import CategorySelectionModal from './CategorySelectionModal'
 import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
-import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
@@ -720,6 +719,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
               <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', marginBottom: '12px' }}>
                 <div style={{ flex: '1' }}>
                   <TextInput
+                    label=""
                     placeholder="e.g. 16 x 20, Edition of 50"
                     value={item.size}
                     onChange={(value) => handleSizeEditionChange(index, 'size', value)}
@@ -727,6 +727,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
                 </div>
                 <div style={{ flex: '1' }}>
                   <NumberInput
+                    label=""
                     placeholder="Enter amount"
                     prefix="$"
                     suffix="USD"
