@@ -31,13 +31,18 @@ interface AISuggestions {
 }
 
 function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) {
-  const [dateOfManufacture, setDateOfManufacture] = useState<string>('')
+  const [creationYear, setCreationYear] = useState<string>('')
   const [period, setPeriod] = useState<string>('')
-  const [materials, setMaterials] = useState<string[]>([])
+  const [medium, setMedium] = useState<string>('')
   const [condition, setCondition] = useState<string>('')
   const [restoration, setRestoration] = useState<string[]>([])
   const [conditionComments, setConditionComments] = useState<string>('')
   const [title, setTitle] = useState<string>('')
+  const [attribution, setAttribution] = useState<string>('')
+  const [artist, setArtist] = useState<string>('')
+  const [artistUnknown, setArtistUnknown] = useState<boolean>(false)
+  const [frameIncluded, setFrameIncluded] = useState<boolean>(false)
+  const [framingOptionsAvailable, setFramingOptionsAvailable] = useState<boolean>(false)
   const [style, setStyle] = useState<string>('')
   const [placeOfOrigin, setPlaceOfOrigin] = useState<string>('')
   const [unlimitedQuantity, setUnlimitedQuantity] = useState<boolean>(false)
@@ -253,27 +258,33 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
     placeOfOrigin: 'US'
   } : {}
 
-  const materialOptions = [
-    'Brass',
-    'Bronze',
-    'Cherry',
-    'Fabric',
-    'Glass',
-    'Leather',
-    'Mahogany',
-    'Maple',
-    'Marble',
-    'Metal',
-    'Oak',
-    'Pine',
-    'Rattan',
-    'Solid Wood',
-    'Steel',
-    'Teak',
-    'Velvet',
-    'Veneer',
-    'Walnut',
-    'Wicker'
+  const mediumOptions = [
+    { value: 'acrylic', label: 'Acrylic' },
+    { value: 'bronze', label: 'Bronze' },
+    { value: 'ceramic', label: 'Ceramic' },
+    { value: 'charcoal', label: 'Charcoal' },
+    { value: 'collage', label: 'Collage' },
+    { value: 'digital', label: 'Digital' },
+    { value: 'encaustic', label: 'Encaustic' },
+    { value: 'etching', label: 'Etching' },
+    { value: 'glass', label: 'Glass' },
+    { value: 'gouache', label: 'Gouache' },
+    { value: 'graphite', label: 'Graphite' },
+    { value: 'ink', label: 'Ink' },
+    { value: 'lithograph', label: 'Lithograph' },
+    { value: 'marble', label: 'Marble' },
+    { value: 'mixed-media', label: 'Mixed Media' },
+    { value: 'oil', label: 'Oil' },
+    { value: 'pastel', label: 'Pastel' },
+    { value: 'photography', label: 'Photography' },
+    { value: 'porcelain', label: 'Porcelain' },
+    { value: 'print', label: 'Print' },
+    { value: 'screenprint', label: 'Screenprint' },
+    { value: 'sculpture', label: 'Sculpture' },
+    { value: 'stone', label: 'Stone' },
+    { value: 'tempera', label: 'Tempera' },
+    { value: 'watercolor', label: 'Watercolor' },
+    { value: 'wood', label: 'Wood' }
   ]
 
   const wearOptions = [
@@ -303,39 +314,35 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
   const attributionOptions = [
     { value: 'attributed-to', label: 'Attributed To' },
     { value: 'by', label: 'By' },
-    { value: 'by-documented', label: 'By and Documented' },
+    { value: 'after', label: 'After' },
+    { value: 'circle-of', label: 'Circle of' },
+    { value: 'school-of', label: 'School of' },
     { value: 'style-of', label: 'In the Style of' },
-    { value: 'unattributed', label: 'Unattributed' }
+    { value: 'manner-of', label: 'In the Manner of' },
+    { value: 'follower-of', label: 'Follower of' }
   ]
 
-  const creatorOptions = [
-    { value: 'charles-eames', label: 'Charles Eames' },
-    { value: 'ray-eames', label: 'Ray Eames' },
-    { value: 'hans-wegner', label: 'Hans Wegner' },
-    { value: 'arne-jacobsen', label: 'Arne Jacobsen' },
-    { value: 'george-nakashima', label: 'George Nakashima' },
-    { value: 'mies-van-der-rohe', label: 'Mies van der Rohe' },
-    { value: 'le-corbusier', label: 'Le Corbusier' },
-    { value: 'isamu-noguchi', label: 'Isamu Noguchi' },
-    { value: 'finn-juhl', label: 'Finn Juhl' },
-    { value: 'eero-saarinen', label: 'Eero Saarinen' },
-    { value: 'florence-knoll', label: 'Florence Knoll' },
-    { value: 'marcel-breuer', label: 'Marcel Breuer' },
-    { value: 'alvar-aalto', label: 'Alvar Aalto' },
-    { value: 'wendell-castle', label: 'Wendell Castle' },
-    { value: 'vladimir-kagan', label: 'Vladimir Kagan' },
-    { value: 'paul-evans', label: 'Paul Evans' },
-    { value: 'philippe-starck', label: 'Philippe Starck' },
-    { value: 'ettore-sottsass', label: 'Ettore Sottsass' },
-    { value: 'jean-prouve', label: 'Jean Prouvé' },
-    { value: 'charlotte-perriand', label: 'Charlotte Perriand' }
-  ]
-
-  const roleOptions = [
-    { value: 'artist', label: 'Artist' },
-    { value: 'author', label: 'Author' },
-    { value: 'designer', label: 'Designer' },
-    { value: 'maker', label: 'Maker' }
+  const artistOptions = [
+    { value: 'pablo-picasso', label: 'Pablo Picasso' },
+    { value: 'andy-warhol', label: 'Andy Warhol' },
+    { value: 'jean-michel-basquiat', label: 'Jean-Michel Basquiat' },
+    { value: 'keith-haring', label: 'Keith Haring' },
+    { value: 'banksy', label: 'Banksy' },
+    { value: 'salvador-dali', label: 'Salvador Dalí' },
+    { value: 'roy-lichtenstein', label: 'Roy Lichtenstein' },
+    { value: 'david-hockney', label: 'David Hockney' },
+    { value: 'gerhard-richter', label: 'Gerhard Richter' },
+    { value: 'yayoi-kusama', label: 'Yayoi Kusama' },
+    { value: 'damien-hirst', label: 'Damien Hirst' },
+    { value: 'takashi-murakami', label: 'Takashi Murakami' },
+    { value: 'kaws', label: 'KAWS' },
+    { value: 'joan-miro', label: 'Joan Miró' },
+    { value: 'mark-rothko', label: 'Mark Rothko' },
+    { value: 'jasper-johns', label: 'Jasper Johns' },
+    { value: 'robert-rauschenberg', label: 'Robert Rauschenberg' },
+    { value: 'francis-bacon', label: 'Francis Bacon' },
+    { value: 'lucian-freud', label: 'Lucian Freud' },
+    { value: 'jackson-pollock', label: 'Jackson Pollock' }
   ]
 
   const styleOptions = [
@@ -442,23 +449,23 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
   ]
 
   const categories = [
-    { l1: 'Decorative Objects', l2: 'Bowls and Baskets', l3: ['Bowls', 'Baskets', 'Trays'] },
-    { l1: 'Decorative Objects', l2: 'Boxes', l3: ['Jewelry Boxes', 'Decorative Boxes', 'Storage Boxes'] },
-    { l1: 'Decorative Objects', l2: 'Candle Holders', l3: ['Candelabras', 'Candle Lamps', 'Candle Sconces'] },
-    { l1: 'Decorative Objects', l2: 'Clocks', l3: ['Wall Clocks', 'Mantle Clocks', 'Grandfather Clocks'] },
-    { l1: 'Decorative Objects', l2: 'Desk Accessories', l3: ['Paperweights', 'Letter Holders', 'Pen Stands'] },
-    { l1: 'Decorative Objects', l2: 'Picture Frames', l3: ['Table Frames', 'Wall Frames', 'Standing Frames'] },
-    { l1: 'Decorative Objects', l2: 'Sculptures', l3: ['Abstract', 'Figurative', 'Busts'] },
-    { l1: 'Decorative Objects', l2: 'Vases and Vessels', l3: ['Floor Vases', 'Table Vases', 'Urns'] },
-    { l1: 'Lighting', l2: 'Chandeliers and Pendants', l3: ['Crystal Chandeliers', 'Modern Pendants', 'Vintage Chandeliers'] },
-    { l1: 'Lighting', l2: 'Floor Lamps', l3: ['Arc Lamps', 'Torchiere', 'Reading Lamps'] },
-    { l1: 'Lighting', l2: 'Flush Mount', l3: ['Ceiling Lights', 'Semi-Flush Mount', 'Recessed Lighting'] },
-    { l1: 'Lighting', l2: 'Lanterns', l3: ['Outdoor Lanterns', 'Indoor Lanterns', 'Hanging Lanterns'] },
-    { l1: 'Lighting', l2: 'Table Lamps', l3: ['Desk Lamps', 'Bedside Lamps', 'Accent Lamps'] },
-    { l1: 'Lighting', l2: 'Wall Lights and Sconces', l3: ['Swing Arm Sconces', 'Candle Sconces', 'Picture Lights'] },
-    { l1: 'Seating', l2: 'Dining Chairs', l3: ['Side Chairs', 'Arm Chairs', 'Bar Stools'] },
-    { l1: 'Seating', l2: 'Stools', l3: ['Counter Stools', 'Footstools', 'Ottomans'] },
-    { l1: 'Tables', l2: 'Vanities', l3: ['Makeup Vanities', 'Dressing Tables', 'Bathroom Vanities'] },
+    { l1: 'Paintings', l2: 'Abstract', l3: ['Expressionism', 'Geometric', 'Color Field'] },
+    { l1: 'Paintings', l2: 'Figurative', l3: ['Portraits', 'Nudes', 'Narrative'] },
+    { l1: 'Paintings', l2: 'Landscape', l3: ['Seascape', 'Cityscape', 'Nature'] },
+    { l1: 'Paintings', l2: 'Still Life', l3: ['Floral', 'Food', 'Objects'] },
+    { l1: 'Photography', l2: 'Fine Art', l3: ['Black & White', 'Color', 'Digital'] },
+    { l1: 'Photography', l2: 'Documentary', l3: ['Street', 'Photojournalism', 'Portrait'] },
+    { l1: 'Photography', l2: 'Fashion', l3: ['Editorial', 'Commercial', 'Beauty'] },
+    { l1: 'Prints', l2: 'Etchings', l3: ['Drypoint', 'Aquatint', 'Line Etching'] },
+    { l1: 'Prints', l2: 'Lithographs', l3: ['Stone', 'Offset', 'Transfer'] },
+    { l1: 'Prints', l2: 'Screenprints', l3: ['Serigraph', 'Silkscreen', 'Stencil'] },
+    { l1: 'Prints', l2: 'Woodcuts', l3: ['Relief', 'Linocut', 'Wood Engraving'] },
+    { l1: 'Sculpture', l2: 'Abstract', l3: ['Geometric', 'Organic', 'Kinetic'] },
+    { l1: 'Sculpture', l2: 'Figurative', l3: ['Bust', 'Full Figure', 'Torso'] },
+    { l1: 'Sculpture', l2: 'Wall Mounted', l3: ['Relief', 'Hanging', 'Assemblage'] },
+    { l1: 'Works on Paper', l2: 'Drawings', l3: ['Charcoal', 'Pencil', 'Ink'] },
+    { l1: 'Works on Paper', l2: 'Watercolors', l3: ['Gouache', 'Tempera', 'Mixed Media'] },
+    { l1: 'Works on Paper', l2: 'Collage', l3: ['Paper', 'Mixed Media', 'Assemblage'] }
   ]
 
   const conditions = [
@@ -519,7 +526,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
     }
   }
 
-  const handleDateBlur = (value: string) => {
+  const handleCreationYearBlur = (value: string) => {
     calculatePeriod(value)
   }
 
@@ -594,11 +601,43 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
           )}
         </div>
         <div className="form-row">
+          <SearchableDropdown
+            label="Artist"
+            placeholder="Select an attribution"
+            options={attributionOptions}
+            value={attribution}
+            onChange={setAttribution}
+            disabled={artistUnknown}
+          />
+          <SearchableDropdown
+            placeholder="Search for artist"
+            options={artistOptions}
+            value={artist}
+            onChange={setArtist}
+            disabled={artistUnknown}
+          />
+        </div>
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            className="checkbox-input"
+            checked={artistUnknown}
+            onChange={(e) => {
+              setArtistUnknown(e.target.checked)
+              if (e.target.checked) {
+                setAttribution('')
+                setArtist('')
+              }
+            }}
+          />
+          <span>The artist for this item is unknown</span>
+        </label>
+        <div className="form-row">
           <TextInput
-            label="Date of Manufacture *"
-            value={dateOfManufacture}
-            onChange={setDateOfManufacture}
-            onBlur={handleDateBlur}
+            label="Creation Year *"
+            value={creationYear}
+            onChange={setCreationYear}
+            onBlur={handleCreationYearBlur}
           />
           <div>
             <SearchableDropdown
@@ -616,20 +655,33 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
             )}
           </div>
         </div>
+        <SearchableDropdown
+          label="Medium *"
+          placeholder="Select medium"
+          options={mediumOptions}
+          value={medium}
+          onChange={setMedium}
+        />
         <div>
-          <MultiSelectDropdown
-            label="Materials *"
-            placeholder="Select materials"
-            options={materialOptions}
-            value={materials}
-            onChange={setMaterials}
-          />
-          {aiAssistEnabled && aiSuggestions.materials && materials.length === 0 && (
-            <AISuggestion
-              suggestion={aiSuggestions.materials.join(', ')}
-              onApply={() => setMaterials(aiSuggestions.materials!)}
+          <p className="optional-fields-label" style={{ marginTop: '16px', marginBottom: '8px' }}>Framing</p>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              className="checkbox-input"
+              checked={frameIncluded}
+              onChange={(e) => setFrameIncluded(e.target.checked)}
             />
-          )}
+            <span>Frame Included</span>
+          </label>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              className="checkbox-input"
+              checked={framingOptionsAvailable}
+              onChange={(e) => setFramingOptionsAvailable(e.target.checked)}
+            />
+            <span>Framing Options Available</span>
+          </label>
         </div>
         <div>
           <ConditionDropdown
@@ -689,53 +741,13 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
         <div className="divider"></div>
         <p className="optional-fields-label">Additional Fields</p>
         <p className="additional-fields-subtext">Adding more fields helps your item get discovered</p>
-        <div className="creators-row">
-          <SearchableDropdown
-            label="Creators"
-            placeholder="Select an attribution"
-            options={attributionOptions}
-          />
-          <SearchableDropdown
-            placeholder="Search for creator"
-            options={creatorOptions}
-          />
-          <SearchableDropdown
-            placeholder="Select a role"
-            options={roleOptions}
-          />
-        </div>
-        <div className="form-row">
-          <div>
-            <SearchableDropdown
-              label="Place of Origin"
-              placeholder="Select place of origin"
-              options={countryOptions}
-              value={placeOfOrigin}
-              onChange={setPlaceOfOrigin}
-            />
-            {aiAssistEnabled && aiSuggestions.placeOfOrigin && !placeOfOrigin && (
-              <AISuggestion
-                suggestion={countryOptions.find(c => c.value === aiSuggestions.placeOfOrigin)?.label || aiSuggestions.placeOfOrigin}
-                onApply={() => setPlaceOfOrigin(aiSuggestions.placeOfOrigin!)}
-              />
-            )}
-          </div>
-          <div>
-            <SearchableDropdown
-              label="Style"
-              placeholder="Select style"
-              options={styleOptions}
-              value={style}
-              onChange={setStyle}
-            />
-            {aiAssistEnabled && aiSuggestions.style && !style && (
-              <AISuggestion
-                suggestion={styleOptions.find(s => s.value === aiSuggestions.style)?.label || aiSuggestions.style}
-                onApply={() => setStyle(aiSuggestions.style!)}
-              />
-            )}
-          </div>
-        </div>
+        <SearchableDropdown
+          label="Style"
+          placeholder="Select style"
+          options={styleOptions}
+          value={style}
+          onChange={setStyle}
+        />
       </div>
 
       <div className="form-section" id="description-section">
