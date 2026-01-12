@@ -1,0 +1,87 @@
+.voice-recording-modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.waveform-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background-color: #F8F8F8;
+  border-radius: 8px;
+  min-height: 120px;
+}
+
+.audio-waveform-canvas {
+  width: 100%;
+  max-width: 400px;
+  height: 100px;
+  border-radius: 4px;
+}
+
+.transcript-preview {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #F8F8F8;
+  border-radius: 4px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.transcript-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666666;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.transcript-text {
+  font-size: 14px;
+  color: #222222;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.voice-error-banner {
+  background-color: #FFF0F0;
+  border: 1px solid #FFCCCC;
+  border-radius: 4px;
+  padding: 16px;
+  font-size: 14px;
+  color: #CC0000;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.stop-button {
+  background-color: #CC4444 !important;
+}
+
+.stop-button:hover {
+  background-color: #AA3333 !important;
+}
+
+/* Recording pulse animation */
+@keyframes recording-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(204, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(204, 68, 68, 0);
+  }
+}
+
+.stop-button {
+  animation: recording-pulse 1.5s infinite;
+}
+
+/* Processing state */
+.modal-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

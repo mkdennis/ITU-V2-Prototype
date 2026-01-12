@@ -4,6 +4,7 @@ import NavigationHeader from './NavigationHeader'
 import ImageUpload from './ImageUpload'
 import UploadedImage from './UploadedImage'
 import Textarea from './Textarea'
+import VoiceToTextButton from './VoiceToTextButton'
 
 interface AIAssistInputProps {
   onContinue: (textContent: string, usePrefillDescription: boolean) => void
@@ -68,6 +69,16 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
     setDraggedImageIndex(null)
   }
 
+  // Handle voice transcription - append to existing content
+  const handleVoiceTranscription = (transcribedText: string) => {
+    setTextContent((prev) => {
+      if (prev.trim()) {
+        return prev.trim() + ' ' + transcribedText
+      }
+      return transcribedText
+    })
+  }
+
   return (
     <>
       <NavigationHeader hideTabs title="Create New Listing" />
@@ -94,6 +105,7 @@ function AIAssistInput({ onContinue }: AIAssistInputProps) {
               placeholder="Paste item information here..."
               rows={8}
             />
+            <VoiceToTextButton onTranscriptionComplete={handleVoiceTranscription} />
             <div className="checkbox-container">
               <input
                 type="checkbox"
