@@ -5,7 +5,7 @@ import FlowSelectionModal from './components/FlowSelectionModal'
 import AIAssistInput from './components/AIAssistInput'
 import AILoadingPage from './components/AILoadingPage'
 import ItemUploadForm from './components/ItemUploadForm'
-import { Vertical } from './types/vertical'
+import type { Vertical } from './types/vertical'
 
 type AppState = 'welcome' | 'flow-selection' | 'ai-assist-input' | 'ai-loading' | 'item-upload'
 

@@ -1,4 +1,4 @@
-import { Vertical } from '../types/vertical'
+import type { Vertical } from '../types/vertical'
 import ItemUploadFormFurniture from './ItemUploadFormFurniture'
 import ItemUploadFormArt from './ItemUploadFormArt'
 import ItemUploadFormFashion from './ItemUploadFormFashion'

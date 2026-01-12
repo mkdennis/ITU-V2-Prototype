@@ -1,7 +1,8 @@
 import './WelcomeModal.css'
 import Modal from './Modal'
 import { useState } from 'react'
-import { Vertical, VERTICALS } from '../types/vertical'
+import type { Vertical } from '../types/vertical'
+import { VERTICALS } from '../types/vertical'
 
 interface WelcomeModalProps {
   isOpen: boolean
