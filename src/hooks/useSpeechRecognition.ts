@@ -9,6 +9,7 @@ interface UseSpeechRecognitionReturn {
   startListening: () => void
   stopListening: () => void
   resetTranscript: () => void
+  getCurrentTranscript: () => string
   browserSupportError: string | null
 }
 
@@ -20,6 +21,9 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
   const [browserSupportError, setBrowserSupportError] = useState<string | null>(null)
 
   const recognitionRef = useRef<SpeechRecognition | null>(null)
+  // Refs to track latest values for use in callbacks (avoids stale closures)
+  const transcriptRef = useRef('')
+  const interimTranscriptRef = useRef('')
 
   useEffect(() => {
     // Check for browser support
@@ -50,8 +54,13 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
       }
 
       if (finalTranscript) {
-        setTranscript((prev) => prev + finalTranscript)
+        setTranscript((prev) => {
+          const newValue = prev + finalTranscript
+          transcriptRef.current = newValue
+          return newValue
+        })
       }
+      interimTranscriptRef.current = interimText
       setInterimTranscript(interimText)
     }
 
@@ -88,6 +97,8 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
     if (recognitionRef.current && !isListening) {
       setTranscript('')
       setInterimTranscript('')
+      transcriptRef.current = ''
+      interimTranscriptRef.current = ''
       setBrowserSupportError(null)
       try {
         recognitionRef.current.start()
@@ -109,6 +120,13 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
   const resetTranscript = useCallback(() => {
     setTranscript('')
     setInterimTranscript('')
+    transcriptRef.current = ''
+    interimTranscriptRef.current = ''
+  }, [])
+
+  // Get current transcript values (uses refs to avoid stale closures)
+  const getCurrentTranscript = useCallback(() => {
+    return transcriptRef.current + interimTranscriptRef.current
   }, [])
 
   return {
@@ -119,6 +137,7 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
     startListening,
     stopListening,
     resetTranscript,
+    getCurrentTranscript,
     browserSupportError
   }
 }
