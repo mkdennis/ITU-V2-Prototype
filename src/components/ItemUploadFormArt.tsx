@@ -633,7 +633,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
         />
         <div>
           <p className="optional-fields-label" style={{ marginTop: '16px', marginBottom: '8px' }}>Framing</p>
-          <label className="checkbox-label">
+          <label className="checkbox-label" style={{ marginBottom: '12px' }}>
             <input
               type="checkbox"
               className="checkbox-input"
@@ -714,12 +714,12 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
           <span>Add More Sizes and Editions</span>
         </label>
         {showSizesAndEditions && (
-          <div style={{ marginTop: '16px' }}>
+          <div style={{ marginTop: '8px' }}>
             {sizesAndEditions.map((item, index) => (
-              <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', marginBottom: '12px' }}>
+              <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', marginBottom: '12px' }}>
                 <div style={{ flex: '1' }}>
                   <TextInput
-                    label=""
+                    label="Size and Edition"
                     placeholder="e.g. 16 x 20, Edition of 50"
                     value={item.size}
                     onChange={(value) => handleSizeEditionChange(index, 'size', value)}
@@ -727,7 +727,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
                 </div>
                 <div style={{ flex: '1' }}>
                   <NumberInput
-                    label=""
+                    label="Price"
                     placeholder="Enter amount"
                     prefix="$"
                     suffix="USD"
@@ -745,7 +745,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
                       cursor: 'pointer',
                       fontSize: '20px',
                       padding: '8px',
-                      marginTop: '4px'
+                      marginBottom: '4px'
                     }}
                   >
                     ×
