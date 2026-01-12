@@ -54,3 +54,72 @@
     padding: 24px;
   }
 }
+
+/* Password Prompt Styles */
+.password-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 40px 40px;
+  gap: 16px;
+}
+
+.password-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 2px solid #DDDDDD;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.password-input:focus {
+  border-color: #436B93;
+}
+
+.password-error {
+  color: #D32F2F;
+  font-size: 14px;
+  margin: 0;
+}
+
+.password-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.password-cancel-btn {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 2px solid #DDDDDD;
+  border-radius: 6px;
+  background: white;
+  color: #666666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.password-cancel-btn:hover {
+  border-color: #999999;
+  color: #333333;
+}
+
+.password-submit-btn {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  background: #436B93;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.password-submit-btn:hover {
+  background: #2d4a62;
+}

@@ -17,20 +17,14 @@ import AISuggestion from './AISuggestion'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
+import type { AISuggestions } from '../types/aiSuggestions'
+
 interface ItemUploadFormJewelryProps {
   aiAssistEnabled?: boolean
+  aiSuggestions?: AISuggestions
 }
 
-interface AISuggestions {
-  title?: string
-  materials?: string[]
-  condition?: string
-  period?: string
-  style?: string
-  placeOfOrigin?: string
-}
-
-function ItemUploadFormJewelry({ aiAssistEnabled = false }: ItemUploadFormJewelryProps) {
+function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUploadFormJewelryProps) {
   const [dateOfManufacture, setDateOfManufacture] = useState<string>('')
   const [period, setPeriod] = useState<string>('')
   const [materials, setMaterials] = useState<string[]>([])
@@ -242,16 +236,6 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false }: ItemUploadFormJewelr
       zones.map(zone => zone.region === region ? { ...zone, shippingMethod: value } : zone)
     )
   }
-
-  // Dummy AI suggestions
-  const aiSuggestions: AISuggestions = aiAssistEnabled ? {
-    title: 'Mid-Century Modern Walnut Coffee Table',
-    materials: ['Walnut', 'Brass'],
-    condition: 'Good',
-    period: '1960-1969',
-    style: 'mid-century-modern',
-    placeOfOrigin: 'US'
-  } : {}
 
   const materialOptions = [
     'Brass',

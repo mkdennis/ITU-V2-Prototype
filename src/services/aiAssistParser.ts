@@ -31,6 +31,25 @@ import {
 // API configuration
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages'
 
+// AI Mode - 'claude' uses API, 'regex' uses fallback extraction
+type AIMode = 'claude' | 'regex'
+let currentAIMode: AIMode = 'regex'
+
+/**
+ * Set the AI mode globally
+ */
+export function setAIMode(mode: AIMode): void {
+  console.log('[AI Parser] Setting AI mode to:', mode)
+  currentAIMode = mode
+}
+
+/**
+ * Get the current AI mode
+ */
+export function getAIMode(): AIMode {
+  return currentAIMode
+}
+
 // Get API key from environment variable
 function getApiKey(): string | null {
   // Check for Vite environment variable
@@ -400,7 +419,24 @@ export async function parseListingWithAI(
   usePrefillDescription: boolean = false
 ): Promise<AIParseResult> {
   console.log('[AI Parser] Starting parseListingWithAI')
+  console.log('[AI Parser] Current AI mode:', currentAIMode)
   const apiKey = getApiKey()
+
+  // If regex mode is selected or no API key, fall back to regex-based extraction
+  if (currentAIMode === 'regex') {
+    console.log('[AI Parser] Using REGEX mode (user selected)')
+    const suggestions = extractSuggestionsFromText(listingText)
+    console.log('[AI Parser] Regex extraction results:', suggestions)
+
+    if (usePrefillDescription) {
+      suggestions.description = listingText
+    }
+
+    return {
+      suggestions,
+      confidence: {},
+    }
+  }
 
   // If no API key, fall back to regex-based extraction
   if (!apiKey) {
