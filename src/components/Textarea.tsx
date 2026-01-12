@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './Textarea.css'
 
 interface TextareaProps {
@@ -10,24 +9,14 @@ interface TextareaProps {
   disabled?: boolean
 }
 
-function Textarea({ label, value, onChange, placeholder, rows = 10, disabled = false }: TextareaProps) {
-  const [internalValue, setInternalValue] = useState<string>(value || '')
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const inputValue = e.target.value
-    setInternalValue(inputValue)
-    if (onChange) {
-      onChange(e)
-    }
-  }
-
+function Textarea({ label, value = '', onChange, placeholder, rows = 10, disabled = false }: TextareaProps) {
   return (
     <div className="textarea-container">
       {label && <label className="textarea-label">{label}</label>}
       <textarea
         className="textarea-field"
-        value={internalValue}
-        onChange={handleChange}
+        value={value}
+        onChange={onChange}
         placeholder={placeholder}
         rows={rows}
         disabled={disabled}
