@@ -17,32 +17,29 @@ import AISuggestion from './AISuggestion'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
-import type { AISuggestions } from '../types/aiSuggestions'
-
-interface ItemUploadFormProps {
+interface ItemUploadFormFashionProps {
   aiAssistEnabled?: boolean
-  aiSuggestions?: AISuggestions
 }
 
-function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUploadFormProps) {
+interface AISuggestions {
+  title?: string
+  materials?: string[]
+  condition?: string
+  period?: string
+  style?: string
+  placeOfOrigin?: string
+}
+
+function ItemUploadFormFashion({ aiAssistEnabled = false }: ItemUploadFormFashionProps) {
   const [dateOfManufacture, setDateOfManufacture] = useState<string>('')
   const [period, setPeriod] = useState<string>('')
   const [materials, setMaterials] = useState<string[]>([])
   const [condition, setCondition] = useState<string>('')
-  const [wear, setWear] = useState<string>('')
   const [restoration, setRestoration] = useState<string[]>([])
   const [conditionComments, setConditionComments] = useState<string>('')
   const [title, setTitle] = useState<string>('')
   const [style, setStyle] = useState<string>('')
   const [placeOfOrigin, setPlaceOfOrigin] = useState<string>('')
-  const [creator, setCreator] = useState<string>('')
-  const [description, setDescription] = useState<string>('')
-
-  // Item dimensions
-  const [itemWidth, setItemWidth] = useState<number>(0)
-  const [itemDepth, setItemDepth] = useState<number>(0)
-  const [itemHeight, setItemHeight] = useState<number>(0)
-  const [itemWeight, setItemWeight] = useState<string>('')
   const [unlimitedQuantity, setUnlimitedQuantity] = useState<boolean>(false)
   const [listPrice, setListPrice] = useState<number>(0)
   const [negotiable, setNegotiable] = useState<boolean>(false)
@@ -246,6 +243,15 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
     )
   }
 
+  // Dummy AI suggestions
+  const aiSuggestions: AISuggestions = aiAssistEnabled ? {
+    title: 'Mid-Century Modern Walnut Coffee Table',
+    materials: ['Walnut', 'Brass'],
+    condition: 'Good',
+    period: '1960-1969',
+    style: 'mid-century-modern',
+    placeOfOrigin: 'US'
+  } : {}
 
   const materialOptions = [
     'Brass',
@@ -538,12 +544,6 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
             View All Categories
           </button>
         </div>
-        {aiAssistEnabled && aiSuggestions.category && !selectedCategory && (
-          <AISuggestion
-            suggestion={`${aiSuggestions.category.l1} > ${aiSuggestions.category.l2}`}
-            onApply={() => setSelectedCategory(`${aiSuggestions.category!.l1} > ${aiSuggestions.category!.l2}`)}
-          />
-        )}
         <CategorySelectionModal
           isOpen={categoryModalOpen}
           onClose={() => setCategoryModalOpen(false)}
@@ -594,23 +594,12 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
           )}
         </div>
         <div className="form-row">
-          <div>
-            <TextInput
-              label="Date of Manufacture *"
-              value={dateOfManufacture}
-              onChange={setDateOfManufacture}
-              onBlur={handleDateBlur}
-            />
-            {aiAssistEnabled && aiSuggestions.dateOfManufacture && !dateOfManufacture && (
-              <AISuggestion
-                suggestion={aiSuggestions.dateOfManufacture}
-                onApply={() => {
-                  setDateOfManufacture(aiSuggestions.dateOfManufacture!)
-                  handleDateBlur(aiSuggestions.dateOfManufacture!)
-                }}
-              />
-            )}
-          </div>
+          <TextInput
+            label="Date of Manufacture *"
+            value={dateOfManufacture}
+            onChange={setDateOfManufacture}
+            onBlur={handleDateBlur}
+          />
           <div>
             <SearchableDropdown
               label="Period *"
@@ -657,37 +646,19 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
             />
           )}
         </div>
-        <div>
-          <SearchableDropdown
-            label="Wear"
-            placeholder="Select wear"
-            options={wearOptions}
-            value={wear}
-            onChange={setWear}
-            disabled={condition === 'New'}
-          />
-          {aiAssistEnabled && aiSuggestions.wear && !wear && condition !== 'New' && (
-            <AISuggestion
-              suggestion={wearOptions.find(w => w.value === aiSuggestions.wear)?.label || aiSuggestions.wear}
-              onApply={() => setWear(aiSuggestions.wear!)}
-            />
-          )}
-        </div>
-        <div>
-          <MultiSelectDropdown
-            label="Restoration Work & Modifications *"
-            placeholder="Select restoration work"
-            options={restorationOptions}
-            value={restoration}
-            onChange={setRestoration}
-          />
-          {aiAssistEnabled && aiSuggestions.restoration && aiSuggestions.restoration.length > 0 && restoration.length === 0 && (
-            <AISuggestion
-              suggestion={aiSuggestions.restoration.join(', ')}
-              onApply={() => setRestoration(aiSuggestions.restoration!)}
-            />
-          )}
-        </div>
+        <SearchableDropdown
+          label="Wear"
+          placeholder="Select wear"
+          options={wearOptions}
+          disabled={condition === 'New'}
+        />
+        <MultiSelectDropdown
+          label="Restoration Work & Modifications *"
+          placeholder="Select restoration work"
+          options={restorationOptions}
+          value={restoration}
+          onChange={setRestoration}
+        />
         <Textarea
           label="Do you have additional comments about the condition of this item?"
           placeholder="Describe any signs of wear, scratches, cracks, or other types of damage. Additionally, if any restorations been made, please describe the work here."
@@ -699,75 +670,39 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
         <div className="dimensions-row">
           <NumberInput
             label="Item Width"
-            suffix={aiSuggestions.dimensionUnit || 'in'}
-            value={itemWidth}
-            onChange={setItemWidth}
+            suffix="in"
           />
           <NumberInput
             label="Item Depth"
-            suffix={aiSuggestions.dimensionUnit || 'in'}
-            value={itemDepth}
-            onChange={setItemDepth}
+            suffix="in"
           />
           <NumberInput
             label="Item Height"
-            suffix={aiSuggestions.dimensionUnit || 'in'}
-            value={itemHeight}
-            onChange={setItemHeight}
+            suffix="in"
           />
         </div>
-        {aiAssistEnabled && aiSuggestions.dimensions && (itemWidth === 0 && itemDepth === 0 && itemHeight === 0) && (
-          <AISuggestion
-            suggestion={`${aiSuggestions.dimensions.width || '?'} x ${aiSuggestions.dimensions.depth || '?'} x ${aiSuggestions.dimensions.height || '?'} ${aiSuggestions.dimensionUnit || 'in'}`}
-            onApply={() => {
-              if (aiSuggestions.dimensions?.width) setItemWidth(aiSuggestions.dimensions.width)
-              if (aiSuggestions.dimensions?.depth) setItemDepth(aiSuggestions.dimensions.depth)
-              if (aiSuggestions.dimensions?.height) setItemHeight(aiSuggestions.dimensions.height)
-            }}
-          />
-        )}
-        <div>
-          <SearchableDropdown
-            label="Weight"
-            placeholder="Select weight"
-            options={weightOptions}
-            value={itemWeight}
-            onChange={setItemWeight}
-          />
-          {aiAssistEnabled && aiSuggestions.weight && !itemWeight && (
-            <AISuggestion
-              suggestion={weightOptions.find(w => w.value === aiSuggestions.weight)?.label || aiSuggestions.weight}
-              onApply={() => setItemWeight(aiSuggestions.weight!)}
-            />
-          )}
-        </div>
+        <SearchableDropdown
+          label="Weight"
+          placeholder="Select weight"
+          options={weightOptions}
+        />
         <div className="divider"></div>
         <p className="optional-fields-label">Additional Fields</p>
         <p className="additional-fields-subtext">Adding more fields helps your item get discovered</p>
-        <div>
-          <div className="creators-row">
-            <SearchableDropdown
-              label="Creators"
-              placeholder="Select an attribution"
-              options={attributionOptions}
-            />
-            <SearchableDropdown
-              placeholder="Search for creator"
-              options={creatorOptions}
-              value={creator}
-              onChange={setCreator}
-            />
-            <SearchableDropdown
-              placeholder="Select a role"
-              options={roleOptions}
-            />
-          </div>
-          {aiAssistEnabled && aiSuggestions.creator && !creator && (
-            <AISuggestion
-              suggestion={creatorOptions.find(c => c.value === aiSuggestions.creator)?.label || aiSuggestions.creator}
-              onApply={() => setCreator(aiSuggestions.creator!)}
-            />
-          )}
+        <div className="creators-row">
+          <SearchableDropdown
+            label="Creators"
+            placeholder="Select an attribution"
+            options={attributionOptions}
+          />
+          <SearchableDropdown
+            placeholder="Search for creator"
+            options={creatorOptions}
+          />
+          <SearchableDropdown
+            placeholder="Select a role"
+            options={roleOptions}
+          />
         </div>
         <div className="form-row">
           <div>
@@ -807,24 +742,14 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
         <h3 className="description-heading">Description</h3>
           <p className="description-recommendation">Recommended length: 120 words.</p>
         <div className="description-section">
-          <div>
-            <Textarea
-              placeholder={`What makes this piece unique or special?
+          <Textarea
+            placeholder={`What makes this piece unique or special?
 Why is it worth the price?
 How would you describe it (and its condition) to someone who hasn't seen it in person?
 What is its background or history?
 What details would be useful for a potential buyer to know?`}
-              rows={12}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            {aiAssistEnabled && aiSuggestions.description && !description && (
-              <AISuggestion
-                suggestion={aiSuggestions.description.slice(0, 100) + (aiSuggestions.description.length > 100 ? '...' : '')}
-                onApply={() => setDescription(aiSuggestions.description!)}
-              />
-            )}
-          </div>
+            rows={12}
+          />
           <div className="description-tips">
             <div className="tips-header">
               <span className="tips-icon">💡</span>
@@ -1125,29 +1050,6 @@ What details would be useful for a potential buyer to know?`}
       </div>
     </>
   )
-import type { Vertical } from '../types/vertical'
-import ItemUploadFormFurniture from './ItemUploadFormFurniture'
-import ItemUploadFormArt from './ItemUploadFormArt'
-import ItemUploadFormFashion from './ItemUploadFormFashion'
-import ItemUploadFormJewelry from './ItemUploadFormJewelry'
-
-interface ItemUploadFormProps {
-  aiAssistEnabled?: boolean
-  vertical?: Vertical
 }
 
-function ItemUploadForm({ aiAssistEnabled = false, vertical = 'furniture' }: ItemUploadFormProps) {
-  switch (vertical) {
-    case 'art':
-      return <ItemUploadFormArt aiAssistEnabled={aiAssistEnabled} />
-    case 'fashion':
-      return <ItemUploadFormFashion aiAssistEnabled={aiAssistEnabled} />
-    case 'jewelry':
-      return <ItemUploadFormJewelry aiAssistEnabled={aiAssistEnabled} />
-    case 'furniture':
-    default:
-      return <ItemUploadFormFurniture aiAssistEnabled={aiAssistEnabled} />
-  }
-}
-
-export default ItemUploadForm
+export default ItemUploadFormFashion

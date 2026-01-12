@@ -7,6 +7,7 @@ import AILoadingPage from './components/AILoadingPage'
 import ItemUploadForm from './components/ItemUploadForm'
 import { parseListingWithAI } from './services/aiAssistParser'
 import type { AISuggestions } from './types/aiSuggestions'
+import type { Vertical } from './types/vertical'
 
 type AppState = 'welcome' | 'flow-selection' | 'ai-assist-input' | 'ai-loading' | 'item-upload'
 
@@ -15,8 +16,10 @@ function App() {
   const [aiAssistEnabled, setAiAssistEnabled] = useState(false)
   const [aiSuggestions, setAiSuggestions] = useState<AISuggestions>({})
   const [isProcessing, setIsProcessing] = useState(false)
+  const [selectedVertical, setSelectedVertical] = useState<Vertical>('furniture')
 
-  const handleGetStarted = () => {
+  const handleGetStarted = (vertical: Vertical) => {
+    setSelectedVertical(vertical)
     setAppState('flow-selection')
   }
 
@@ -94,6 +97,7 @@ function App() {
           aiAssistEnabled={aiAssistEnabled}
           aiSuggestions={aiSuggestions}
         />
+        <ItemUploadForm aiAssistEnabled={aiAssistEnabled} vertical={selectedVertical} />
       )}
     </>
   )

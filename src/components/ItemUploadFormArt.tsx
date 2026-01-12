@@ -12,38 +12,41 @@ import SearchableCategoryDropdown from './SearchableCategoryDropdown'
 import CategorySelectionModal from './CategorySelectionModal'
 import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
-import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
-import type { AISuggestions } from '../types/aiSuggestions'
-
-interface ItemUploadFormProps {
+interface ItemUploadFormArtProps {
   aiAssistEnabled?: boolean
-  aiSuggestions?: AISuggestions
 }
 
-function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUploadFormProps) {
-  const [dateOfManufacture, setDateOfManufacture] = useState<string>('')
+interface AISuggestions {
+  title?: string
+  materials?: string[]
+  condition?: string
+  period?: string
+  style?: string
+  placeOfOrigin?: string
+}
+
+function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) {
+  const [creationYear, setCreationYear] = useState<string>('')
   const [period, setPeriod] = useState<string>('')
-  const [materials, setMaterials] = useState<string[]>([])
+  const [medium, setMedium] = useState<string>('')
   const [condition, setCondition] = useState<string>('')
-  const [wear, setWear] = useState<string>('')
-  const [restoration, setRestoration] = useState<string[]>([])
   const [conditionComments, setConditionComments] = useState<string>('')
   const [title, setTitle] = useState<string>('')
+  const [attribution, setAttribution] = useState<string>('')
+  const [artist, setArtist] = useState<string>('')
+  const [artistUnknown, setArtistUnknown] = useState<boolean>(false)
+  const [frameIncluded, setFrameIncluded] = useState<boolean>(false)
+  const [framingOptionsAvailable, setFramingOptionsAvailable] = useState<boolean>(false)
   const [style, setStyle] = useState<string>('')
-  const [placeOfOrigin, setPlaceOfOrigin] = useState<string>('')
-  const [creator, setCreator] = useState<string>('')
-  const [description, setDescription] = useState<string>('')
-
-  // Item dimensions
-  const [itemWidth, setItemWidth] = useState<number>(0)
-  const [itemDepth, setItemDepth] = useState<number>(0)
-  const [itemHeight, setItemHeight] = useState<number>(0)
-  const [itemWeight, setItemWeight] = useState<string>('')
   const [unlimitedQuantity, setUnlimitedQuantity] = useState<boolean>(false)
+  const [showSizesAndEditions, setShowSizesAndEditions] = useState<boolean>(false)
+  const [sizesAndEditions, setSizesAndEditions] = useState<Array<{ size: string; price: number }>>([
+    { size: '', price: 0 }
+  ])
   const [listPrice, setListPrice] = useState<number>(0)
   const [negotiable, setNegotiable] = useState<boolean>(false)
   const [netPriceDiscount, setNetPriceDiscount] = useState<number>(10)
@@ -246,45 +249,61 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
     )
   }
 
+  // Handle sizes and editions changes
+  const handleSizeEditionChange = (index: number, field: 'size' | 'price', value: string | number) => {
+    const newSizesAndEditions = [...sizesAndEditions]
+    newSizesAndEditions[index][field] = value as never
+    setSizesAndEditions(newSizesAndEditions)
+  }
 
-  const materialOptions = [
-    'Brass',
-    'Bronze',
-    'Cherry',
-    'Fabric',
-    'Glass',
-    'Leather',
-    'Mahogany',
-    'Maple',
-    'Marble',
-    'Metal',
-    'Oak',
-    'Pine',
-    'Rattan',
-    'Solid Wood',
-    'Steel',
-    'Teak',
-    'Velvet',
-    'Veneer',
-    'Walnut',
-    'Wicker'
-  ]
+  const handleAddSizeEdition = () => {
+    setSizesAndEditions([...sizesAndEditions, { size: '', price: 0 }])
+  }
 
-  const wearOptions = [
-    { value: 'consistent', label: 'Wear consistent with age and use' },
-    { value: 'minor-losses', label: 'Minor Losses' },
-    { value: 'minor-structural', label: 'Minor Structural Damages' },
-    { value: 'minor-fading', label: 'Minor Fading' }
-  ]
+  const handleDeleteSizeEdition = (index: number) => {
+    if (sizesAndEditions.length > 1) {
+      const newSizesAndEditions = sizesAndEditions.filter((_, i) => i !== index)
+      setSizesAndEditions(newSizesAndEditions)
+    }
+  }
 
-  const restorationOptions = [
-    'Repairs',
-    'Replacements',
-    'Refinishing',
-    'Reupholstery',
-    'Reweaving',
-    'Rewiring',
-    'Additions or Alterations to Original'
+  // Dummy AI suggestions
+  const aiSuggestions: AISuggestions = aiAssistEnabled ? {
+    title: 'Mid-Century Modern Walnut Coffee Table',
+    materials: ['Walnut', 'Brass'],
+    condition: 'Good',
+    period: '1960-1969',
+    style: 'mid-century-modern',
+    placeOfOrigin: 'US'
+  } : {}
+
+  const mediumOptions = [
+    { value: 'acrylic', label: 'Acrylic' },
+    { value: 'bronze', label: 'Bronze' },
+    { value: 'ceramic', label: 'Ceramic' },
+    { value: 'charcoal', label: 'Charcoal' },
+    { value: 'collage', label: 'Collage' },
+    { value: 'digital', label: 'Digital' },
+    { value: 'encaustic', label: 'Encaustic' },
+    { value: 'etching', label: 'Etching' },
+    { value: 'glass', label: 'Glass' },
+    { value: 'gouache', label: 'Gouache' },
+    { value: 'graphite', label: 'Graphite' },
+    { value: 'ink', label: 'Ink' },
+    { value: 'lithograph', label: 'Lithograph' },
+    { value: 'marble', label: 'Marble' },
+    { value: 'mixed-media', label: 'Mixed Media' },
+    { value: 'oil', label: 'Oil' },
+    { value: 'pastel', label: 'Pastel' },
+    { value: 'photography', label: 'Photography' },
+    { value: 'porcelain', label: 'Porcelain' },
+    { value: 'print', label: 'Print' },
+    { value: 'screenprint', label: 'Screenprint' },
+    { value: 'sculpture', label: 'Sculpture' },
+    { value: 'stone', label: 'Stone' },
+    { value: 'tempera', label: 'Tempera' },
+    { value: 'watercolor', label: 'Watercolor' },
+    { value: 'wood', label: 'Wood' }
   ]
 
   const weightOptions = [
@@ -297,39 +316,35 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
   const attributionOptions = [
     { value: 'attributed-to', label: 'Attributed To' },
     { value: 'by', label: 'By' },
-    { value: 'by-documented', label: 'By and Documented' },
+    { value: 'after', label: 'After' },
+    { value: 'circle-of', label: 'Circle of' },
+    { value: 'school-of', label: 'School of' },
     { value: 'style-of', label: 'In the Style of' },
-    { value: 'unattributed', label: 'Unattributed' }
+    { value: 'manner-of', label: 'In the Manner of' },
+    { value: 'follower-of', label: 'Follower of' }
   ]
 
-  const creatorOptions = [
-    { value: 'charles-eames', label: 'Charles Eames' },
-    { value: 'ray-eames', label: 'Ray Eames' },
-    { value: 'hans-wegner', label: 'Hans Wegner' },
-    { value: 'arne-jacobsen', label: 'Arne Jacobsen' },
-    { value: 'george-nakashima', label: 'George Nakashima' },
-    { value: 'mies-van-der-rohe', label: 'Mies van der Rohe' },
-    { value: 'le-corbusier', label: 'Le Corbusier' },
-    { value: 'isamu-noguchi', label: 'Isamu Noguchi' },
-    { value: 'finn-juhl', label: 'Finn Juhl' },
-    { value: 'eero-saarinen', label: 'Eero Saarinen' },
-    { value: 'florence-knoll', label: 'Florence Knoll' },
-    { value: 'marcel-breuer', label: 'Marcel Breuer' },
-    { value: 'alvar-aalto', label: 'Alvar Aalto' },
-    { value: 'wendell-castle', label: 'Wendell Castle' },
-    { value: 'vladimir-kagan', label: 'Vladimir Kagan' },
-    { value: 'paul-evans', label: 'Paul Evans' },
-    { value: 'philippe-starck', label: 'Philippe Starck' },
-    { value: 'ettore-sottsass', label: 'Ettore Sottsass' },
-    { value: 'jean-prouve', label: 'Jean Prouvé' },
-    { value: 'charlotte-perriand', label: 'Charlotte Perriand' }
-  ]
-
-  const roleOptions = [
-    { value: 'artist', label: 'Artist' },
-    { value: 'author', label: 'Author' },
-    { value: 'designer', label: 'Designer' },
-    { value: 'maker', label: 'Maker' }
+  const artistOptions = [
+    { value: 'pablo-picasso', label: 'Pablo Picasso' },
+    { value: 'andy-warhol', label: 'Andy Warhol' },
+    { value: 'jean-michel-basquiat', label: 'Jean-Michel Basquiat' },
+    { value: 'keith-haring', label: 'Keith Haring' },
+    { value: 'banksy', label: 'Banksy' },
+    { value: 'salvador-dali', label: 'Salvador Dalí' },
+    { value: 'roy-lichtenstein', label: 'Roy Lichtenstein' },
+    { value: 'david-hockney', label: 'David Hockney' },
+    { value: 'gerhard-richter', label: 'Gerhard Richter' },
+    { value: 'yayoi-kusama', label: 'Yayoi Kusama' },
+    { value: 'damien-hirst', label: 'Damien Hirst' },
+    { value: 'takashi-murakami', label: 'Takashi Murakami' },
+    { value: 'kaws', label: 'KAWS' },
+    { value: 'joan-miro', label: 'Joan Miró' },
+    { value: 'mark-rothko', label: 'Mark Rothko' },
+    { value: 'jasper-johns', label: 'Jasper Johns' },
+    { value: 'robert-rauschenberg', label: 'Robert Rauschenberg' },
+    { value: 'francis-bacon', label: 'Francis Bacon' },
+    { value: 'lucian-freud', label: 'Lucian Freud' },
+    { value: 'jackson-pollock', label: 'Jackson Pollock' }
   ]
 
   const styleOptions = [
@@ -355,104 +370,67 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
     { value: 'victorian', label: 'Victorian' }
   ]
 
-  const countryOptions = [
-    { value: 'AF', label: 'Afghanistan' },
-    { value: 'AL', label: 'Albania' },
-    { value: 'DZ', label: 'Algeria' },
-    { value: 'AR', label: 'Argentina' },
-    { value: 'AM', label: 'Armenia' },
-    { value: 'AU', label: 'Australia' },
-    { value: 'AT', label: 'Austria' },
-    { value: 'AZ', label: 'Azerbaijan' },
-    { value: 'BD', label: 'Bangladesh' },
-    { value: 'BY', label: 'Belarus' },
-    { value: 'BE', label: 'Belgium' },
-    { value: 'BR', label: 'Brazil' },
-    { value: 'BG', label: 'Bulgaria' },
-    { value: 'KH', label: 'Cambodia' },
-    { value: 'CA', label: 'Canada' },
-    { value: 'CL', label: 'Chile' },
-    { value: 'CN', label: 'China' },
-    { value: 'CO', label: 'Colombia' },
-    { value: 'HR', label: 'Croatia' },
-    { value: 'CU', label: 'Cuba' },
-    { value: 'CZ', label: 'Czech Republic' },
-    { value: 'DK', label: 'Denmark' },
-    { value: 'EG', label: 'Egypt' },
-    { value: 'EE', label: 'Estonia' },
-    { value: 'FI', label: 'Finland' },
-    { value: 'FR', label: 'France' },
-    { value: 'GE', label: 'Georgia' },
-    { value: 'DE', label: 'Germany' },
-    { value: 'GR', label: 'Greece' },
-    { value: 'HK', label: 'Hong Kong' },
-    { value: 'HU', label: 'Hungary' },
-    { value: 'IS', label: 'Iceland' },
-    { value: 'IN', label: 'India' },
-    { value: 'ID', label: 'Indonesia' },
-    { value: 'IR', label: 'Iran' },
-    { value: 'IQ', label: 'Iraq' },
-    { value: 'IE', label: 'Ireland' },
-    { value: 'IL', label: 'Israel' },
-    { value: 'IT', label: 'Italy' },
-    { value: 'JP', label: 'Japan' },
-    { value: 'KZ', label: 'Kazakhstan' },
-    { value: 'KE', label: 'Kenya' },
-    { value: 'KR', label: 'South Korea' },
-    { value: 'LV', label: 'Latvia' },
-    { value: 'LT', label: 'Lithuania' },
-    { value: 'LU', label: 'Luxembourg' },
-    { value: 'MY', label: 'Malaysia' },
-    { value: 'MX', label: 'Mexico' },
-    { value: 'MA', label: 'Morocco' },
-    { value: 'NL', label: 'Netherlands' },
-    { value: 'NZ', label: 'New Zealand' },
-    { value: 'NG', label: 'Nigeria' },
-    { value: 'NO', label: 'Norway' },
-    { value: 'PK', label: 'Pakistan' },
-    { value: 'PE', label: 'Peru' },
-    { value: 'PH', label: 'Philippines' },
-    { value: 'PL', label: 'Poland' },
-    { value: 'PT', label: 'Portugal' },
-    { value: 'RO', label: 'Romania' },
-    { value: 'RU', label: 'Russia' },
-    { value: 'SA', label: 'Saudi Arabia' },
-    { value: 'RS', label: 'Serbia' },
-    { value: 'SG', label: 'Singapore' },
-    { value: 'SK', label: 'Slovakia' },
-    { value: 'SI', label: 'Slovenia' },
-    { value: 'ZA', label: 'South Africa' },
-    { value: 'ES', label: 'Spain' },
-    { value: 'SE', label: 'Sweden' },
-    { value: 'CH', label: 'Switzerland' },
-    { value: 'TW', label: 'Taiwan' },
-    { value: 'TH', label: 'Thailand' },
-    { value: 'TR', label: 'Turkey' },
-    { value: 'UA', label: 'Ukraine' },
-    { value: 'AE', label: 'United Arab Emirates' },
-    { value: 'GB', label: 'United Kingdom' },
-    { value: 'US', label: 'United States' },
-    { value: 'VN', label: 'Vietnam' }
-  ]
-
   const categories = [
-    { l1: 'Decorative Objects', l2: 'Bowls and Baskets', l3: ['Bowls', 'Baskets', 'Trays'] },
-    { l1: 'Decorative Objects', l2: 'Boxes', l3: ['Jewelry Boxes', 'Decorative Boxes', 'Storage Boxes'] },
-    { l1: 'Decorative Objects', l2: 'Candle Holders', l3: ['Candelabras', 'Candle Lamps', 'Candle Sconces'] },
-    { l1: 'Decorative Objects', l2: 'Clocks', l3: ['Wall Clocks', 'Mantle Clocks', 'Grandfather Clocks'] },
-    { l1: 'Decorative Objects', l2: 'Desk Accessories', l3: ['Paperweights', 'Letter Holders', 'Pen Stands'] },
-    { l1: 'Decorative Objects', l2: 'Picture Frames', l3: ['Table Frames', 'Wall Frames', 'Standing Frames'] },
-    { l1: 'Decorative Objects', l2: 'Sculptures', l3: ['Abstract', 'Figurative', 'Busts'] },
-    { l1: 'Decorative Objects', l2: 'Vases and Vessels', l3: ['Floor Vases', 'Table Vases', 'Urns'] },
-    { l1: 'Lighting', l2: 'Chandeliers and Pendants', l3: ['Crystal Chandeliers', 'Modern Pendants', 'Vintage Chandeliers'] },
-    { l1: 'Lighting', l2: 'Floor Lamps', l3: ['Arc Lamps', 'Torchiere', 'Reading Lamps'] },
-    { l1: 'Lighting', l2: 'Flush Mount', l3: ['Ceiling Lights', 'Semi-Flush Mount', 'Recessed Lighting'] },
-    { l1: 'Lighting', l2: 'Lanterns', l3: ['Outdoor Lanterns', 'Indoor Lanterns', 'Hanging Lanterns'] },
-    { l1: 'Lighting', l2: 'Table Lamps', l3: ['Desk Lamps', 'Bedside Lamps', 'Accent Lamps'] },
-    { l1: 'Lighting', l2: 'Wall Lights and Sconces', l3: ['Swing Arm Sconces', 'Candle Sconces', 'Picture Lights'] },
-    { l1: 'Seating', l2: 'Dining Chairs', l3: ['Side Chairs', 'Arm Chairs', 'Bar Stools'] },
-    { l1: 'Seating', l2: 'Stools', l3: ['Counter Stools', 'Footstools', 'Ottomans'] },
-    { l1: 'Tables', l2: 'Vanities', l3: ['Makeup Vanities', 'Dressing Tables', 'Bathroom Vanities'] },
+    // Drawings and Watercolor Paintings (8)
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Abstract Drawings', l3: ['Expressionism', 'Geometric', 'Gestural'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Figurative Drawings', l3: ['Portraits', 'Nudes', 'Narrative'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Landscape Drawings', l3: ['Seascape', 'Cityscape', 'Nature'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Still-life Drawings', l3: ['Floral', 'Food', 'Objects'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Abstract Watercolors', l3: ['Expressionism', 'Color Studies', 'Mixed Media'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Figurative Watercolors', l3: ['Portraits', 'Figures', 'Narrative'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Landscape Watercolors', l3: ['Seascape', 'Cityscape', 'Nature'] },
+    { l1: 'Drawings and Watercolor Paintings', l2: 'Still-life Watercolors', l3: ['Floral', 'Food', 'Objects'] },
+
+    // Mixed Media (5)
+    { l1: 'Mixed Media', l2: 'Collage', l3: ['Paper', 'Fabric', 'Found Objects'] },
+    { l1: 'Mixed Media', l2: 'Assemblage', l3: ['Wall Mounted', 'Freestanding', 'Relief'] },
+    { l1: 'Mixed Media', l2: 'Abstract Mixed Media', l3: ['Expressionism', 'Geometric', 'Textural'] },
+    { l1: 'Mixed Media', l2: 'Figurative Mixed Media', l3: ['Portraits', 'Figures', 'Narrative'] },
+    { l1: 'Mixed Media', l2: 'Installation Art', l3: ['Participatory', 'Site-specific', 'Multimedia'] },
+
+    // More Art (5)
+    { l1: 'More Art', l2: 'Digital Art', l3: ['NFTs', 'Prints', 'Generative'] },
+    { l1: 'More Art', l2: 'Street Art', l3: ['Graffiti', 'Stencils', 'Murals'] },
+    { l1: 'More Art', l2: 'Textile Art', l3: ['Tapestries', 'Fiber Art', 'Quilts'] },
+    { l1: 'More Art', l2: 'Ceramics', l3: ['Vessels', 'Sculptural', 'Functional'] },
+    { l1: 'More Art', l2: 'Glass Art', l3: ['Blown Glass', 'Stained Glass', 'Sculptural'] },
+
+    // Paintings (8)
+    { l1: 'Paintings', l2: 'Abstract Paintings', l3: ['Expressionism', 'Geometric', 'Color Field'] },
+    { l1: 'Paintings', l2: 'Animal Paintings', l3: ['Wildlife', 'Domestic', 'Marine Life'] },
+    { l1: 'Paintings', l2: 'Figurative Paintings', l3: ['Portraits', 'Nudes', 'Narrative'] },
+    { l1: 'Paintings', l2: 'Interior Paintings', l3: ['Domestic Scenes', 'Architectural', 'Still Life Settings'] },
+    { l1: 'Paintings', l2: 'Landscape Paintings', l3: ['Seascape', 'Cityscape', 'Nature'] },
+    { l1: 'Paintings', l2: 'Nude Paintings', l3: ['Classical', 'Contemporary', 'Abstract'] },
+    { l1: 'Paintings', l2: 'Portrait Paintings', l3: ['Single Figure', 'Group Portraits', 'Self-portraits'] },
+    { l1: 'Paintings', l2: 'Still-life Paintings', l3: ['Floral', 'Food', 'Objects'] },
+
+    // Photography (8)
+    { l1: 'Photography', l2: 'Abstract Photography', l3: ['Experimental', 'Color Studies', 'Light and Shadow'] },
+    { l1: 'Photography', l2: 'Documentary Photography', l3: ['Street', 'Photojournalism', 'Social Commentary'] },
+    { l1: 'Photography', l2: 'Fashion Photography', l3: ['Editorial', 'Commercial', 'Beauty'] },
+    { l1: 'Photography', l2: 'Fine Art Photography', l3: ['Black & White', 'Color', 'Digital'] },
+    { l1: 'Photography', l2: 'Landscape Photography', l3: ['Nature', 'Urban', 'Aerial'] },
+    { l1: 'Photography', l2: 'Portrait Photography', l3: ['Studio', 'Environmental', 'Candid'] },
+    { l1: 'Photography', l2: 'Still-life Photography', l3: ['Product', 'Food', 'Objects'] },
+    { l1: 'Photography', l2: 'Wildlife Photography', l3: ['Animals', 'Birds', 'Marine Life'] },
+
+    // Prints and Multiples (9)
+    { l1: 'Prints and Multiples', l2: 'Etchings', l3: ['Drypoint', 'Aquatint', 'Line Etching'] },
+    { l1: 'Prints and Multiples', l2: 'Giclée Prints', l3: ['Fine Art', 'Reproduction', 'Limited Edition'] },
+    { l1: 'Prints and Multiples', l2: 'Letterpress', l3: ['Posters', 'Typography', 'Illustrations'] },
+    { l1: 'Prints and Multiples', l2: 'Linocuts', l3: ['Relief', 'Reduction', 'Multi-block'] },
+    { l1: 'Prints and Multiples', l2: 'Lithographs', l3: ['Stone', 'Offset', 'Transfer'] },
+    { l1: 'Prints and Multiples', l2: 'Monotypes', l3: ['Abstract', 'Figurative', 'Landscape'] },
+    { l1: 'Prints and Multiples', l2: 'Screenprints', l3: ['Serigraph', 'Silkscreen', 'Stencil'] },
+    { l1: 'Prints and Multiples', l2: 'Woodcuts', l3: ['Relief', 'Wood Engraving', 'Japanese Woodblock'] },
+    { l1: 'Prints and Multiples', l2: 'Other Prints', l3: ['Posters', 'Reproductions', 'Limited Editions'] },
+
+    // Sculptures (4)
+    { l1: 'Sculptures', l2: 'Abstract Sculptures', l3: ['Geometric', 'Organic', 'Kinetic'] },
+    { l1: 'Sculptures', l2: 'Figurative Sculptures', l3: ['Bust', 'Full Figure', 'Torso'] },
+    { l1: 'Sculptures', l2: 'Outdoor Sculptures', l3: ['Garden', 'Monumental', 'Public Art'] },
+    { l1: 'Sculptures', l2: 'Wall-mounted Sculptures', l3: ['Relief', 'Hanging', 'Assemblage'] }
   ]
 
   const conditions = [
@@ -513,7 +491,7 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
     }
   }
 
-  const handleDateBlur = (value: string) => {
+  const handleCreationYearBlur = (value: string) => {
     calculatePeriod(value)
   }
 
@@ -538,12 +516,6 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
             View All Categories
           </button>
         </div>
-        {aiAssistEnabled && aiSuggestions.category && !selectedCategory && (
-          <AISuggestion
-            suggestion={`${aiSuggestions.category.l1} > ${aiSuggestions.category.l2}`}
-            onApply={() => setSelectedCategory(`${aiSuggestions.category!.l1} > ${aiSuggestions.category!.l2}`)}
-          />
-        )}
         <CategorySelectionModal
           isOpen={categoryModalOpen}
           onClose={() => setCategoryModalOpen(false)}
@@ -593,24 +565,49 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
             />
           )}
         </div>
-        <div className="form-row">
-          <div>
-            <TextInput
-              label="Date of Manufacture *"
-              value={dateOfManufacture}
-              onChange={setDateOfManufacture}
-              onBlur={handleDateBlur}
+        <div className="form-row" style={{ alignItems: 'flex-end' }}>
+          <div style={{ flex: '0 0 35%' }}>
+            <SearchableDropdown
+              label="Artist"
+              placeholder="Select an attribution"
+              options={attributionOptions}
+              value={attribution}
+              onChange={setAttribution}
+              disabled={artistUnknown}
             />
-            {aiAssistEnabled && aiSuggestions.dateOfManufacture && !dateOfManufacture && (
-              <AISuggestion
-                suggestion={aiSuggestions.dateOfManufacture}
-                onApply={() => {
-                  setDateOfManufacture(aiSuggestions.dateOfManufacture!)
-                  handleDateBlur(aiSuggestions.dateOfManufacture!)
-                }}
-              />
-            )}
           </div>
+          <div style={{ flex: '1' }}>
+            <SearchableDropdown
+              placeholder="Search for artist"
+              options={artistOptions}
+              value={artist}
+              onChange={setArtist}
+              disabled={artistUnknown}
+            />
+          </div>
+        </div>
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            className="checkbox-input"
+            checked={artistUnknown}
+            onChange={(e) => {
+              setArtistUnknown(e.target.checked)
+              if (e.target.checked) {
+                setAttribution('')
+                setArtist('')
+              }
+            }}
+          />
+          <span>The artist for this item is unknown</span>
+        </label>
+        <div className="form-row">
+          <TextInput
+            label="Creation Year *"
+            value={creationYear}
+            onChange={setCreationYear}
+            onBlur={handleCreationYearBlur}
+          />
           <div>
             <SearchableDropdown
               label="Period *"
@@ -627,20 +624,33 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
             )}
           </div>
         </div>
+        <SearchableDropdown
+          label="Medium *"
+          placeholder="Select medium"
+          options={mediumOptions}
+          value={medium}
+          onChange={setMedium}
+        />
         <div>
-          <MultiSelectDropdown
-            label="Materials *"
-            placeholder="Select materials"
-            options={materialOptions}
-            value={materials}
-            onChange={setMaterials}
-          />
-          {aiAssistEnabled && aiSuggestions.materials && materials.length === 0 && (
-            <AISuggestion
-              suggestion={aiSuggestions.materials.join(', ')}
-              onApply={() => setMaterials(aiSuggestions.materials!)}
+          <p className="optional-fields-label" style={{ marginTop: '16px', marginBottom: '8px' }}>Framing</p>
+          <label className="checkbox-label" style={{ marginBottom: '12px' }}>
+            <input
+              type="checkbox"
+              className="checkbox-input"
+              checked={frameIncluded}
+              onChange={(e) => setFrameIncluded(e.target.checked)}
             />
-          )}
+            <span>Frame Included</span>
+          </label>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              className="checkbox-input"
+              checked={framingOptionsAvailable}
+              onChange={(e) => setFramingOptionsAvailable(e.target.checked)}
+            />
+            <span>Framing Options Available</span>
+          </label>
         </div>
         <div>
           <ConditionDropdown
@@ -657,37 +667,6 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
             />
           )}
         </div>
-        <div>
-          <SearchableDropdown
-            label="Wear"
-            placeholder="Select wear"
-            options={wearOptions}
-            value={wear}
-            onChange={setWear}
-            disabled={condition === 'New'}
-          />
-          {aiAssistEnabled && aiSuggestions.wear && !wear && condition !== 'New' && (
-            <AISuggestion
-              suggestion={wearOptions.find(w => w.value === aiSuggestions.wear)?.label || aiSuggestions.wear}
-              onApply={() => setWear(aiSuggestions.wear!)}
-            />
-          )}
-        </div>
-        <div>
-          <MultiSelectDropdown
-            label="Restoration Work & Modifications *"
-            placeholder="Select restoration work"
-            options={restorationOptions}
-            value={restoration}
-            onChange={setRestoration}
-          />
-          {aiAssistEnabled && aiSuggestions.restoration && aiSuggestions.restoration.length > 0 && restoration.length === 0 && (
-            <AISuggestion
-              suggestion={aiSuggestions.restoration.join(', ')}
-              onApply={() => setRestoration(aiSuggestions.restoration!)}
-            />
-          )}
-        </div>
         <Textarea
           label="Do you have additional comments about the condition of this item?"
           placeholder="Describe any signs of wear, scratches, cracks, or other types of damage. Additionally, if any restorations been made, please describe the work here."
@@ -699,132 +678,103 @@ function ItemUploadForm({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUpl
         <div className="dimensions-row">
           <NumberInput
             label="Item Width"
-            suffix={aiSuggestions.dimensionUnit || 'in'}
-            value={itemWidth}
-            onChange={setItemWidth}
+            suffix="in"
           />
           <NumberInput
             label="Item Depth"
-            suffix={aiSuggestions.dimensionUnit || 'in'}
-            value={itemDepth}
-            onChange={setItemDepth}
+            suffix="in"
           />
           <NumberInput
             label="Item Height"
-            suffix={aiSuggestions.dimensionUnit || 'in'}
-            value={itemHeight}
-            onChange={setItemHeight}
+            suffix="in"
           />
         </div>
-        {aiAssistEnabled && aiSuggestions.dimensions && (itemWidth === 0 && itemDepth === 0 && itemHeight === 0) && (
-          <AISuggestion
-            suggestion={`${aiSuggestions.dimensions.width || '?'} x ${aiSuggestions.dimensions.depth || '?'} x ${aiSuggestions.dimensions.height || '?'} ${aiSuggestions.dimensionUnit || 'in'}`}
-            onApply={() => {
-              if (aiSuggestions.dimensions?.width) setItemWidth(aiSuggestions.dimensions.width)
-              if (aiSuggestions.dimensions?.depth) setItemDepth(aiSuggestions.dimensions.depth)
-              if (aiSuggestions.dimensions?.height) setItemHeight(aiSuggestions.dimensions.height)
-            }}
-          />
-        )}
-        <div>
-          <SearchableDropdown
-            label="Weight"
-            placeholder="Select weight"
-            options={weightOptions}
-            value={itemWeight}
-            onChange={setItemWeight}
-          />
-          {aiAssistEnabled && aiSuggestions.weight && !itemWeight && (
-            <AISuggestion
-              suggestion={weightOptions.find(w => w.value === aiSuggestions.weight)?.label || aiSuggestions.weight}
-              onApply={() => setItemWeight(aiSuggestions.weight!)}
-            />
-          )}
-        </div>
+        <SearchableDropdown
+          label="Weight"
+          placeholder="Select weight"
+          options={weightOptions}
+        />
         <div className="divider"></div>
         <p className="optional-fields-label">Additional Fields</p>
         <p className="additional-fields-subtext">Adding more fields helps your item get discovered</p>
-        <div>
-          <div className="creators-row">
-            <SearchableDropdown
-              label="Creators"
-              placeholder="Select an attribution"
-              options={attributionOptions}
-            />
-            <SearchableDropdown
-              placeholder="Search for creator"
-              options={creatorOptions}
-              value={creator}
-              onChange={setCreator}
-            />
-            <SearchableDropdown
-              placeholder="Select a role"
-              options={roleOptions}
-            />
+        <SearchableDropdown
+          label="Style"
+          placeholder="Select style"
+          options={styleOptions}
+          value={style}
+          onChange={setStyle}
+        />
+        <label className="checkbox-label" style={{ marginTop: '16px' }}>
+          <input
+            type="checkbox"
+            className="checkbox-input"
+            checked={showSizesAndEditions}
+            onChange={(e) => setShowSizesAndEditions(e.target.checked)}
+          />
+          <span>Add More Sizes and Editions</span>
+        </label>
+        {showSizesAndEditions && (
+          <div style={{ marginTop: '4px' }}>
+            {sizesAndEditions.map((item, index) => (
+              <div key={index} style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', marginBottom: '12px' }}>
+                <div style={{ flex: '1' }}>
+                  <TextInput
+                    label="Size and Edition"
+                    placeholder="e.g. 16 x 20, Edition of 50"
+                    value={item.size}
+                    onChange={(value) => handleSizeEditionChange(index, 'size', value)}
+                  />
+                </div>
+                <div style={{ flex: '1' }}>
+                  <NumberInput
+                    label="Price"
+                    placeholder="Enter amount"
+                    prefix="$"
+                    suffix="USD"
+                    value={item.price}
+                    onChange={(value) => handleSizeEditionChange(index, 'price', value)}
+                  />
+                </div>
+                {sizesAndEditions.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteSizeEdition(index)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: '20px',
+                      padding: '8px'
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              className="link-button"
+              onClick={handleAddSizeEdition}
+            >
+              Add Size and Edition
+            </button>
           </div>
-          {aiAssistEnabled && aiSuggestions.creator && !creator && (
-            <AISuggestion
-              suggestion={creatorOptions.find(c => c.value === aiSuggestions.creator)?.label || aiSuggestions.creator}
-              onApply={() => setCreator(aiSuggestions.creator!)}
-            />
-          )}
-        </div>
-        <div className="form-row">
-          <div>
-            <SearchableDropdown
-              label="Place of Origin"
-              placeholder="Select place of origin"
-              options={countryOptions}
-              value={placeOfOrigin}
-              onChange={setPlaceOfOrigin}
-            />
-            {aiAssistEnabled && aiSuggestions.placeOfOrigin && !placeOfOrigin && (
-              <AISuggestion
-                suggestion={countryOptions.find(c => c.value === aiSuggestions.placeOfOrigin)?.label || aiSuggestions.placeOfOrigin}
-                onApply={() => setPlaceOfOrigin(aiSuggestions.placeOfOrigin!)}
-              />
-            )}
-          </div>
-          <div>
-            <SearchableDropdown
-              label="Style"
-              placeholder="Select style"
-              options={styleOptions}
-              value={style}
-              onChange={setStyle}
-            />
-            {aiAssistEnabled && aiSuggestions.style && !style && (
-              <AISuggestion
-                suggestion={styleOptions.find(s => s.value === aiSuggestions.style)?.label || aiSuggestions.style}
-                onApply={() => setStyle(aiSuggestions.style!)}
-              />
-            )}
-          </div>
-        </div>
+        )}
       </div>
 
       <div className="form-section" id="description-section">
         <h3 className="description-heading">Description</h3>
           <p className="description-recommendation">Recommended length: 120 words.</p>
         <div className="description-section">
-          <div>
-            <Textarea
-              placeholder={`What makes this piece unique or special?
+          <Textarea
+            placeholder={`What makes this piece unique or special?
 Why is it worth the price?
 How would you describe it (and its condition) to someone who hasn't seen it in person?
 What is its background or history?
 What details would be useful for a potential buyer to know?`}
-              rows={12}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            {aiAssistEnabled && aiSuggestions.description && !description && (
-              <AISuggestion
-                suggestion={aiSuggestions.description.slice(0, 100) + (aiSuggestions.description.length > 100 ? '...' : '')}
-                onApply={() => setDescription(aiSuggestions.description!)}
-              />
-            )}
-          </div>
+            rows={12}
+          />
           <div className="description-tips">
             <div className="tips-header">
               <span className="tips-icon">💡</span>
@@ -1125,29 +1075,6 @@ What details would be useful for a potential buyer to know?`}
       </div>
     </>
   )
-import type { Vertical } from '../types/vertical'
-import ItemUploadFormFurniture from './ItemUploadFormFurniture'
-import ItemUploadFormArt from './ItemUploadFormArt'
-import ItemUploadFormFashion from './ItemUploadFormFashion'
-import ItemUploadFormJewelry from './ItemUploadFormJewelry'
-
-interface ItemUploadFormProps {
-  aiAssistEnabled?: boolean
-  vertical?: Vertical
 }
 
-function ItemUploadForm({ aiAssistEnabled = false, vertical = 'furniture' }: ItemUploadFormProps) {
-  switch (vertical) {
-    case 'art':
-      return <ItemUploadFormArt aiAssistEnabled={aiAssistEnabled} />
-    case 'fashion':
-      return <ItemUploadFormFashion aiAssistEnabled={aiAssistEnabled} />
-    case 'jewelry':
-      return <ItemUploadFormJewelry aiAssistEnabled={aiAssistEnabled} />
-    case 'furniture':
-    default:
-      return <ItemUploadFormFurniture aiAssistEnabled={aiAssistEnabled} />
-  }
-}
-
-export default ItemUploadForm
+export default ItemUploadFormArt
