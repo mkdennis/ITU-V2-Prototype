@@ -2,7 +2,8 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 6px;
+  margin-top: 8px;
+  margin-bottom: 4px;
   font-size: 14px;
 }
 
@@ -17,14 +18,49 @@
 .ai-suggestion-link {
   background: none;
   border: none;
-  padding: 0;
+  padding: 4px 8px;
   color: #436B93;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
   font-size: 14px;
   font-family: inherit;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .ai-suggestion-link:hover {
   color: #2d4a62;
+  background: linear-gradient(90deg,
+    rgba(67, 107, 147, 0.05) 0%,
+    rgba(67, 107, 147, 0.1) 50%,
+    rgba(67, 107, 147, 0.05) 100%
+  );
+  text-decoration: underline;
+}
+
+.ai-suggestion-link:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
 }

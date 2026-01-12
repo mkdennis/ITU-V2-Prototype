@@ -17,20 +17,14 @@ import AISuggestion from './AISuggestion'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
+import type { AISuggestions } from '../types/aiSuggestions'
+
 interface ItemUploadFormFurnitureProps {
   aiAssistEnabled?: boolean
+  aiSuggestions?: AISuggestions
 }
 
-interface AISuggestions {
-  title?: string
-  materials?: string[]
-  condition?: string
-  period?: string
-  style?: string
-  placeOfOrigin?: string
-}
-
-function ItemUploadFormFurniture({ aiAssistEnabled = false }: ItemUploadFormFurnitureProps) {
+function ItemUploadFormFurniture({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUploadFormFurnitureProps) {
   const [dateOfManufacture, setDateOfManufacture] = useState<string>('')
   const [period, setPeriod] = useState<string>('')
   const [materials, setMaterials] = useState<string[]>([])
@@ -40,6 +34,11 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false }: ItemUploadFormFurn
   const [title, setTitle] = useState<string>('')
   const [style, setStyle] = useState<string>('')
   const [placeOfOrigin, setPlaceOfOrigin] = useState<string>('')
+  const [creator, setCreator] = useState<string>('')
+  const [itemWidth, setItemWidth] = useState<number>(0)
+  const [itemDepth, setItemDepth] = useState<number>(0)
+  const [itemHeight, setItemHeight] = useState<number>(0)
+  const [itemWeight, setItemWeight] = useState<string>('')
   const [unlimitedQuantity, setUnlimitedQuantity] = useState<boolean>(false)
   const [listPrice, setListPrice] = useState<number>(0)
   const [negotiable, setNegotiable] = useState<boolean>(false)
@@ -242,16 +241,6 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false }: ItemUploadFormFurn
       zones.map(zone => zone.region === region ? { ...zone, shippingMethod: value } : zone)
     )
   }
-
-  // Dummy AI suggestions
-  const aiSuggestions: AISuggestions = aiAssistEnabled ? {
-    title: 'Mid-Century Modern Walnut Coffee Table',
-    materials: ['Walnut', 'Brass'],
-    condition: 'Good',
-    period: '1960-1969',
-    style: 'mid-century-modern',
-    placeOfOrigin: 'US'
-  } : {}
 
   const materialOptions = [
     'Brass',
@@ -543,6 +532,12 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false }: ItemUploadFormFurn
           >
             View All Categories
           </button>
+          {aiAssistEnabled && aiSuggestions.category && !selectedCategory && (
+            <AISuggestion
+              suggestion={`${aiSuggestions.category.l1} > ${aiSuggestions.category.l2}`}
+              onApply={() => setSelectedCategory(`${aiSuggestions.category!.l1} > ${aiSuggestions.category!.l2}`)}
+            />
+          )}
         </div>
         <CategorySelectionModal
           isOpen={categoryModalOpen}
@@ -594,12 +589,23 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false }: ItemUploadFormFurn
           )}
         </div>
         <div className="form-row">
-          <TextInput
-            label="Date of Manufacture *"
-            value={dateOfManufacture}
-            onChange={setDateOfManufacture}
-            onBlur={handleDateBlur}
-          />
+          <div>
+            <TextInput
+              label="Date of Manufacture *"
+              value={dateOfManufacture}
+              onChange={setDateOfManufacture}
+              onBlur={handleDateBlur}
+            />
+            {aiAssistEnabled && aiSuggestions.dateOfManufacture && !dateOfManufacture && (
+              <AISuggestion
+                suggestion={aiSuggestions.dateOfManufacture}
+                onApply={() => {
+                  setDateOfManufacture(aiSuggestions.dateOfManufacture!)
+                  handleDateBlur(aiSuggestions.dateOfManufacture!)
+                }}
+              />
+            )}
+          </div>
           <div>
             <SearchableDropdown
               label="Period *"
@@ -670,39 +676,75 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false }: ItemUploadFormFurn
         <div className="dimensions-row">
           <NumberInput
             label="Item Width"
-            suffix="in"
+            suffix={aiSuggestions.dimensionUnit || 'in'}
+            value={itemWidth}
+            onChange={setItemWidth}
           />
           <NumberInput
             label="Item Depth"
-            suffix="in"
+            suffix={aiSuggestions.dimensionUnit || 'in'}
+            value={itemDepth}
+            onChange={setItemDepth}
           />
           <NumberInput
             label="Item Height"
-            suffix="in"
+            suffix={aiSuggestions.dimensionUnit || 'in'}
+            value={itemHeight}
+            onChange={setItemHeight}
           />
         </div>
-        <SearchableDropdown
-          label="Weight"
-          placeholder="Select weight"
-          options={weightOptions}
-        />
+        {aiAssistEnabled && aiSuggestions.dimensions && (itemWidth === 0 && itemDepth === 0 && itemHeight === 0) && (
+          <AISuggestion
+            suggestion={`${aiSuggestions.dimensions.width || '?'} x ${aiSuggestions.dimensions.depth || '?'} x ${aiSuggestions.dimensions.height || '?'} ${aiSuggestions.dimensionUnit || 'in'}`}
+            onApply={() => {
+              if (aiSuggestions.dimensions?.width) setItemWidth(aiSuggestions.dimensions.width)
+              if (aiSuggestions.dimensions?.depth) setItemDepth(aiSuggestions.dimensions.depth)
+              if (aiSuggestions.dimensions?.height) setItemHeight(aiSuggestions.dimensions.height)
+            }}
+          />
+        )}
+        <div>
+          <SearchableDropdown
+            label="Weight"
+            placeholder="Select weight"
+            options={weightOptions}
+            value={itemWeight}
+            onChange={setItemWeight}
+          />
+          {aiAssistEnabled && aiSuggestions.weight && !itemWeight && (
+            <AISuggestion
+              suggestion={weightOptions.find(w => w.value === aiSuggestions.weight)?.label || aiSuggestions.weight}
+              onApply={() => setItemWeight(aiSuggestions.weight!)}
+            />
+          )}
+        </div>
         <div className="divider"></div>
         <p className="optional-fields-label">Additional Fields</p>
         <p className="additional-fields-subtext">Adding more fields helps your item get discovered</p>
-        <div className="creators-row">
-          <SearchableDropdown
-            label="Creators"
-            placeholder="Select an attribution"
-            options={attributionOptions}
-          />
-          <SearchableDropdown
-            placeholder="Search for creator"
-            options={creatorOptions}
-          />
-          <SearchableDropdown
-            placeholder="Select a role"
-            options={roleOptions}
-          />
+        <div>
+          <div className="creators-row">
+            <SearchableDropdown
+              label="Creators"
+              placeholder="Select an attribution"
+              options={attributionOptions}
+            />
+            <SearchableDropdown
+              placeholder="Search for creator"
+              options={creatorOptions}
+              value={creator}
+              onChange={setCreator}
+            />
+            <SearchableDropdown
+              placeholder="Select a role"
+              options={roleOptions}
+            />
+          </div>
+          {aiAssistEnabled && aiSuggestions.creator && !creator && (
+            <AISuggestion
+              suggestion={creatorOptions.find(c => c.value === aiSuggestions.creator)?.label || aiSuggestions.creator}
+              onApply={() => setCreator(aiSuggestions.creator!)}
+            />
+          )}
         </div>
         <div className="form-row">
           <div>

@@ -5,7 +5,8 @@ import FlowSelectionModal from './components/FlowSelectionModal'
 import AIAssistInput from './components/AIAssistInput'
 import AILoadingPage from './components/AILoadingPage'
 import ItemUploadForm from './components/ItemUploadForm'
-import { parseListingWithAI } from './services/aiAssistParser'
+import APIToggle, { type AIMode } from './components/APIToggle'
+import { parseListingWithAI, setAIMode } from './services/aiAssistParser'
 import type { AISuggestions } from './types/aiSuggestions'
 import type { Vertical } from './types/vertical'
 
@@ -17,6 +18,12 @@ function App() {
   const [aiSuggestions, setAiSuggestions] = useState<AISuggestions>({})
   const [isProcessing, setIsProcessing] = useState(false)
   const [selectedVertical, setSelectedVertical] = useState<Vertical>('furniture')
+  const [aiMode, setAiModeState] = useState<AIMode>('claude')
+
+  const handleAIModeChange = (mode: AIMode) => {
+    setAiModeState(mode)
+    setAIMode(mode)
+  }
 
   const handleGetStarted = (vertical: Vertical) => {
     setSelectedVertical(vertical)
@@ -96,9 +103,10 @@ function App() {
         <ItemUploadForm
           aiAssistEnabled={aiAssistEnabled}
           aiSuggestions={aiSuggestions}
+          vertical={selectedVertical}
         />
-        <ItemUploadForm aiAssistEnabled={aiAssistEnabled} vertical={selectedVertical} />
       )}
+      <APIToggle mode={aiMode} onModeChange={handleAIModeChange} />
     </>
   )
 }

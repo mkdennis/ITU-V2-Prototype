@@ -16,20 +16,14 @@ import AISuggestion from './AISuggestion'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
+import type { AISuggestions } from '../types/aiSuggestions'
+
 interface ItemUploadFormArtProps {
   aiAssistEnabled?: boolean
+  aiSuggestions?: AISuggestions
 }
 
-interface AISuggestions {
-  title?: string
-  materials?: string[]
-  condition?: string
-  period?: string
-  style?: string
-  placeOfOrigin?: string
-}
-
-function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) {
+function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUploadFormArtProps) {
   const [creationYear, setCreationYear] = useState<string>('')
   const [period, setPeriod] = useState<string>('')
   const [medium, setMedium] = useState<string>('')
@@ -266,16 +260,6 @@ function ItemUploadFormArt({ aiAssistEnabled = false }: ItemUploadFormArtProps) 
       setSizesAndEditions(newSizesAndEditions)
     }
   }
-
-  // Dummy AI suggestions
-  const aiSuggestions: AISuggestions = aiAssistEnabled ? {
-    title: 'Mid-Century Modern Walnut Coffee Table',
-    materials: ['Walnut', 'Brass'],
-    condition: 'Good',
-    period: '1960-1969',
-    style: 'mid-century-modern',
-    placeOfOrigin: 'US'
-  } : {}
 
   const mediumOptions = [
     { value: 'acrylic', label: 'Acrylic' },

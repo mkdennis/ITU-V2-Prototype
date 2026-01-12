@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './FlowSelectionModal.css'
 import Modal from './Modal'
 
@@ -7,7 +8,81 @@ interface FlowSelectionModalProps {
   onSelectStandard: () => void
 }
 
+const AI_ASSIST_PASSWORD = '1stDibs'
+
 function FlowSelectionModal({ isOpen, onSelectAIAssist, onSelectStandard }: FlowSelectionModalProps) {
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false)
+  const [password, setPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+
+  const handleAIAssistClick = () => {
+    setShowPasswordPrompt(true)
+    setPassword('')
+    setPasswordError('')
+  }
+
+  const handlePasswordSubmit = () => {
+    if (password === AI_ASSIST_PASSWORD) {
+      setShowPasswordPrompt(false)
+      setPassword('')
+      setPasswordError('')
+      onSelectAIAssist()
+    } else {
+      setPasswordError('Incorrect password. Please try again.')
+    }
+  }
+
+  const handlePasswordCancel = () => {
+    setShowPasswordPrompt(false)
+    setPassword('')
+    setPasswordError('')
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handlePasswordSubmit()
+    } else if (e.key === 'Escape') {
+      handlePasswordCancel()
+    }
+  }
+
+  if (showPasswordPrompt) {
+    return (
+      <Modal isOpen={isOpen} onClose={handlePasswordCancel}>
+        <div className="flow-selection-modal">
+          <div className="modal-header">
+            <h2 className="modal-title">AI Assist Access</h2>
+            <p className="modal-description">
+              Please enter the password to access AI Assist
+            </p>
+          </div>
+          <div className="password-prompt">
+            <input
+              type="password"
+              className="password-input"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
+              autoFocus
+            />
+            {passwordError && (
+              <p className="password-error">{passwordError}</p>
+            )}
+            <div className="password-buttons">
+              <button className="password-cancel-btn" onClick={handlePasswordCancel}>
+                Cancel
+              </button>
+              <button className="password-submit-btn" onClick={handlePasswordSubmit}>
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+    )
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={() => {}}>
       <div className="flow-selection-modal">
@@ -18,7 +93,7 @@ function FlowSelectionModal({ isOpen, onSelectAIAssist, onSelectStandard }: Flow
           </p>
         </div>
         <div className="flow-cards">
-          <div className="flow-card" onClick={onSelectAIAssist}>
+          <div className="flow-card" onClick={handleAIAssistClick}>
             <div className="flow-card-icon">
               <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
                 <path d="M40 10 L42 38 L70 40 L42 42 L40 70 L38 42 L10 40 L38 38 Z" fill="#436B93"/>
