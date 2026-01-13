@@ -13,6 +13,7 @@ import CategorySelectionModal from './CategorySelectionModal'
 import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import AISuggestion from './AISuggestion'
+import AISuggestionsBanner from './AISuggestionsBanner'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
@@ -479,10 +480,30 @@ function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: Item
     calculatePeriod(value)
   }
 
+  const applyAllSuggestions = () => {
+    // Apply title
+    if (aiSuggestions.title && !title) {
+      setTitle(aiSuggestions.title)
+    }
+
+    // Apply period
+    if (aiSuggestions.period && !period) {
+      setPeriod(aiSuggestions.period)
+    }
+
+    // Apply condition
+    if (aiSuggestions.condition && !condition) {
+      setCondition(aiSuggestions.condition)
+    }
+  }
+
   return (
     <>
       <NavigationHeader />
       <div className="app">
+        {aiAssistEnabled && (
+          <AISuggestionsBanner onApplyAll={applyAllSuggestions} />
+        )}
         <div className="form-section" id="basic-information-section">
           <h3>Basic Information</h3>
         <div className="category-field-wrapper">
