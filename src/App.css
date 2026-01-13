@@ -149,23 +149,27 @@
 }
 
 .view-all-categories-button {
-  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
   background-color: white;
-  border: 1px solid #DDDDDD;
+  border: 1px solid #436B93;
   border-radius: 4px;
   font-size: 14px;
-  color: #222222;
+  font-weight: 500;
+  color: #436B93;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s;
-  height: 44px;
+  height: 40px;
   margin-bottom: 0px;
   flex-shrink: 0;
+  font-family: inherit;
 }
 
 .view-all-categories-button:hover {
-  background-color: #F3F3F3;
-  border-color: #CCCCCC;
+  background-color: #436B93;
+  color: white;
 }
 
 .creators-row {

@@ -423,7 +423,7 @@ export function getL2Categories(): string[] {
   return categories.map(c => c.l2)
 }
 
-// Helper to get all L1 categories (top-level)
+// Helper to get all L1 categories (top-level), sorted alphabetically
 export function getL1Categories(): string[] {
-  return [...new Set(categories.map(c => c.l1))]
+  return [...new Set(categories.map(c => c.l1))].sort((a, b) => a.localeCompare(b))
 }
