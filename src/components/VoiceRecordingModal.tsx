@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import './VoiceRecordingModal.css'
 import Modal from './Modal'
-import AudioWaveform from './AudioWaveform'
+import LiveWaveform from './LiveWaveform'
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition'
 import { cleanupTranscribedText } from '../services/voiceTextCleanup'
 
@@ -20,9 +20,6 @@ function VoiceRecordingModal({
 }: VoiceRecordingModalProps) {
   const [recordingState, setRecordingState] = useState<RecordingState>('idle')
   const [error, setError] = useState<string | null>(null)
-  const [audioAnalyser, setAudioAnalyser] = useState<AnalyserNode | null>(null)
-  const audioContextRef = useRef<AudioContext | null>(null)
-  const mediaStreamRef = useRef<MediaStream | null>(null)
 
   const {
     isSupported,
@@ -35,47 +32,16 @@ function VoiceRecordingModal({
     browserSupportError
   } = useSpeechRecognition()
 
-  // Cleanup audio resources
-  const cleanupAudio = useCallback(() => {
-    if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach(track => track.stop())
-      mediaStreamRef.current = null
-    }
-    if (audioContextRef.current) {
-      audioContextRef.current.close()
-      audioContextRef.current = null
-    }
-    setAudioAnalyser(null)
-  }, [])
-
   // Handle starting recording
-  const handleStartRecording = useCallback(async () => {
+  const handleStartRecording = useCallback(() => {
     setError(null)
     setRecordingState('recording')
-
-    // Setup audio context for waveform visualization
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      mediaStreamRef.current = stream
-      const audioContext = new AudioContext()
-      audioContextRef.current = audioContext
-      const source = audioContext.createMediaStreamSource(stream)
-      const analyser = audioContext.createAnalyser()
-      analyser.fftSize = 256
-      source.connect(analyser)
-      setAudioAnalyser(analyser)
-    } catch (err) {
-      console.error('Microphone access error:', err)
-      // Continue anyway - waveform just won't show
-    }
-
     startListening()
   }, [startListening])
 
   // Handle stopping recording
   const handleStopRecording = useCallback(async () => {
     setRecordingState('processing')
-    cleanupAudio()
 
     // Wait for speech recognition to fully stop and get final transcript
     const textToClean = await stopListening()
@@ -96,19 +62,18 @@ function VoiceRecordingModal({
       setError('Failed to process transcription. Please try again.')
       setRecordingState('error')
     }
-  }, [stopListening, cleanupAudio, onTranscriptionComplete, resetTranscript])
+  }, [stopListening, onTranscriptionComplete, resetTranscript])
 
   // Handle modal close with cleanup
   const handleClose = useCallback(() => {
     if (isListening) {
       stopListening()
     }
-    cleanupAudio()
     resetTranscript()
     setRecordingState('idle')
     setError(null)
     onClose()
-  }, [isListening, stopListening, cleanupAudio, resetTranscript, onClose])
+  }, [isListening, stopListening, resetTranscript, onClose])
 
   // Handle retry from error state
   const handleRetry = useCallback(() => {
@@ -125,13 +90,6 @@ function VoiceRecordingModal({
       resetTranscript()
     }
   }, [isOpen, resetTranscript])
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      cleanupAudio()
-    }
-  }, [cleanupAudio])
 
   const displayTranscript = transcript + interimTranscript
   const showError = browserSupportError || error
@@ -166,9 +124,23 @@ function VoiceRecordingModal({
           {isSupported && (
             <>
               <div className="waveform-container">
-                <AudioWaveform
-                  analyser={audioAnalyser}
-                  isActive={recordingState === 'recording'}
+                <LiveWaveform
+                  active={recordingState === 'recording'}
+                  processing={recordingState === 'processing'}
+                  mode="static"
+                  barWidth={5}
+                  barGap={1}
+                  barRadius={1.5}
+                  barHeight={4}
+                  barColor="#3b82f6"
+                  fadeEdges={true}
+                  fadeWidth={24}
+                  height={96}
+                  sensitivity={1}
+                  smoothingTimeConstant={0.8}
+                  fftSize={256}
+                  historySize={60}
+                  updateRate={30}
                 />
               </div>
 
