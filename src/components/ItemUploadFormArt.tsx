@@ -887,6 +887,7 @@ What details would be useful for a potential buyer to know?`}
         </div>
 
         <div className="pricing-options-content">
+          <div className="divider"></div>
           <div className="net-price-section">
             <div className="net-price-row">
               <NumberInput

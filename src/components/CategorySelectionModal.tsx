@@ -20,8 +20,8 @@ function CategorySelectionModal({ isOpen, onClose, onSelect, categories }: Categ
   const [selectedL2, setSelectedL2] = useState<string>('')
   const [selectedL3, setSelectedL3] = useState<string>('')
 
-  // Get unique L1 categories
-  const l1Categories = Array.from(new Set(categories.map(c => c.l1)))
+  // Get unique L1 categories, sorted alphabetically
+  const l1Categories = Array.from(new Set(categories.map(c => c.l1))).sort((a, b) => a.localeCompare(b))
 
   // Get L2 categories for selected L1
   const l2Categories = selectedL1
