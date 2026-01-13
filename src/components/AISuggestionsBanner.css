@@ -1,0 +1,76 @@
+.ai-suggestions-banner {
+  background-color: #eef1f7;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 20px 0 30px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid #d6dce8;
+}
+
+.ai-suggestions-banner-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+}
+
+.ai-suggestions-banner-icon {
+  font-size: 24px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.ai-suggestions-banner-text {
+  flex: 1;
+}
+
+.ai-suggestions-banner-text strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a2332;
+  margin-bottom: 6px;
+}
+
+.ai-suggestions-banner-text p {
+  font-size: 14px;
+  color: #5a6c7d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ai-suggestions-apply-all-button {
+  background-color: #436B93;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.ai-suggestions-apply-all-button:hover {
+  background-color: #345577;
+}
+
+.ai-suggestions-apply-all-button:active {
+  background-color: #2a4562;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+  .ai-suggestions-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ai-suggestions-apply-all-button {
+    width: 100%;
+  }
+}

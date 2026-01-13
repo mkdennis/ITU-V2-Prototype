@@ -14,6 +14,7 @@ import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
+import AISuggestionsBanner from './AISuggestionsBanner'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
@@ -507,10 +508,45 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
     calculatePeriod(value)
   }
 
+  const applyAllSuggestions = () => {
+    // Apply title
+    if (aiSuggestions.title && !title) {
+      setTitle(aiSuggestions.title)
+    }
+
+    // Apply period
+    if (aiSuggestions.period && !period) {
+      setPeriod(aiSuggestions.period)
+    }
+
+    // Apply materials
+    if (aiSuggestions.materials && materials.length === 0) {
+      setMaterials(aiSuggestions.materials)
+    }
+
+    // Apply condition
+    if (aiSuggestions.condition && !condition) {
+      setCondition(aiSuggestions.condition)
+    }
+
+    // Apply place of origin
+    if (aiSuggestions.placeOfOrigin && !placeOfOrigin) {
+      setPlaceOfOrigin(aiSuggestions.placeOfOrigin)
+    }
+
+    // Apply style
+    if (aiSuggestions.style && !style) {
+      setStyle(aiSuggestions.style)
+    }
+  }
+
   return (
     <>
       <NavigationHeader />
       <div className="app">
+        {aiAssistEnabled && (
+          <AISuggestionsBanner onApplyAll={applyAllSuggestions} />
+        )}
         <div className="form-section" id="basic-information-section">
           <h3>Basic Information</h3>
         <div className="category-field-wrapper">

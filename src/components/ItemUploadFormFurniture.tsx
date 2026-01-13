@@ -15,6 +15,7 @@ import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
+import AISuggestionsBanner from './AISuggestionsBanner'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
@@ -493,10 +494,73 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false, aiSuggestions = {} }
     calculatePeriod(value)
   }
 
+  const applyAllSuggestions = () => {
+    // Apply category
+    if (aiSuggestions.category && !selectedCategory) {
+      setSelectedCategory(`${aiSuggestions.category.l1} > ${aiSuggestions.category.l2}`)
+    }
+
+    // Apply title
+    if (aiSuggestions.title && !title) {
+      setTitle(aiSuggestions.title)
+    }
+
+    // Apply date of manufacture
+    if (aiSuggestions.dateOfManufacture && !dateOfManufacture) {
+      setDateOfManufacture(aiSuggestions.dateOfManufacture)
+      handleDateBlur(aiSuggestions.dateOfManufacture)
+    }
+
+    // Apply period
+    if (aiSuggestions.period && !period) {
+      setPeriod(aiSuggestions.period)
+    }
+
+    // Apply materials
+    if (aiSuggestions.materials && materials.length === 0) {
+      setMaterials(aiSuggestions.materials)
+    }
+
+    // Apply condition
+    if (aiSuggestions.condition && !condition) {
+      setCondition(aiSuggestions.condition)
+    }
+
+    // Apply dimensions
+    if (aiSuggestions.dimensions && itemWidth === 0 && itemDepth === 0 && itemHeight === 0) {
+      if (aiSuggestions.dimensions.width) setItemWidth(aiSuggestions.dimensions.width)
+      if (aiSuggestions.dimensions.depth) setItemDepth(aiSuggestions.dimensions.depth)
+      if (aiSuggestions.dimensions.height) setItemHeight(aiSuggestions.dimensions.height)
+    }
+
+    // Apply weight
+    if (aiSuggestions.weight && !itemWeight) {
+      setItemWeight(aiSuggestions.weight)
+    }
+
+    // Apply creator
+    if (aiSuggestions.creator && !creator) {
+      setCreator(aiSuggestions.creator)
+    }
+
+    // Apply place of origin
+    if (aiSuggestions.placeOfOrigin && !placeOfOrigin) {
+      setPlaceOfOrigin(aiSuggestions.placeOfOrigin)
+    }
+
+    // Apply style
+    if (aiSuggestions.style && !style) {
+      setStyle(aiSuggestions.style)
+    }
+  }
+
   return (
     <>
       <NavigationHeader />
       <div className="app">
+        {aiAssistEnabled && (
+          <AISuggestionsBanner onApplyAll={applyAllSuggestions} />
+        )}
         <div className="form-section" id="basic-information-section">
           <h3>Basic Information</h3>
         <div>
