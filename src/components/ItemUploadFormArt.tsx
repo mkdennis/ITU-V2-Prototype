@@ -279,6 +279,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: Item
     { value: 'marble', label: 'Marble' },
     { value: 'mixed-media', label: 'Mixed Media' },
     { value: 'oil', label: 'Oil' },
+    { value: 'offset-print', label: 'Offset Print' },
     { value: 'pastel', label: 'Pastel' },
     { value: 'photography', label: 'Photography' },
     { value: 'porcelain', label: 'Porcelain' },
@@ -329,7 +330,8 @@ function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: Item
     { value: 'robert-rauschenberg', label: 'Robert Rauschenberg' },
     { value: 'francis-bacon', label: 'Francis Bacon' },
     { value: 'lucian-freud', label: 'Lucian Freud' },
-    { value: 'jackson-pollock', label: 'Jackson Pollock' }
+    { value: 'jackson-pollock', label: 'Jackson Pollock' },
+    { value: 'walasse-ting', label: 'Walasse Ting' }
   ]
 
   const styleOptions = [
