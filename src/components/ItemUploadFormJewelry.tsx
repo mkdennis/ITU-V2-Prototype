@@ -268,13 +268,6 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
     )
   }
 
-  const weightOptions = [
-    { value: 'less-40', label: 'Less than 40 lbs (<18 kilos)' },
-    { value: '40-70', label: 'Between 40-70 lbs (18-31 kilos)' },
-    { value: '70-200', label: 'Between 70-200 lbs (31-90 kilos)' },
-    { value: 'more-200', label: 'More than 200 lbs (90+ kilos)' }
-  ]
-
   // Calculate period from year
   const calculatePeriod = (yearString: string) => {
     const year = parseInt(yearString)
