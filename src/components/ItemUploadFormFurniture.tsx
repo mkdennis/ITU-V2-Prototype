@@ -591,6 +591,7 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false, aiSuggestions = {} }
           onClose={() => setCategoryModalOpen(false)}
           onSelect={setSelectedCategory}
           categories={categories}
+          l1Filter="Furniture"
         />
         <RadioButtonGroup
           label="Sell as * (cannot be edited after submission)"
