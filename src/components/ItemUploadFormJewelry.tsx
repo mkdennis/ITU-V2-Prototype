@@ -379,6 +379,7 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
           onClose={() => setCategoryModalOpen(false)}
           onSelect={setSelectedCategory}
           categories={jewelryCategories}
+          l1Filter="Jewelry"
         />
         <RadioButtonGroup
           label="Sell as * (cannot be edited after submission)"
