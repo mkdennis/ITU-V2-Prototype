@@ -35,6 +35,14 @@ export interface AISuggestions {
   placeOfOrigin?: string
   style?: string
 
+  // Jewelry-specific fields
+  gender?: string
+  stones?: string[]
+  stoneCuts?: string[]
+  metals?: string[]
+  otherCharacteristics?: string[]
+  customization?: string
+
   // Description
   description?: string
 }

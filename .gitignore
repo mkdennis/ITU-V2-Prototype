@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Specs directory (optional)
+# Uncomment the line below if you're using a symlinked private specs repo
+# specs/
