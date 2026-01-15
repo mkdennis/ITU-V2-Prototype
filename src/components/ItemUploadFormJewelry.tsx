@@ -486,7 +486,7 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
             onChange={setDiameter}
           />
         </div>
-        <div className="form-row" style={{ alignItems: 'flex-end' }}>
+        <div className="form-row" style={{ alignItems: 'flex-end', gridTemplateColumns: weightUnit === 'Enter Custom Unit' ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)' }}>
           <NumberInput
             label="Weight"
             placeholder="Enter weight"
