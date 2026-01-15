@@ -5385,3 +5385,65 @@ export const jewelryStyleOptions: LabeledOption[] = [
   { value: 'victorian', label: 'Victorian' },
   { value: 'william-iv', label: 'William IV' }
 ]
+
+export const metalOptions: string[] = [
+  '10k Gold',
+  '14k Gold',
+  '15k Gold',
+  '18k Gold',
+  '22k Gold',
+  '24k Gold',
+  '9k Gold',
+  'Base Metal',
+  'Berlin Iron',
+  'Brass',
+  'Britannia Standard Silver',
+  'Bronze',
+  'Copper',
+  'Cut Steel',
+  'Enamel',
+  'Gilt Metal',
+  'Gold',
+  'Gold Plate',
+  'Gold-filled',
+  'Metal',
+  'Mixed Metal',
+  'Niello',
+  'Other',
+  'PVD-Coated',
+  'Palladium',
+  'Pinchbeck',
+  'Platinum',
+  'Rhodium',
+  'Rose Gold',
+  'Shakudo',
+  'Sheffield Plate',
+  'Silver',
+  'Silver Plate',
+  'Stainless Steel',
+  'Steel',
+  'Sterling Silver',
+  'Titanium',
+  'Vermeil',
+  'White Gold',
+  'Yellow Gold'
+]
+
+export const genderOptions: string[] = [
+  "Women's",
+  "Men's",
+  "Unisex"
+]
+
+export const jewelryRestorationOptions: string[] = [
+  'Repairs',
+  'Replacements',
+  'Additions or Alterations to Original',
+  'Polishing'
+]
+
+export const jewelryWearOptions: LabeledOption[] = [
+  { value: 'consistent', label: 'Wear consistent with age and use' },
+  { value: 'minor-losses', label: 'Minor Losses' },
+  { value: 'original-box', label: 'In original box' }
+]
