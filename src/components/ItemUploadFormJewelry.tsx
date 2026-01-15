@@ -393,13 +393,6 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
           value={stones}
           onChange={setStones}
         />
-        <MultiSelectDropdown
-          label="Metals"
-          placeholder="Select metals"
-          options={metalOptions}
-          value={metals}
-          onChange={setMetals}
-        />
         {stones.length > 0 && (
           <MultiSelectDropdown
             label="Stone Cut"
@@ -420,6 +413,13 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
             <span>Lab report available</span>
           </label>
         )}
+        <MultiSelectDropdown
+          label="Metals"
+          placeholder="Select metals"
+          options={metalOptions}
+          value={metals}
+          onChange={setMetals}
+        />
         <div>
           <ConditionDropdown
             label="Item Condition *"
