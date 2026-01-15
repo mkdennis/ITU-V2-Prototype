@@ -14,25 +14,12 @@ import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import MultiSelectDropdown from './MultiSelectDropdown'
 import AISuggestion from './AISuggestion'
-import AISuggestionsBanner from './AISuggestionsBanner'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
 import type { AISuggestions } from '../types/aiSuggestions'
-import {
-  jewelryCategories,
-  genderOptions,
-  stoneOptions,
-  stoneCutOptions,
-  metalOptions,
-  otherCharacteristicsOptions,
-  jewelryStyleOptions,
-  jewelryCreatorOptions,
-  jewelryConditions,
-  jewelryWearOptions,
-  jewelryRestorationOptions,
-} from '../data/jewelryOptions'
-import { countryOptions, periods } from '../data/formOptions'
+import { jewelryCreatorOptions, stoneOptions, stoneCutOptions, jewelryStyleOptions } from '../data/jewelryOptions'
+import { categories, conditions, periods, materialOptions, wearOptions, restorationOptions, weightOptions, attributionOptions, roleOptions, countryOptions } from '../data/formOptions'
 
 interface ItemUploadFormJewelryProps {
   aiAssistEnabled?: boolean
@@ -42,20 +29,18 @@ interface ItemUploadFormJewelryProps {
 function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: ItemUploadFormJewelryProps) {
   const [dateOfManufacture, setDateOfManufacture] = useState<string>('')
   const [period, setPeriod] = useState<string>('')
+  const [materials, setMaterials] = useState<string[]>([])
+  const [stone, setStone] = useState<string>('')
+  const [stoneCut, setStoneCut] = useState<string>('')
+  const [labReportAvailable, setLabReportAvailable] = useState<boolean>(false)
   const [condition, setCondition] = useState<string>('')
-  const [wear, setWear] = useState<string>('')
   const [restoration, setRestoration] = useState<string[]>([])
   const [conditionComments, setConditionComments] = useState<string>('')
   const [title, setTitle] = useState<string>('')
-  const [creator, setCreator] = useState<string>('')
-  const [gender, setGender] = useState<string>('')
   const [style, setStyle] = useState<string>('')
   const [placeOfOrigin, setPlaceOfOrigin] = useState<string>('')
-  const [stones, setStones] = useState<string[]>([])
-  const [stoneCuts, setStoneCuts] = useState<string[]>([])
-  const [metals, setMetals] = useState<string[]>([])
-  const [otherCharacteristics, setOtherCharacteristics] = useState<string[]>([])
-  const [customization, setCustomization] = useState<string>('')
+  const [weightUnit, setWeightUnit] = useState<string>('')
+  const [customWeightUnit, setCustomWeightUnit] = useState<string>('')
   const [unlimitedQuantity, setUnlimitedQuantity] = useState<boolean>(false)
   const [listPrice, setListPrice] = useState<number>(0)
   const [negotiable, setNegotiable] = useState<boolean>(false)
@@ -67,15 +52,6 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [netPrice, setNetPrice] = useState<number>(0)
   const [autoOfferPrice, setAutoOfferPrice] = useState<number>(0)
-
-  // Handle stones change with stone cut clearing
-  const handleStonesChange = (newStones: string[]) => {
-    setStones(newStones)
-    // Clear stone cuts if no stones selected
-    if (newStones.length === 0) {
-      setStoneCuts([])
-    }
-  }
 
   // Image state
   const [primaryImage, setPrimaryImage] = useState<string | null>(null)
@@ -268,6 +244,9 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
     )
   }
 
+  // Filter categories to show only Jewelry vertical
+  const jewelryCategories = categories.filter(cat => cat.l1 === 'Jewelry')
+
   // Calculate period from year
   const calculatePeriod = (yearString: string) => {
     const year = parseInt(yearString)
@@ -293,70 +272,10 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
     calculatePeriod(value)
   }
 
-  const applyAllSuggestions = () => {
-    // Apply title
-    if (aiSuggestions.title && !title) {
-      setTitle(aiSuggestions.title)
-    }
-
-    // Apply period
-    if (aiSuggestions.period && !period) {
-      setPeriod(aiSuggestions.period)
-    }
-
-    // Apply condition
-    if (aiSuggestions.condition && !condition) {
-      setCondition(aiSuggestions.condition)
-    }
-
-    // Apply place of origin
-    if (aiSuggestions.placeOfOrigin && !placeOfOrigin) {
-      setPlaceOfOrigin(aiSuggestions.placeOfOrigin)
-    }
-
-    // Apply style
-    if (aiSuggestions.style && !style) {
-      setStyle(aiSuggestions.style)
-    }
-
-    // Apply gender
-    if (aiSuggestions.gender && !gender) {
-      setGender(aiSuggestions.gender)
-    }
-
-    // Apply stones
-    if (aiSuggestions.stones && stones.length === 0) {
-      setStones(aiSuggestions.stones)
-    }
-
-    // Apply stone cuts
-    if (aiSuggestions.stoneCuts && stoneCuts.length === 0) {
-      setStoneCuts(aiSuggestions.stoneCuts)
-    }
-
-    // Apply metals
-    if (aiSuggestions.metals && metals.length === 0) {
-      setMetals(aiSuggestions.metals)
-    }
-
-    // Apply other characteristics
-    if (aiSuggestions.otherCharacteristics && otherCharacteristics.length === 0) {
-      setOtherCharacteristics(aiSuggestions.otherCharacteristics)
-    }
-
-    // Apply customization
-    if (aiSuggestions.customization && !customization) {
-      setCustomization(aiSuggestions.customization)
-    }
-  }
-
   return (
     <>
       <NavigationHeader />
       <div className="app">
-        {aiAssistEnabled && (
-          <AISuggestionsBanner onApplyAll={applyAllSuggestions} />
-        )}
         <div className="form-section" id="basic-information-section">
           <h3>Basic Information</h3>
         <div className="category-field-wrapper">
@@ -379,7 +298,6 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
           onClose={() => setCategoryModalOpen(false)}
           onSelect={setSelectedCategory}
           categories={jewelryCategories}
-          l1Filter="Jewelry"
         />
         <RadioButtonGroup
           label="Sell as * (cannot be edited after submission)"
@@ -447,25 +365,53 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
             )}
           </div>
         </div>
-        <SearchableDropdown
-          label="Creator/Brand"
-          placeholder="Search for creator or brand"
-          options={jewelryCreatorOptions}
-          value={creator}
-          onChange={setCreator}
-        />
-        <SearchableDropdown
-          label="Gender"
-          placeholder="Select gender"
-          options={genderOptions}
-          value={gender}
-          onChange={setGender}
-        />
+        <div>
+          <MultiSelectDropdown
+            label="Materials *"
+            placeholder="Select materials"
+            options={materialOptions}
+            value={materials}
+            onChange={setMaterials}
+          />
+          {aiAssistEnabled && aiSuggestions.materials && materials.length === 0 && (
+            <AISuggestion
+              suggestion={aiSuggestions.materials.join(', ')}
+              onApply={() => setMaterials(aiSuggestions.materials!)}
+            />
+          )}
+        </div>
+        <div className="form-row">
+          <SearchableDropdown
+            label="Stone"
+            placeholder="Select stone type"
+            options={stoneOptions}
+            value={stone}
+            onChange={setStone}
+          />
+          <SearchableDropdown
+            label="Stone Cut"
+            placeholder="Select stone cut"
+            options={stoneCutOptions}
+            value={stoneCut}
+            onChange={setStoneCut}
+          />
+        </div>
+        {stoneCut && (
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              className="checkbox-input"
+              checked={labReportAvailable}
+              onChange={(e) => setLabReportAvailable(e.target.checked)}
+            />
+            <span>Lab report available</span>
+          </label>
+        )}
         <div>
           <ConditionDropdown
             label="Item Condition *"
             placeholder="Select condition"
-            conditions={jewelryConditions}
+            conditions={conditions}
             value={condition}
             onChange={setCondition}
           />
@@ -479,21 +425,19 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
         <SearchableDropdown
           label="Wear"
           placeholder="Select wear"
-          options={jewelryWearOptions}
-          value={wear}
-          onChange={setWear}
+          options={wearOptions}
           disabled={condition === 'New'}
         />
         <MultiSelectDropdown
-          label="Restoration Work & Modifications"
+          label="Restoration Work & Modifications *"
           placeholder="Select restoration work"
-          options={jewelryRestorationOptions}
+          options={restorationOptions}
           value={restoration}
           onChange={setRestoration}
         />
         <Textarea
-          label="Additional Comments"
-          placeholder="Describe any signs of wear, scratches, or damage. If restorations have been made, please describe the work here."
+          label="Do you have additional comments about the condition of this item?"
+          placeholder="Describe any signs of wear, scratches, cracks, or other types of damage. Additionally, if any restorations been made, please describe the work here."
           rows={4}
           value={conditionComments}
           onChange={(e) => setConditionComments(e.target.value)}
@@ -502,20 +446,65 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
         <div className="dimensions-row">
           <NumberInput
             label="Item Width"
-            suffix="mm"
+            suffix="in"
           />
           <NumberInput
             label="Item Depth"
-            suffix="mm"
+            suffix="in"
           />
           <NumberInput
             label="Item Height"
-            suffix="mm"
+            suffix="in"
           />
         </div>
+        <div className="form-row">
+          <SearchableDropdown
+            label="Weight"
+            placeholder="Select weight"
+            options={weightOptions}
+          />
+          {weightUnit === 'custom' ? (
+            <TextInput
+              label=""
+              placeholder="Enter custom unit"
+              value={customWeightUnit}
+              onChange={setCustomWeightUnit}
+            />
+          ) : (
+            <div className="dropdown-container" style={{ marginTop: '0' }}>
+              <select
+                className="discount-dropdown"
+                value={weightUnit}
+                onChange={(e) => setWeightUnit(e.target.value)}
+                style={{ height: '40px' }}
+              >
+                <option value="">Enter custom unit</option>
+                <option value="ct">Carat (ct)</option>
+                <option value="g">Grams (g)</option>
+                <option value="toz">Troy Ounces (t oz)</option>
+                <option value="custom">Use Custom Field</option>
+              </select>
+            </div>
+          )}
+        </div>
         <div className="divider"></div>
-        <p className="optional-fields-label">Additional Details</p>
+        <p className="optional-fields-label">Additional Fields</p>
         <p className="additional-fields-subtext">Adding more fields helps your item get discovered</p>
+        <div className="creators-row">
+          <SearchableDropdown
+            label="Creators"
+            placeholder="Select an attribution"
+            options={attributionOptions}
+          />
+          <SearchableDropdown
+            placeholder="Search for creator"
+            options={jewelryCreatorOptions}
+          />
+          <SearchableDropdown
+            placeholder="Select a role"
+            options={roleOptions}
+          />
+        </div>
         <div className="form-row">
           <div>
             <SearchableDropdown
@@ -548,50 +537,6 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
             )}
           </div>
         </div>
-        <div>
-          <MultiSelectDropdown
-            label="Stone(s)"
-            placeholder="Select stones"
-            options={stoneOptions}
-            value={stones}
-            onChange={handleStonesChange}
-          />
-        </div>
-        {stones.length > 0 && (
-          <div>
-            <MultiSelectDropdown
-              label="Stone Cut"
-              placeholder="Select stone cuts"
-              options={stoneCutOptions}
-              value={stoneCuts}
-              onChange={setStoneCuts}
-            />
-          </div>
-        )}
-        <div>
-          <MultiSelectDropdown
-            label="Metal(s)"
-            placeholder="Select metals"
-            options={metalOptions}
-            value={metals}
-            onChange={setMetals}
-          />
-        </div>
-        <div>
-          <MultiSelectDropdown
-            label="Other Characteristics"
-            placeholder="Select characteristics"
-            options={otherCharacteristicsOptions}
-            value={otherCharacteristics}
-            onChange={setOtherCharacteristics}
-          />
-        </div>
-        <TextInput
-          label="Customization"
-          placeholder="Enter customization details"
-          value={customization}
-          onChange={setCustomization}
-        />
       </div>
 
       <div className="form-section" id="description-section">
