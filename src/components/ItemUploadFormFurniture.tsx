@@ -1,5 +1,5 @@
 import '../App.css'
-import { categories } from '../data/formOptions'
+import { categoriesByVertical } from '../data/formOptions'
 import RadioButtonGroup from './RadioButtonGroup'
 import NumberInput from './NumberInput'
 import TextInput from './TextInput'
@@ -495,9 +495,10 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false, aiSuggestions = {} }
   }
 
   const applyAllSuggestions = () => {
-    // Apply category
+    // Apply category (l1 is L2 name, l2 is L3 name in optionMatcher output)
     if (aiSuggestions.category && !selectedCategory) {
-      setSelectedCategory(`${aiSuggestions.category.l1} > ${aiSuggestions.category.l2}`)
+      const { l1, l2 } = aiSuggestions.category
+      setSelectedCategory(l2 ? `${l1} > ${l2}` : l1)
     }
 
     // Apply title
@@ -568,7 +569,7 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false, aiSuggestions = {} }
             <SearchableCategoryDropdown
               label="Category *"
               placeholder="Select a category"
-              categories={categories}
+              categories={categoriesByVertical.Furniture}
               value={selectedCategory}
               onChange={setSelectedCategory}
             />
@@ -581,8 +582,11 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false, aiSuggestions = {} }
           </div>
           {aiAssistEnabled && aiSuggestions.category && !selectedCategory && (
             <AISuggestion
-              suggestion={`${aiSuggestions.category.l1} > ${aiSuggestions.category.l2}`}
-              onApply={() => setSelectedCategory(`${aiSuggestions.category!.l1} > ${aiSuggestions.category!.l2}`)}
+              suggestion={aiSuggestions.category.l2 ? `${aiSuggestions.category.l1} > ${aiSuggestions.category.l2}` : aiSuggestions.category.l1}
+              onApply={() => {
+                const { l1, l2 } = aiSuggestions.category!
+                setSelectedCategory(l2 ? `${l1} > ${l2}` : l1)
+              }}
             />
           )}
         </div>
@@ -590,8 +594,7 @@ function ItemUploadFormFurniture({ aiAssistEnabled = false, aiSuggestions = {} }
           isOpen={categoryModalOpen}
           onClose={() => setCategoryModalOpen(false)}
           onSelect={setSelectedCategory}
-          categories={categories}
-          l1Filter="Furniture"
+          categories={categoriesByVertical.Furniture}
         />
         <RadioButtonGroup
           label="Sell as * (cannot be edited after submission)"

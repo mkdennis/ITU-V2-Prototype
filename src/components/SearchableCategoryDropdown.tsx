@@ -1,26 +1,22 @@
 import { useState, useRef, useEffect } from 'react'
 import './SearchableCategoryDropdown.css'
 import chevronDown from '/Chevon Down.svg'
-
-interface Category {
-  l1: string
-  l2: string
-}
+import type { VerticalCategory } from '../types/aiSuggestions'
 
 interface SearchableCategoryDropdownProps {
   label?: string
   placeholder: string
   value?: string
   onChange?: (value: string) => void
-  categories: Category[]
+  categories: VerticalCategory[]
 }
 
-function SearchableCategoryDropdown({ 
-  label, 
-  placeholder, 
-  value, 
-  onChange, 
-  categories = [] 
+function SearchableCategoryDropdown({
+  label,
+  placeholder,
+  value,
+  onChange,
+  categories = []
 }: SearchableCategoryDropdownProps) {
   const [inputValue, setInputValue] = useState<string>(value || '')
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -40,7 +36,7 @@ function SearchableCategoryDropdown({
 
   // Recent categories to show when field is empty
   const recentCategories = [
-    'Seating > Dining Chairs',
+    'Seating > Dining Room Chairs',
     'Seating > Stools',
     'Tables > Vanities'
   ]
@@ -52,12 +48,24 @@ function SearchableCategoryDropdown({
     }
 
     const lowerSearch = searchTerm.toLowerCase()
-    return categories
-      .filter(category => 
-        category.l1.toLowerCase().includes(lowerSearch) ||
-        category.l2.toLowerCase().includes(lowerSearch)
-      )
-      .map(category => `${category.l1} > ${category.l2}`)
+    const results: string[] = []
+
+    categories.forEach(category => {
+      // Check if L2 matches
+      if (category.l2.toLowerCase().includes(lowerSearch)) {
+        results.push(category.l2)
+      }
+      // Check if any L3 matches
+      if (category.l3) {
+        category.l3.forEach(l3 => {
+          if (l3.toLowerCase().includes(lowerSearch)) {
+            results.push(`${category.l2} > ${l3}`)
+          }
+        })
+      }
+    })
+
+    return results
   }
 
   // Determine what to show: recent categories or filtered suggestions
@@ -117,7 +125,7 @@ function SearchableCategoryDropdown({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault()
-        setHighlightedIndex(prev => 
+        setHighlightedIndex(prev =>
           prev < displaySuggestions.length - 1 ? prev + 1 : prev
         )
         break
@@ -248,4 +256,3 @@ function SearchableCategoryDropdown({
 }
 
 export default SearchableCategoryDropdown
-

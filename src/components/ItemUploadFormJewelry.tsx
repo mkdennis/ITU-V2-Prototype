@@ -19,7 +19,7 @@ import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
 import type { AISuggestions } from '../types/aiSuggestions'
 import { jewelryCreatorOptions, stoneOptions, stoneCutOptions, jewelryStyleOptions } from '../data/jewelryOptions'
-import { categories, conditions, periods, materialOptions, wearOptions, restorationOptions, weightOptions, attributionOptions, roleOptions, countryOptions } from '../data/formOptions'
+import { categoriesByVertical, conditions, periods, materialOptions, wearOptions, restorationOptions, weightOptions, attributionOptions, roleOptions, countryOptions } from '../data/formOptions'
 
 interface ItemUploadFormJewelryProps {
   aiAssistEnabled?: boolean
@@ -244,8 +244,8 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
     )
   }
 
-  // Filter categories to show only Jewelry vertical
-  const jewelryCategories = categories.filter(cat => cat.l1 === 'Jewelry')
+  // Use Jewelry-specific categories (no filtering needed)
+  const jewelryCategories = categoriesByVertical.Jewelry
 
   // Calculate period from year
   const calculatePeriod = (yearString: string) => {

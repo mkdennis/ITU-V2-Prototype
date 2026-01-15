@@ -1,4 +1,5 @@
 import '../App.css'
+import { categoriesByVertical } from '../data/formOptions'
 import RadioButtonGroup from './RadioButtonGroup'
 import NumberInput from './NumberInput'
 import TextInput from './TextInput'
@@ -426,25 +427,8 @@ function ItemUploadFormFashion({ aiAssistEnabled = false, aiSuggestions = {} }: 
     { value: 'VN', label: 'Vietnam' }
   ]
 
-  const categories = [
-    { l1: 'Decorative Objects', l2: 'Bowls and Baskets', l3: ['Bowls', 'Baskets', 'Trays'] },
-    { l1: 'Decorative Objects', l2: 'Boxes', l3: ['Jewelry Boxes', 'Decorative Boxes', 'Storage Boxes'] },
-    { l1: 'Decorative Objects', l2: 'Candle Holders', l3: ['Candelabras', 'Candle Lamps', 'Candle Sconces'] },
-    { l1: 'Decorative Objects', l2: 'Clocks', l3: ['Wall Clocks', 'Mantle Clocks', 'Grandfather Clocks'] },
-    { l1: 'Decorative Objects', l2: 'Desk Accessories', l3: ['Paperweights', 'Letter Holders', 'Pen Stands'] },
-    { l1: 'Decorative Objects', l2: 'Picture Frames', l3: ['Table Frames', 'Wall Frames', 'Standing Frames'] },
-    { l1: 'Decorative Objects', l2: 'Sculptures', l3: ['Abstract', 'Figurative', 'Busts'] },
-    { l1: 'Decorative Objects', l2: 'Vases and Vessels', l3: ['Floor Vases', 'Table Vases', 'Urns'] },
-    { l1: 'Lighting', l2: 'Chandeliers and Pendants', l3: ['Crystal Chandeliers', 'Modern Pendants', 'Vintage Chandeliers'] },
-    { l1: 'Lighting', l2: 'Floor Lamps', l3: ['Arc Lamps', 'Torchiere', 'Reading Lamps'] },
-    { l1: 'Lighting', l2: 'Flush Mount', l3: ['Ceiling Lights', 'Semi-Flush Mount', 'Recessed Lighting'] },
-    { l1: 'Lighting', l2: 'Lanterns', l3: ['Outdoor Lanterns', 'Indoor Lanterns', 'Hanging Lanterns'] },
-    { l1: 'Lighting', l2: 'Table Lamps', l3: ['Desk Lamps', 'Bedside Lamps', 'Accent Lamps'] },
-    { l1: 'Lighting', l2: 'Wall Lights and Sconces', l3: ['Swing Arm Sconces', 'Candle Sconces', 'Picture Lights'] },
-    { l1: 'Seating', l2: 'Dining Chairs', l3: ['Side Chairs', 'Arm Chairs', 'Bar Stools'] },
-    { l1: 'Seating', l2: 'Stools', l3: ['Counter Stools', 'Footstools', 'Ottomans'] },
-    { l1: 'Tables', l2: 'Vanities', l3: ['Makeup Vanities', 'Dressing Tables', 'Bathroom Vanities'] },
-  ]
+  // Use Fashion-specific categories from centralized data
+  const fashionCategories = categoriesByVertical.Fashion
 
   const conditions = [
     {
@@ -553,7 +537,7 @@ function ItemUploadFormFashion({ aiAssistEnabled = false, aiSuggestions = {} }: 
           <SearchableCategoryDropdown
             label="Category *"
             placeholder="Select a category"
-            categories={categories}
+            categories={fashionCategories}
             value={selectedCategory}
             onChange={setSelectedCategory}
           />
@@ -568,7 +552,7 @@ function ItemUploadFormFashion({ aiAssistEnabled = false, aiSuggestions = {} }: 
           isOpen={categoryModalOpen}
           onClose={() => setCategoryModalOpen(false)}
           onSelect={setSelectedCategory}
-          categories={categories}
+          categories={fashionCategories}
         />
         <RadioButtonGroup
           label="Sell as * (cannot be edited after submission)"
