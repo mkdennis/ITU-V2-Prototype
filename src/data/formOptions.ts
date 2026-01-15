@@ -1,7 +1,56 @@
 // Centralized form options data - extracted for use in AI matching
 
-import type { Category, LabeledOption, Condition } from '../types/aiSuggestions'
+import type { Category, VerticalCategory, Vertical, LabeledOption, Condition } from '../types/aiSuggestions'
 
+// Categories organized by vertical (for UI components - L1 is implicit)
+export const categoriesByVertical: Record<Vertical, VerticalCategory[]> = {
+  Art: [
+    { l2: 'Drawings and Watercolor Paintings', l3: ['Abstract Drawings and Watercolors', 'Animal Drawings and Watercolors', 'Figurative Drawings and Watercolors', 'Interior Drawings and Watercolors', 'Landscape Drawings and Watercolors', 'Nude Drawings and Watercolors', 'Portrait Drawings and Watercolors', 'Still-life Drawings and Watercolors'] },
+    { l2: 'Mixed Media', l3: [] },
+    { l2: 'More Art', l3: [] },
+    { l2: 'Paintings', l3: ['Abstract Paintings', 'Animal Paintings', 'Figurative Paintings', 'Interior Paintings', 'Landscape Paintings', 'Nude Paintings', 'Portrait Paintings', 'Still-life Paintings'] },
+    { l2: 'Photography', l3: ['Abstract Photography', 'Black and White Photography', 'Color Photography', 'Figurative Photography', 'Landscape Photography', 'Nude Photography', 'Portrait Photography', 'Still-life Photography'] },
+    { l2: 'Prints and Multiples', l3: ['Abstract Prints', 'Animal Prints', 'Figurative Prints', 'Interior Prints', 'Landscape Prints', 'More Prints', 'Nude Prints', 'Portrait Prints', 'Still-life Prints'] },
+    { l2: 'Sculptures', l3: ['Abstract Sculptures', 'Figurative Sculptures', 'Nude Sculptures', 'Still-life Sculptures'] },
+  ],
+  Fashion: [
+    { l2: 'Accessories', l3: ['Babushka', 'Bandannas', 'Bandeaus', 'Beanies', 'Belts', 'Berets', 'Bonnets', 'Braces', 'Canes and Walking Sticks', 'Caps', 'Cloche Hats', 'Contour', 'Corsages', 'Cravats', 'Cummerbunds', 'Fichu', 'Gauntlets', 'Gloves', 'Handheld Fans', 'Handkerchiefs', 'Hats', 'Hoods', 'Muffs', 'Neckcloths', 'Neckties', 'Sashes', 'Scarves', 'Shoes', 'Sunglasses', 'Suspenders', 'Ties', 'Visors', 'Waist Belts'] },
+    { l2: 'Books', l3: ['Antique Books', 'Avant Garde Books', 'Body', 'Classic', 'Clothes', 'Collection', 'Costumes', 'Couture', 'Dandy', 'Design', 'Fashion', 'Fashion Books', 'Look', 'Modernist', 'Retro', 'Softcover and Paperback', 'Style', 'Vintage', 'Wearable Art'] },
+    { l2: 'Clothing', l3: ['Blouses', 'Coats and Outerwear', 'Day Dresses', 'Evening Dresses and Gowns', 'Jackets', 'Lingerie', 'Pants', 'Shirts', 'Shoes', 'Shorts', 'Skirts', 'Sportswear', 'Suits, Outfits and Ensembles', 'Sweaters', 'Swimwear'] },
+    { l2: 'Ephemera', l3: ['Ashtrays', 'Barware', 'Baskets', 'Boxes', 'Centerpieces', 'Ceramics', 'Children', 'Clocks', 'Coatstands', 'Curiosities', 'Decorative Mounted Boxes', 'Decorative Objects', 'Dry Bar', 'For The Desk', 'For The Table', 'Games', 'Globes', 'Jewelry Boxes', 'Knife Boxes', 'Miscellaneous', 'Other', 'Pillows and Throws', 'Rugs', 'Sculptures', 'Teacaddies and Canisters', 'Textiles and Quilts', 'Toys', 'Trunks and Luggage', 'Umbrella Stands', 'Vases', 'Wine Coolers', 'Wine Service'] },
+    { l2: 'Handbags and Purses', l3: ['Backpacks', 'Briefcases and Attachés', 'Clutches', 'Crossbody Bags and Messenger Bags', 'Evening Bags and Minaudières', 'Luggage and Travel Bags', 'Novelty Bags', 'Shoulder Bags', 'Top Handle Bags', 'Tote Bags', 'Wallets and Small Accessories'] },
+  ],
+  Furniture: [
+    { l2: 'Asian Art and Furniture', l3: ['Antiquities', 'Ceramics', 'Furniture', 'Lacquer', 'Metalwork', 'More Asian Art, Objects and Furniture', 'Paintings and Screens', 'Prints', 'Scholar\'s Objects', 'Sculptures and Carvings', 'Textiles'] },
+    { l2: 'Building and Garden Elements', l3: ['Andirons', 'Architectural Elements', 'Balustrades and Fixtures', 'Bathroom Fixtures', 'Doors and Gates', 'Fireplace Tools and Chimney Pots', 'Fireplaces and Mantels', 'Flooring', 'Fountains', 'Garden Ornaments', 'Panelling', 'Patio and Garden Furniture', 'Pedestals and Columns', 'Planters and Jardinieres', 'Stairs', 'Statues', 'Stone Sinks', 'Sundials', 'Urns', 'Windows'] },
+    { l2: 'Case Pieces and Storage Cabinets', l3: ['Apothecary Cabinets', 'Blanket Chests', 'Bookcases', 'Buffets', 'Cabinets', 'Commodes and Chests of Drawers', 'Corner Cupboards', 'Credenzas', 'Cupboards', 'Desks', 'Dressers', 'Dry Bars', 'Linen Presses', 'Secretaires', 'Shelves', 'Sideboards', 'Vitrines', 'Wardrobes and Armoires'] },
+    { l2: 'Decorative Objects', l3: ['Bowls and Baskets', 'Boxes', 'Candle Holders', 'Clocks', 'Desk Accessories', 'Picture Frames', 'Sculptures', 'Vases and Vessels'] },
+    { l2: 'Folk Art', l3: ['Antiquities', 'Carnival Art', 'Ceramics', 'Decoys', 'Game Boards', 'Masks', 'Mirrors', 'More Folk Art', 'Native American Objects', 'Nautical Objects', 'Outsider and Self Taught Art', 'Painted Furniture', 'Paintings', 'Political and Patriotic Memorabilia', 'Posters', 'Primitives', 'Quilts', 'Rugs', 'Sculptures and Carvings', 'Signs', 'Toys', 'Tribal Art', 'Weathervanes'] },
+    { l2: 'Lighting', l3: ['Chandeliers and Pendants', 'Floor Lamps', 'Flush Mount', 'Lanterns', 'More Lighting', 'Table Lamps', 'Wall Lights and Sconces'] },
+    { l2: 'Mirrors', l3: ['Convex Mirrors', 'Floor Mirrors and Full-Length Mirrors', 'Girandoles', 'Mantel Mirrors and Fireplace Mirrors', 'More Mirrors', 'Pier Mirrors and Console Mirrors', 'Sunburst Mirrors', 'Table Mirrors', 'Trumeau Mirrors', 'Wall Mirrors'] },
+    { l2: 'More Furniture and Collectibles', l3: ['Bedroom Furniture', 'Children\'s Furniture', 'Collectibles and Curiosities', 'Home Accents', 'Racks and Stands', 'Textiles'] },
+    { l2: 'Rugs and Carpets', l3: ['Caucasian Rugs', 'Central Asian Rugs', 'Chinese and East Asian Rugs', 'Indian Rugs', 'More Carpets', 'Moroccan and North African Rugs', 'North and South American Rugs', 'Persian Rugs', 'Russian and Scandinavian Rugs', 'Turkish Rugs', 'Western European Rugs'] },
+    { l2: 'Seating', l3: ['Armchairs', 'Benches', 'Bergere Chairs', 'Canapes', 'Chairs', 'Chaise Longues', 'Club Chairs', 'Corner Chairs', 'Daybeds', 'Dining Room Chairs', 'Footstools', 'Living Room Sets', 'Lounge Chairs', 'Loveseats', 'Office Chairs and Desk Chairs', 'Ottomans and Poufs', 'Rocking Chairs', 'Sectional Sofas', 'Settees', 'Side Chairs', 'Slipper Chairs', 'Sofas', 'Stools', 'Swivel Chairs', 'Windsor Chairs', 'Wingback Chairs'] },
+    { l2: 'Serveware, Ceramics, Silver and Glass', l3: ['Ashtrays', 'Barware', 'Butcher Blocks', 'Centerpieces', 'Ceramics', 'Crystal Serveware', 'Delft and Faience', 'Dinner Plates', 'Glass', 'Knife Boxes', 'More Dining and Entertaining', 'Pitchers', 'Platters and Serveware', 'Porcelain', 'Pottery', 'Serving Bowls', 'Serving Pieces', 'Sheffield and Silverplate', 'Soup Tureens', 'Sterling Silver', 'Tableware', 'Tea Sets', 'Wine Coolers'] },
+    { l2: 'Tables', l3: ['Candle Stands', 'Card Tables and Tea Tables', 'Carts and Bar Carts', 'Center Tables', 'Coffee and Cocktail Tables', 'Conference Tables', 'Console Tables', 'Demi-lune Tables', 'Desks and Writing Tables', 'Dessert Tables and Tilt-top Tables', 'Dining Room Sets', 'Dining Room Tables', 'Drop-leaf and Pembroke Tables', 'End Tables', 'Farm Tables', 'Game Tables', 'Gueridon', 'Industrial and Work Tables', 'Lowboys', 'Nesting Tables and Stacking Tables', 'Pedestals', 'Serving Tables', 'Side Tables', 'Sofa Tables', 'Tables', 'Tray Tables', 'Vanities'] },
+    { l2: 'Wall Decorations', l3: ['Contemporary Art', 'Decorative Art', 'Drawings', 'Paintings', 'Photography', 'Posters', 'Prints', 'Shadow Boxes', 'Shelves and Wall Cabinets', 'Tapestries', 'Wall Brackets', 'Wall-mounted Sculptures', 'Wallpaper'] },
+  ],
+  Jewelry: [
+    { l2: 'Bracelets', l3: ['Anklets', 'Bangles', 'Beaded Bracelets', 'Chain Bracelets', 'Charm Bracelets', 'Clamper Bracelets', 'Cuff Bracelets', 'Link Bracelets', 'Modern Bracelets', 'More Bracelets', 'Retro Bracelets', 'Tennis Bracelets'] },
+    { l2: 'Brooches', l3: ['Brooches'] },
+    { l2: 'Cufflinks', l3: ['Cufflinks'] },
+    { l2: 'Earrings', l3: ['Chandelier Earrings', 'Clip-on Earrings', 'Dangle Earrings', 'Drop Earrings', 'Hoop Earrings', 'Lever-Back Earrings', 'More Earrings', 'Stud Earrings'] },
+    { l2: 'Loose Gemstones', l3: [] },
+    { l2: 'More Jewelry and Watches', l3: ['More Jewelry'] },
+    { l2: 'Necklaces', l3: ['Beaded Necklaces', 'Chain Necklaces', 'Choker Necklaces', 'Drop Necklaces', 'Link Necklaces', 'More Necklaces', 'Multi-Strand Necklaces', 'Necklace Enhancers', 'Pendant Necklaces', 'Rope Necklaces'] },
+    { l2: 'Objets d\'Art and Vertu', l3: ['Boxes and Cases', 'Desk Accessories', 'Enamel Frames and Objects', 'Figurines and Sculptures', 'Frames', 'Models and Miniatures', 'More Objets d\'Art and Vertu', 'Vanity Items'] },
+    { l2: 'Rings', l3: ['Band Rings', 'Bridal Rings', 'Cluster Rings', 'Cocktail Rings', 'Dome Rings', 'Engagement Rings', 'Fashion Rings', 'More Rings', 'Signet Rings', 'Solitaire Rings', 'Three-Stone Rings', 'Wedding Rings'] },
+    { l2: 'Silver, Flatware and Silverplate', l3: ['Barware', 'Candleholders and Candelabra', 'Centerpieces and Tazzas', 'Coffee and Tea Sets', 'Dinnerware and Flatware Sets', 'Flatware and Serving Pieces', 'More Silver, Flatware and Silverplate', 'Pitchers and Decanters', 'Platters and Trays', 'Serving Bowls and Tureens', 'Silver Bowls', 'Silver Chargers and Plates', 'Vases'] },
+    { l2: 'Watches', l3: ['Pocket Watches', 'Wrist Watches'] },
+  ],
+}
+
+// Legacy flat categories array (kept for AI matching backward compatibility)
 export const categories: Category[] = [
   { l1: 'Art', l2: 'Drawings and Watercolor Paintings', l3: ['Abstract Drawings and Watercolors', 'Animal Drawings and Watercolors', 'Figurative Drawings and Watercolors', 'Interior Drawings and Watercolors', 'Landscape Drawings and Watercolors', 'Nude Drawings and Watercolors', 'Portrait Drawings and Watercolors', 'Still-life Drawings and Watercolors'] },
   { l1: 'Art', l2: 'Mixed Media', l3: [] },

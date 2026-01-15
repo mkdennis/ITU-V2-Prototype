@@ -62,12 +62,21 @@ export interface AIParseResult {
   rawResponse?: string // For debugging
 }
 
-// Category type matching the form structure
+// Category type matching the form structure (used for AI matching - includes L1)
 export interface Category {
   l1: string
   l2: string
   l3?: string[]
 }
+
+// Simplified category type for UI display (L1 is implicit from vertical context)
+export interface VerticalCategory {
+  l2: string
+  l3?: string[]
+}
+
+// Vertical names
+export type Vertical = 'Art' | 'Fashion' | 'Furniture' | 'Jewelry'
 
 // Option types for dropdowns
 export interface LabeledOption {

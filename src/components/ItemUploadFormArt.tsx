@@ -1,4 +1,5 @@
 import '../App.css'
+import { categoriesByVertical } from '../data/formOptions'
 import RadioButtonGroup from './RadioButtonGroup'
 import NumberInput from './NumberInput'
 import TextInput from './TextInput'
@@ -357,68 +358,8 @@ function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: Item
     { value: 'victorian', label: 'Victorian' }
   ]
 
-  const categories = [
-    // Drawings and Watercolor Paintings (8)
-    { l1: 'Drawings and Watercolor Paintings', l2: 'Abstract Drawings', l3: ['Expressionism', 'Geometric', 'Gestural'] },
-    { l1: 'Drawings and Watercolor Paintings', l2: 'Figurative Drawings', l3: ['Portraits', 'Nudes', 'Narrative'] },
-    { l1: 'Drawings and Watercolor Paintings', l2: 'Landscape Drawings', l3: ['Seascape', 'Cityscape', 'Nature'] },
-    { l1: 'Drawings and Watercolor Paintings', l2: 'Still-life Drawings', l3: ['Floral', 'Food', 'Objects'] },
-    { l1: 'Drawings and Watercolor Paintings', l2: 'Abstract Watercolors', l3: ['Expressionism', 'Color Studies', 'Mixed Media'] },
-    { l1: 'Drawings and Watercolor Paintings', l2: 'Figurative Watercolors', l3: ['Portraits', 'Figures', 'Narrative'] },
-    { l1: 'Drawings and Watercolor Paintings', l2: 'Landscape Watercolors', l3: ['Seascape', 'Cityscape', 'Nature'] },
-    { l1: 'Drawings and Watercolor Paintings', l2: 'Still-life Watercolors', l3: ['Floral', 'Food', 'Objects'] },
-
-    // Mixed Media (5)
-    { l1: 'Mixed Media', l2: 'Collage', l3: ['Paper', 'Fabric', 'Found Objects'] },
-    { l1: 'Mixed Media', l2: 'Assemblage', l3: ['Wall Mounted', 'Freestanding', 'Relief'] },
-    { l1: 'Mixed Media', l2: 'Abstract Mixed Media', l3: ['Expressionism', 'Geometric', 'Textural'] },
-    { l1: 'Mixed Media', l2: 'Figurative Mixed Media', l3: ['Portraits', 'Figures', 'Narrative'] },
-    { l1: 'Mixed Media', l2: 'Installation Art', l3: ['Participatory', 'Site-specific', 'Multimedia'] },
-
-    // More Art (5)
-    { l1: 'More Art', l2: 'Digital Art', l3: ['NFTs', 'Prints', 'Generative'] },
-    { l1: 'More Art', l2: 'Street Art', l3: ['Graffiti', 'Stencils', 'Murals'] },
-    { l1: 'More Art', l2: 'Textile Art', l3: ['Tapestries', 'Fiber Art', 'Quilts'] },
-    { l1: 'More Art', l2: 'Ceramics', l3: ['Vessels', 'Sculptural', 'Functional'] },
-    { l1: 'More Art', l2: 'Glass Art', l3: ['Blown Glass', 'Stained Glass', 'Sculptural'] },
-
-    // Paintings (8)
-    { l1: 'Paintings', l2: 'Abstract Paintings', l3: ['Expressionism', 'Geometric', 'Color Field'] },
-    { l1: 'Paintings', l2: 'Animal Paintings', l3: ['Wildlife', 'Domestic', 'Marine Life'] },
-    { l1: 'Paintings', l2: 'Figurative Paintings', l3: ['Portraits', 'Nudes', 'Narrative'] },
-    { l1: 'Paintings', l2: 'Interior Paintings', l3: ['Domestic Scenes', 'Architectural', 'Still Life Settings'] },
-    { l1: 'Paintings', l2: 'Landscape Paintings', l3: ['Seascape', 'Cityscape', 'Nature'] },
-    { l1: 'Paintings', l2: 'Nude Paintings', l3: ['Classical', 'Contemporary', 'Abstract'] },
-    { l1: 'Paintings', l2: 'Portrait Paintings', l3: ['Single Figure', 'Group Portraits', 'Self-portraits'] },
-    { l1: 'Paintings', l2: 'Still-life Paintings', l3: ['Floral', 'Food', 'Objects'] },
-
-    // Photography (8)
-    { l1: 'Photography', l2: 'Abstract Photography', l3: ['Experimental', 'Color Studies', 'Light and Shadow'] },
-    { l1: 'Photography', l2: 'Documentary Photography', l3: ['Street', 'Photojournalism', 'Social Commentary'] },
-    { l1: 'Photography', l2: 'Fashion Photography', l3: ['Editorial', 'Commercial', 'Beauty'] },
-    { l1: 'Photography', l2: 'Fine Art Photography', l3: ['Black & White', 'Color', 'Digital'] },
-    { l1: 'Photography', l2: 'Landscape Photography', l3: ['Nature', 'Urban', 'Aerial'] },
-    { l1: 'Photography', l2: 'Portrait Photography', l3: ['Studio', 'Environmental', 'Candid'] },
-    { l1: 'Photography', l2: 'Still-life Photography', l3: ['Product', 'Food', 'Objects'] },
-    { l1: 'Photography', l2: 'Wildlife Photography', l3: ['Animals', 'Birds', 'Marine Life'] },
-
-    // Prints and Multiples (9)
-    { l1: 'Prints and Multiples', l2: 'Etchings', l3: ['Drypoint', 'Aquatint', 'Line Etching'] },
-    { l1: 'Prints and Multiples', l2: 'Giclée Prints', l3: ['Fine Art', 'Reproduction', 'Limited Edition'] },
-    { l1: 'Prints and Multiples', l2: 'Letterpress', l3: ['Posters', 'Typography', 'Illustrations'] },
-    { l1: 'Prints and Multiples', l2: 'Linocuts', l3: ['Relief', 'Reduction', 'Multi-block'] },
-    { l1: 'Prints and Multiples', l2: 'Lithographs', l3: ['Stone', 'Offset', 'Transfer'] },
-    { l1: 'Prints and Multiples', l2: 'Monotypes', l3: ['Abstract', 'Figurative', 'Landscape'] },
-    { l1: 'Prints and Multiples', l2: 'Screenprints', l3: ['Serigraph', 'Silkscreen', 'Stencil'] },
-    { l1: 'Prints and Multiples', l2: 'Woodcuts', l3: ['Relief', 'Wood Engraving', 'Japanese Woodblock'] },
-    { l1: 'Prints and Multiples', l2: 'Other Prints', l3: ['Posters', 'Reproductions', 'Limited Editions'] },
-
-    // Sculptures (4)
-    { l1: 'Sculptures', l2: 'Abstract Sculptures', l3: ['Geometric', 'Organic', 'Kinetic'] },
-    { l1: 'Sculptures', l2: 'Figurative Sculptures', l3: ['Bust', 'Full Figure', 'Torso'] },
-    { l1: 'Sculptures', l2: 'Outdoor Sculptures', l3: ['Garden', 'Monumental', 'Public Art'] },
-    { l1: 'Sculptures', l2: 'Wall-mounted Sculptures', l3: ['Relief', 'Hanging', 'Assemblage'] }
-  ]
+  // Use Art-specific categories from centralized data
+  const artCategories = categoriesByVertical.Art
 
   const conditions = [
     {
@@ -512,7 +453,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: Item
           <SearchableCategoryDropdown
             label="Category *"
             placeholder="Select a category"
-            categories={categories}
+            categories={artCategories}
             value={selectedCategory}
             onChange={setSelectedCategory}
           />
@@ -527,7 +468,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: Item
           isOpen={categoryModalOpen}
           onClose={() => setCategoryModalOpen(false)}
           onSelect={setSelectedCategory}
-          categories={categories}
+          categories={artCategories}
         />
         <RadioButtonGroup
           label="Sell as * (cannot be edited after submission)"
