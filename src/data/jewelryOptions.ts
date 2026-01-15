@@ -5447,3 +5447,10 @@ export const jewelryWearOptions: LabeledOption[] = [
   { value: 'minor-losses', label: 'Minor Losses' },
   { value: 'original-box', label: 'In original box' }
 ]
+
+export const weightUnitOptions: string[] = [
+  'Carat (ct)',
+  'Grams (g)',
+  'Troy ounces (t oz)',
+  'Enter Custom Unit'
+]

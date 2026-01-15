@@ -323,6 +323,14 @@ export const countryOptions: LabeledOption[] = [
   { value: 'GB', label: 'United Kingdom' },
   { value: 'US', label: 'United States' },
   { value: 'VN', label: 'Vietnam' },
+  // Continents
+  { value: 'AFRICA', label: 'Africa' },
+  { value: 'ANTARCTICA', label: 'Antarctica' },
+  { value: 'ASIA', label: 'Asia' },
+  { value: 'EUROPE', label: 'Europe' },
+  { value: 'NORTH_AMERICA', label: 'North America' },
+  { value: 'OCEANIA', label: 'Oceania' },
+  { value: 'SOUTH_AMERICA', label: 'South America' },
 ]
 
 export const conditions: Condition[] = [

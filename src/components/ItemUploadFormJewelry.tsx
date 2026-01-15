@@ -18,8 +18,8 @@ import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
 import type { AISuggestions } from '../types/aiSuggestions'
-import { jewelryCreatorOptions, stoneOptions, stoneCutOptions, jewelryStyleOptions, metalOptions, genderOptions, jewelryRestorationOptions, jewelryWearOptions } from '../data/jewelryOptions'
-import { categoriesByVertical, conditions, periods, attributionOptions, roleOptions, countryOptions } from '../data/formOptions'
+import { jewelryCreatorOptions, stoneOptions, stoneCutOptions, jewelryStyleOptions, metalOptions, genderOptions, jewelryRestorationOptions, jewelryWearOptions, weightUnitOptions } from '../data/jewelryOptions'
+import { categoriesByVertical, conditions, periods, countryOptions } from '../data/formOptions'
 
 interface ItemUploadFormJewelryProps {
   aiAssistEnabled?: boolean
@@ -31,8 +31,9 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
   const [period, setPeriod] = useState<string>('')
   const [stones, setStones] = useState<string[]>([])
   const [metals, setMetals] = useState<string[]>([])
-  const [stoneCut, setStoneCut] = useState<string>('')
+  const [stoneCuts, setStoneCuts] = useState<string[]>([])
   const [labReportAvailable, setLabReportAvailable] = useState<boolean>(false)
+  const [creator, setCreator] = useState<string>('')
   const [condition, setCondition] = useState<string>('')
   const [wear, setWear] = useState<string>('')
   const [restoration, setRestoration] = useState<string[]>([])
@@ -371,6 +372,20 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
             )}
           </div>
         </div>
+        <SearchableDropdown
+          label="Creator *"
+          placeholder="Search for creator"
+          options={jewelryCreatorOptions}
+          value={creator}
+          onChange={setCreator}
+        />
+        <SearchableDropdown
+          label="Gender *"
+          placeholder="Select gender"
+          options={genderOptions}
+          value={gender}
+          onChange={setGender}
+        />
         <MultiSelectDropdown
           label="Stone"
           placeholder="Select stone type"
@@ -385,14 +400,16 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
           value={metals}
           onChange={setMetals}
         />
-        <SearchableDropdown
-          label="Stone Cut"
-          placeholder="Select stone cut"
-          options={stoneCutOptions}
-          value={stoneCut}
-          onChange={setStoneCut}
-        />
-        {stoneCut && (
+        {stones.length > 0 && (
+          <MultiSelectDropdown
+            label="Stone Cut"
+            placeholder="Select stone cut"
+            options={stoneCutOptions}
+            value={stoneCuts}
+            onChange={setStoneCuts}
+          />
+        )}
+        {stoneCuts.length > 0 && (
           <label className="checkbox-label">
             <input
               type="checkbox"
@@ -469,27 +486,20 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
             onChange={setDiameter}
           />
         </div>
-        <div className="form-row">
+        <div className="form-row" style={{ alignItems: 'flex-end' }}>
           <NumberInput
             label="Weight"
             placeholder="Enter weight"
             value={weightValue}
             onChange={setWeightValue}
           />
-          <div className="dropdown-container" style={{ marginTop: '0' }}>
-            <select
-              className="discount-dropdown"
-              value={weightUnit}
-              onChange={(e) => setWeightUnit(e.target.value)}
-              style={{ height: '40px' }}
-            >
-              <option value="ct">Carat (ct)</option>
-              <option value="g">Grams (g)</option>
-              <option value="toz">Troy ounces (t oz)</option>
-              <option value="custom">Enter Custom Unit</option>
-            </select>
-          </div>
-          {weightUnit === 'custom' && (
+          <SearchableDropdown
+            placeholder="Select unit"
+            options={weightUnitOptions}
+            value={weightUnit}
+            onChange={setWeightUnit}
+          />
+          {weightUnit === 'Enter Custom Unit' && (
             <TextInput
               label=""
               placeholder="Enter Custom Unit"
@@ -501,21 +511,6 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
         <div className="divider"></div>
         <p className="optional-fields-label">Additional Fields</p>
         <p className="additional-fields-subtext">Adding more fields helps your item get discovered</p>
-        <div className="creators-row">
-          <SearchableDropdown
-            label="Creators"
-            placeholder="Select an attribution"
-            options={attributionOptions}
-          />
-          <SearchableDropdown
-            placeholder="Search for creator"
-            options={jewelryCreatorOptions}
-          />
-          <SearchableDropdown
-            placeholder="Select a role"
-            options={roleOptions}
-          />
-        </div>
         <div className="form-row">
           <div>
             <SearchableDropdown
@@ -547,15 +542,6 @@ function ItemUploadFormJewelry({ aiAssistEnabled = false, aiSuggestions = {} }: 
               />
             )}
           </div>
-        </div>
-        <div className="form-row">
-          <SearchableDropdown
-            label="Gender *"
-            placeholder="Select gender"
-            options={genderOptions}
-            value={gender}
-            onChange={setGender}
-          />
         </div>
         <label className="checkbox-label">
           <input
