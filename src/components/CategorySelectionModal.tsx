@@ -13,24 +13,34 @@ interface CategorySelectionModalProps {
   onClose: () => void
   onSelect: (category: string) => void
   categories: Category[]
+  l1Filter?: string  // Pre-filter by L1 category (e.g., "Furniture", "Jewelry")
 }
 
-function CategorySelectionModal({ isOpen, onClose, onSelect, categories }: CategorySelectionModalProps) {
+function CategorySelectionModal({ isOpen, onClose, onSelect, categories, l1Filter }: CategorySelectionModalProps) {
   const [selectedL1, setSelectedL1] = useState<string>('')
   const [selectedL2, setSelectedL2] = useState<string>('')
   const [selectedL3, setSelectedL3] = useState<string>('')
 
-  // Get unique L1 categories
-  const l1Categories = Array.from(new Set(categories.map(c => c.l1)))
+  // Filter categories by L1 if l1Filter is provided
+  const filteredCategories = l1Filter
+    ? categories.filter(c => c.l1 === l1Filter)
+    : categories
 
-  // Get L2 categories for selected L1
-  const l2Categories = selectedL1
-    ? categories.filter(c => c.l1 === selectedL1)
-    : []
+  // Get unique L1 categories (only used when l1Filter is not provided)
+  const l1Categories = Array.from(new Set(filteredCategories.map(c => c.l1))).sort((a, b) => a.localeCompare(b))
+
+  // Get L2 categories based on mode
+  const l2Categories = l1Filter
+    ? filteredCategories  // When l1Filter is provided, show all L2s for that L1
+    : selectedL1
+      ? filteredCategories.filter(c => c.l1 === selectedL1)  // When no l1Filter, filter by selected L1
+      : []
 
   // Get L3 categories for selected L2
   const l3Categories = selectedL2
-    ? categories.find(c => c.l1 === selectedL1 && c.l2 === selectedL2)?.l3 || []
+    ? (l1Filter
+        ? filteredCategories.find(c => c.l2 === selectedL2)?.l3 || []
+        : filteredCategories.find(c => c.l1 === selectedL1 && c.l2 === selectedL2)?.l3 || [])
     : []
 
   const handleL1Click = (l1: string) => {
@@ -49,12 +59,22 @@ function CategorySelectionModal({ isOpen, onClose, onSelect, categories }: Categ
   }
 
   const handleSave = () => {
-    if (selectedL3) {
-      onSelect(`${selectedL1} > ${selectedL2} > ${selectedL3}`)
-    } else if (selectedL2) {
-      onSelect(`${selectedL1} > ${selectedL2}`)
-    } else if (selectedL1) {
-      onSelect(selectedL1)
+    if (l1Filter) {
+      // 2-column mode: L1 is pre-filtered
+      if (selectedL3) {
+        onSelect(`${l1Filter} > ${selectedL2} > ${selectedL3}`)
+      } else if (selectedL2) {
+        onSelect(`${l1Filter} > ${selectedL2}`)
+      }
+    } else {
+      // 3-column mode: L1 is selectable
+      if (selectedL3) {
+        onSelect(`${selectedL1} > ${selectedL2} > ${selectedL3}`)
+      } else if (selectedL2) {
+        onSelect(`${selectedL1} > ${selectedL2}`)
+      } else if (selectedL1) {
+        onSelect(selectedL1)
+      }
     }
     onClose()
     // Reset selection
@@ -71,6 +91,9 @@ function CategorySelectionModal({ isOpen, onClose, onSelect, categories }: Categ
     setSelectedL3('')
   }
 
+  // 2-column mode when l1Filter is provided, 3-column mode otherwise
+  const isTwoColumnMode = !!l1Filter
+
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
       <div className="category-selection-modal">
@@ -81,26 +104,30 @@ function CategorySelectionModal({ isOpen, onClose, onSelect, categories }: Categ
           </button>
         </div>
         <div className="category-breadcrumb">
-          Category: {selectedL1 && `${selectedL1} > `}{selectedL2 && `${selectedL2} > `}{selectedL3}
+          Category: {l1Filter ? `${l1Filter} > ` : (selectedL1 ? `${selectedL1} > ` : '')}{selectedL2 && `${selectedL2} > `}{selectedL3}
         </div>
-        <div className="category-columns">
-          <div className="category-column">
-            {l1Categories.map((l1) => (
-              <div
-                key={l1}
-                className={`category-item ${selectedL1 === l1 ? 'selected' : ''}`}
-                onClick={() => handleL1Click(l1)}
-              >
-                <span>{l1}</span>
-                {categories.filter(c => c.l1 === l1).length > 0 && (
-                  <span className="category-count">
-                    ({categories.filter(c => c.l1 === l1).length})
+        <div className={`category-columns ${isTwoColumnMode ? 'category-columns-two' : ''}`}>
+          {!isTwoColumnMode && (
+            <div className="category-column">
+              {l1Categories.map((l1) => (
+                <div
+                  key={l1}
+                  className={`category-item ${selectedL1 === l1 ? 'selected' : ''}`}
+                  onClick={() => handleL1Click(l1)}
+                >
+                  <span className="category-text">
+                    {l1}
+                    {filteredCategories.filter(c => c.l1 === l1).length > 0 && (
+                      <span className="category-count">
+                        ({filteredCategories.filter(c => c.l1 === l1).length})
+                      </span>
+                    )}
                   </span>
-                )}
-                {selectedL1 === l1 && <span className="category-arrow">&gt;</span>}
-              </div>
-            ))}
-          </div>
+                  {selectedL1 === l1 && <span className="category-arrow">&gt;</span>}
+                </div>
+              ))}
+            </div>
+          )}
           <div className="category-column">
             {l2Categories.map((cat) => (
               <div
@@ -108,10 +135,12 @@ function CategorySelectionModal({ isOpen, onClose, onSelect, categories }: Categ
                 className={`category-item ${selectedL2 === cat.l2 ? 'selected' : ''}`}
                 onClick={() => handleL2Click(cat.l2)}
               >
-                <span>{cat.l2}</span>
-                {cat.l3 && cat.l3.length > 0 && (
-                  <span className="category-count">({cat.l3.length})</span>
-                )}
+                <span className="category-text">
+                  {cat.l2}
+                  {cat.l3 && cat.l3.length > 0 && (
+                    <span className="category-count">({cat.l3.length})</span>
+                  )}
+                </span>
                 {selectedL2 === cat.l2 && cat.l3 && cat.l3.length > 0 && (
                   <span className="category-arrow">&gt;</span>
                 )}
@@ -134,7 +163,7 @@ function CategorySelectionModal({ isOpen, onClose, onSelect, categories }: Categ
           <button
             className="modal-button modal-button-primary category-save-button"
             onClick={handleSave}
-            disabled={!selectedL1}
+            disabled={isTwoColumnMode ? !selectedL2 : !selectedL1}
           >
             SAVE
           </button>

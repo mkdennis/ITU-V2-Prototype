@@ -13,6 +13,7 @@ import CategorySelectionModal from './CategorySelectionModal'
 import ConditionDropdown from './ConditionDropdown'
 import SearchableDropdown from './SearchableDropdown'
 import AISuggestion from './AISuggestion'
+import AISuggestionsBanner from './AISuggestionsBanner'
 import PackageDimensions from './PackageDimensions'
 import ShippingQuotes from './ShippingQuotes'
 import { useState, useEffect } from 'react'
@@ -278,6 +279,7 @@ function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: Item
     { value: 'marble', label: 'Marble' },
     { value: 'mixed-media', label: 'Mixed Media' },
     { value: 'oil', label: 'Oil' },
+    { value: 'offset-print', label: 'Offset Print' },
     { value: 'pastel', label: 'Pastel' },
     { value: 'photography', label: 'Photography' },
     { value: 'porcelain', label: 'Porcelain' },
@@ -328,7 +330,8 @@ function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: Item
     { value: 'robert-rauschenberg', label: 'Robert Rauschenberg' },
     { value: 'francis-bacon', label: 'Francis Bacon' },
     { value: 'lucian-freud', label: 'Lucian Freud' },
-    { value: 'jackson-pollock', label: 'Jackson Pollock' }
+    { value: 'jackson-pollock', label: 'Jackson Pollock' },
+    { value: 'walasse-ting', label: 'Walasse Ting' }
   ]
 
   const styleOptions = [
@@ -479,10 +482,30 @@ function ItemUploadFormArt({ aiAssistEnabled = false, aiSuggestions = {} }: Item
     calculatePeriod(value)
   }
 
+  const applyAllSuggestions = () => {
+    // Apply title
+    if (aiSuggestions.title && !title) {
+      setTitle(aiSuggestions.title)
+    }
+
+    // Apply period
+    if (aiSuggestions.period && !period) {
+      setPeriod(aiSuggestions.period)
+    }
+
+    // Apply condition
+    if (aiSuggestions.condition && !condition) {
+      setCondition(aiSuggestions.condition)
+    }
+  }
+
   return (
     <>
       <NavigationHeader />
       <div className="app">
+        {aiAssistEnabled && (
+          <AISuggestionsBanner onApplyAll={applyAllSuggestions} />
+        )}
         <div className="form-section" id="basic-information-section">
           <h3>Basic Information</h3>
         <div className="category-field-wrapper">
@@ -887,6 +910,7 @@ What details would be useful for a potential buyer to know?`}
         </div>
 
         <div className="pricing-options-content">
+          <div className="divider"></div>
           <div className="net-price-section">
             <div className="net-price-row">
               <NumberInput
