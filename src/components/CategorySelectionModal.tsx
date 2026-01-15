@@ -115,12 +115,14 @@ function CategorySelectionModal({ isOpen, onClose, onSelect, categories, l1Filte
                   className={`category-item ${selectedL1 === l1 ? 'selected' : ''}`}
                   onClick={() => handleL1Click(l1)}
                 >
-                  <span>{l1}</span>
-                  {filteredCategories.filter(c => c.l1 === l1).length > 0 && (
-                    <span className="category-count">
-                      ({filteredCategories.filter(c => c.l1 === l1).length})
-                    </span>
-                  )}
+                  <span className="category-text">
+                    {l1}
+                    {filteredCategories.filter(c => c.l1 === l1).length > 0 && (
+                      <span className="category-count">
+                        ({filteredCategories.filter(c => c.l1 === l1).length})
+                      </span>
+                    )}
+                  </span>
                   {selectedL1 === l1 && <span className="category-arrow">&gt;</span>}
                 </div>
               ))}
@@ -133,10 +135,12 @@ function CategorySelectionModal({ isOpen, onClose, onSelect, categories, l1Filte
                 className={`category-item ${selectedL2 === cat.l2 ? 'selected' : ''}`}
                 onClick={() => handleL2Click(cat.l2)}
               >
-                <span>{cat.l2}</span>
-                {cat.l3 && cat.l3.length > 0 && (
-                  <span className="category-count">({cat.l3.length})</span>
-                )}
+                <span className="category-text">
+                  {cat.l2}
+                  {cat.l3 && cat.l3.length > 0 && (
+                    <span className="category-count">({cat.l3.length})</span>
+                  )}
+                </span>
                 {selectedL2 === cat.l2 && cat.l3 && cat.l3.length > 0 && (
                   <span className="category-arrow">&gt;</span>
                 )}
